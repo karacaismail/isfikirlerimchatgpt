@@ -4,6 +4,8 @@ Kaynak incelemesiyle iş tanımı, müşteri, mevcut ürün ve ticari yönü bir
 
 İlk yayın **kısmi kaynak incelemesine** dayanır. Kaynak ürünler çalıştırılmadı. Katalogdaki puanlar gelir garantisi veya ölçülmüş başarı olasılığı değildir. İnceleme kapsamı ve sınırlamalar sitede görünürdür.
 
+[Karar sayfası](https://karacaismail.github.io/isfikirlerimchatgpt/kararlar/) ilk ücretli deneyi, koşullu önceliği ve kararı değiştirecek kanıtı açıklar. Veri sürümü 1.1, ilk yayın kapsam snapshot'ını tarihli birleşik okuma kaydından ayırır. Bütün taslaklar yerel analiz kapsamındadır; public veri yalnız sahipliği açık kişisel projelerin arındırılmış özetlerini taşır.
+
 ## Yerel çalışma
 
 Node 24.21.0 ve npm 11.19.0 ile:

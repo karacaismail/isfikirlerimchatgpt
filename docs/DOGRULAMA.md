@@ -1,5 +1,15 @@
 # İlk sürüm doğrulama kaydı
 
+## Karar ve kaynak güncellemesi
+
+10 Ekim 2026, veri sürümü 1.1. Altı proje özeti yeni kaynak okumalarıyla düzeltildi; çatı marka, iç üretim kabiliyeti ve satılabilecek dar işler ayrıldı. Genel bakış ve karar sayfasına koşullu ilk deney önerisi eklendi. İlk yayın sayaçları korunur; yeni okuma kaydı kendi UTC zamanına bağlıdır. Toplu çıkarım, belge metni/hücresi, tam kaynak metni ve formül yeniden hesaplaması ayrı ölçümlerdir.
+
+Bu adayda yerel formatter, Astro kontrolü, 7 model testi ve üretim derlemesi/gizlilik kapısı geçti. Chromium, Firefox ve WebKit üzerinde **33/33** tarayıcı testi geçti; atlanan, beklenmeyen ve dalgalı sonuç sıfır. Yeni test genel bakış/karar/yöntem metinlerini 320–1280 matrisinde ve yüzde 200 kök metinle kontrol eder. Kaynak projeler çalıştırılmadı.
+
+İçerik değişimi eski altı Darwin görsel referansını önce başarısız yaptı. Bağımsız inceleyici her motorun önce/sonra/fark görüntülerini ve 18 statik sayfa görüntüsünü inceledi; değişim metin ve doğal satır yüksekliğine bağlıydı. Sürüm etiketi, kelime boşluğu ve eski kısmi kaynak notları düzeltildi. İncelenmiş hash bağlı adaylar referansa alındıktan sonra normal sıfır piksel farkı tekrarı geçti. Linux referansları ve yayın sonucu ilgili commitin GitHub Actions kaydına ayrıca bağlanır; aşağıdaki 30 testlik kayıt ilk sürüme aittir.
+
+## İlk sürümün kanıtı
+
 10 Ekim 2026. Bu kayıt katalog sitesini kapsar. Kaynak projelerin çalıştırılması, müşteri kabulü veya gelir doğrulaması değildir. Yerel komutların çalışma dizini bu deponun köküdür.
 
 | Kontrol                                                | Durum   | Gerçek kanıt                                                                                    |

@@ -3,11 +3,14 @@ import Layout from '../layouts/Layout.astro';
 import { portfolio } from '../lib/data';
 import { criteria, groupIds, groupNames } from '../lib/model';
 const c = portfolio.coverage;
+const r = portfolio.reviewUpdate;
 const n = (x: number) => x.toLocaleString('tr-TR');
 ---
 
 <Layout title="Yöntem ve kapsam">
-  <p class="eyebrow">Model 1.0 · {portfolio.date}</p>
+  <p class="eyebrow">
+    Veri sürümü {portfolio.version} · {portfolio.date}
+  </p>
   <h1>Bir iddia, dayanağı kadar güçlü.</h1>
   <section class="reading">
     <h2>Bütün taslaklar değerlendirme kapsamında</h2>
@@ -26,13 +29,23 @@ const n = (x: number) => x.toLocaleString('tr-TR');
       satış varsayımlarını veya ürünlerin çalışmasını doğrulamaz.
     </p>
     <p>
-      Aşağıdaki sayaçlar ilk yayının inceleme kaydını gösterir. Derin okumada
-      bulunan yeni iş tanımları, teklif sürümleri ve hesaplama çelişkileri
-      değerlendirmeye eklenmektedir; bütün kaynak incelemesi henüz tamamlanmadı.
+      Güncel birleşik kayıt ({r.capturedAt}): {n(r.fullTextFiles)} tam metin
+      dosyası, {n(r.partialTextFiles)} kısmi metin dosyası ve {n(r.textLines)}{' '}
+      okunan metin satırı. Ayrıca {n(r.documentTextFiles)} belgenin metni veya
+      hücreleri incelendi; bu sayı tam görsel inceleme değildir. Aynı yol ve
+      güncel içerik özeti bir kez sayıldı. Toplu metin çıkarımı bu okuma
+      sayısına eklenmedi. Finans kontrolünde değiştirilen girdilere sahip{' '}
+      {r.changedInputCases} senaryo da karşılaştırmadan geçti. Bütün kaynak
+      incelemesi henüz tamamlanmadı.
     </p>
   </section>
   <section class="reading">
-    <h2>Dört ayrı kapsam ölçümü</h2>
+    <h2>İlk yayının kapsam kaydı</h2>
+    <p>
+      Aşağıdaki sayılar ilk yayın snapshot’ıdır; güncel okuma toplamı yukarıda
+      yer alır. Değişen dosya sistemi için bunlardan yeni bir kalan dosya sayısı
+      veya tamamlanma yüzdesi türetilmez.
+    </p>
     <dl>
       <dt>1. Envanter kapsaması</dt>
       <dd>

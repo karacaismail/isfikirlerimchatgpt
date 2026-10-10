@@ -2,7 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import ProjectSummary from '../components/ProjectSummary.astro';
 import { portfolio } from '../lib/data';
-const { coverage: c, projects } = portfolio;
+const { reviewUpdate: r, projects } = portfolio;
 const base = import.meta.env.BASE_URL;
 const number = (n: number) => n.toLocaleString('tr-TR');
 ---
@@ -20,7 +20,7 @@ const number = (n: number) => n.toLocaleString('tr-TR');
         <a class="button-link" href={`${base}katalog/`}>
           Projeleri incele
         </a>
-        <a href={`${base}yontem/`}>Kanıt sınırlarını oku</a>
+        <a href={`${base}kararlar/`}>Önerilen ilk deneyi gör</a>
       </div>
     </div>
     <aside class="notice">
@@ -40,31 +40,45 @@ const number = (n: number) => n.toLocaleString('tr-TR');
       <strong>{projects.length}</strong>Yayımlanan kişisel proje özeti
     </div>
     <div class="metric">
-      <strong>{c.localIdeas}</strong>Yerelde ayrılan bağımsız fikir adayı
+      <strong>{number(r.fullTextFiles)}</strong>Tam metni okunan kaynak dosya
     </div>
     <div class="metric">
-      <strong>{number(c.reviewedFull)}</strong>Tamamı incelenen dosya yolu
+      <strong>{number(r.documentTextFiles)}</strong>Metni veya hücreleri
+      incelenen belge
     </div>
     <div class="metric">
-      <strong>{number(c.inventoryFiles)}</strong>Metaverisi kaydedilen dosya
+      <strong>{number(r.formulaCells)}</strong>Yeniden hesaplanıp
+      karşılaştırılan formül
     </div>
   </section>
   <section class="notice">
-    <h2>Bu yayının sınırı</h2>
+    <h2>Güncel inceleme kaydı</h2>
     <p>
-      Kaynak envanteri{' '}
-      {c.inventoryComplete
-        ? 'dosya sistemi düzeyinde tamamlandı'
-        : 'devam ediyor'}
-      . İçerik incelemesi {c.contentComplete ? 'tamamlandı' : 'tamamlanmadı'}.{' '}
-      {number(c.reviewedPartial)} dosya kısmen incelendi; kalan özgün içerikler
-      için kararlar geçicidir.
+      Sayaçlar {r.capturedAt} tarihli birleşik kayda aittir. Aynı yol ve içerik
+      özeti bir kez sayıldı; {number(r.textLines)} metin satırı incelendi.{' '}
+      {number(r.partialTextFiles)} metin dosyasının kalan bölümünde üçüncü taraf
+      paket kodu ayrıdır. Belge metni, görsel inceleme ve formül kontrolü ayrı
+      ölçümlerdir. Bütün portföyün içerik incelemesi henüz tamamlanmadı.
     </p>
     <p>
       İşverene, arkadaşlara veya sahipliği belirsiz içeriklere ait ayrıntılar
       kamuya açık veri kümesine alınmadı. Bazı projelerin yalnız araştırma veya
       gereksinim kanıtı var.
     </p>
+  </section>
+  <section class="reading">
+    <h2>İlk öneri: Titanlar’ın dar ücretli atölyesi</h2>
+    <p>
+      İki oturum ve beş gerçek ücretli katılımcıyla başlayacak 14 günlük deney,
+      yeni bir platform geliştirmeden ödeme ve teslim emeğini ölçebilir. Eğitmen
+      yeterliği, ayrılabilir zaman ve izinli erişim kanalı bu önerinin
+      koşuludur. Mevcut peşinatlı ve kapsamı doğrulanmış bir AtonotA hizmet işi
+      varsa önce o iş gelir. SaaS yönünde PIM’in tek kanal katalog pilotu ayrı
+      adaydır.
+    </p>
+    <a href={`${base}kararlar/`}>
+      Sıralamayı ve kararı değiştiren koşulları oku
+    </a>
   </section>
   <h2>Kaynaklardan ayrıştırılan kişisel projeler</h2>
   <div class="project-grid">

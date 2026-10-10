@@ -5,12 +5,47 @@ const base = import.meta.env.BASE_URL;
 ---
 
 <Layout title="Karar ve eylem listesi">
-  <p class="eyebrow">Önce bilgi açığını kapat</p>
-  <h1>İlk satıştan önce hangi varsayım sınanmalı?</h1>
+  <p class="eyebrow">Kaynaklara dayanan deney önceliği</p>
+  <h1>Önce hangi projeyle başlamalı?</h1>
   <p class="lede">
-    Geçmiş emek, otomatik geliştirme önceliği değildir. Hak, güvenlik ve kritik
-    iş akışı engelleri puanın dışında görünür tutulur.
+    İlk öneri Titanlar’ın küçük ücretli uygulama atölyesi. Bu, uzun vadeli
+    yatırım getirisi sıralaması değil; ilk gerçek ödemeyi ve teslim maliyetini
+    az yeni altyapıyla öğrenme sırasıdır.
   </p>
+  <section class="reading">
+    <h2>İlk 14 gün için seçim</h2>
+    <p>
+      <a href={`${base}projeler/titanlar/`}>Titanlar</a>: tek bir somut öğrenci
+      çıktısı için iki oturum, tek paket ve beş ücretli kayıt hedefle. Satış,
+      hazırlık, ders, destek ve iade sonrası toplam kurucu saatini ölç. Beş
+      ödeme önerilen deney eşiğidir; gerçekleşmiş kayıt veya ürün-pazar uyumu
+      değildir. Eğitmen yeterliği, zaman ve izinli müşteri erişimi yoksa bu
+      öncelik düşer. Kaynakta örnek/sahte olduğu belirtilen yorumları gerçek
+      öğrenci kanıtı olarak kullanma.
+    </p>
+    <p>
+      <strong>Öne geçebilecek iş:</strong>{' '}
+      <a href={`${base}projeler/atonota/`}>AtonotA</a> için somut peşinatlı,
+      erişimleri doğrulanmış ve kabul ölçütü yazılmış tek iş akışı varsa önce
+      onu teslim et. Teklif belgesinin bulunması ödeme değildir. Çatı markasını,
+      hizmet işini, AgencyOps’u ve Studio’yu ayrı değerlendir.
+    </p>
+    <p>
+      <strong>Tekrarlanan ürün yönü:</strong> AgencyOps’ta bir ajansın gerçek
+      teslim/kabul işini elle iyileştir ve ikinci ödemeyi ölç.{' '}
+      <a href={`${base}projeler/pim/`}>PIM</a> için 100 SKU/tek kanal ücretli
+      katalog eşleme işi daha uygun alıcıya erişiyorsa öne geçebilir. Her iki
+      seçenekte de ilk satıştan önce geniş platform kurma.
+    </p>
+    <p>
+      <a href={`${base}projeler/metaframer/`}>MetaFramer</a> seçilen ürünün iç
+      kabiliyeti olarak, önerilen haftada en fazla iki saatle ölçülmeli.{' '}
+      <a href={`${base}projeler/hrms/`}>HRMS</a> ve{' '}
+      <a href={`${base}projeler/ibys/`}>İBYS</a> için önce alan ortağı ve tek
+      ücretli süreç gerekir. Kaynaklarda doğrulanmış müşteri, tahsilat veya
+      uçtan uca ürün çalışması bulunmadı.
+    </p>
+  </section>
   <div class="notice">
     <p>
       Kurucunun haftalık zamanı ve bütçesi belirlenemedi. Kapasite önerisi: aynı

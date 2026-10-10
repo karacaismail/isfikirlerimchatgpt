@@ -16,4 +16,6 @@ Public veri strict Zod izin listesi ile doğrulanır. Kaynak referansları yaln�
 
 Yerel iş analizinde bütün taslaklar, eski sürümler, yedeklerdeki iş içeriği, sunumlar ve finansal tablolar kapsam içindedir. Klasör adı veya korumalı etiketi bütün dosyayı analiz dışında bırakma gerekçesi değildir; iş mantığı, şema ve ticari içerik ayrıca incelenir. Toplu çıkarım ve hash eşlemesi semantik okuma sayılmaz. Yayın sayaçları sürümüne bağlanır; önceki yayın sayıları güncel inceleme sonucu diye sunulmaz.
 
+Veri sürümü 1.1: coverage ilk yayın snapshot'ını korur; reviewUpdate tarihli birleşik okuma kaydıdır. Aynı kaynak yolu ve güncel SHA için metin aralıkları birleşir, örtüşen satırlar yeniden sayılmaz. Tam metin, kısmi metin, belge metni/hücreleri ve formül yeniden hesaplama ayrı ölçümlerdir. Toplu çıkarım ve yapısal parse bu sayaçları büyütmez. Statik karar/genel bakış/yöntem sayfaları da genişlik matrisinde ve yüzde 200 kök metinle sınanır.
+
 Lisans kararı kullanıcı tarafından sonraya bırakılmıştır; onaysız lisans ekleme. Public görünürlük açık kaynak lisansı değildir.

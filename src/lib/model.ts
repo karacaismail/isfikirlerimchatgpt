@@ -167,10 +167,22 @@ export const coverageSchema = z
   .strict();
 export const datasetSchema = z
   .object({
-    version: z.literal('1.0'),
+    version: z.literal('1.1'),
     date: s,
     projects: z.array(projectSchema),
     coverage: coverageSchema,
+    reviewUpdate: z
+      .object({
+        capturedAt: s,
+        fullTextFiles: z.number().int().nonnegative(),
+        partialTextFiles: z.number().int().nonnegative(),
+        textLines: z.number().int().nonnegative(),
+        documentTextFiles: z.number().int().nonnegative(),
+        formulaCells: z.number().int().nonnegative(),
+        changedInputCases: z.number().int().nonnegative(),
+        contentComplete: z.literal(false),
+      })
+      .strict(),
   })
   .strict()
   .superRefine((data, ctx) => {

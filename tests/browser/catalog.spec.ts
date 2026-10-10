@@ -331,6 +331,24 @@ test('JavaScript kapalıyken bütün temel sayfa ve proje bağlantıları okunur
   await context.close();
 });
 
+test('karar, kapsam ve genel bakış metinleri akışkan kalır', async ({
+  page,
+}) => {
+  for (const route of ['', 'kararlar/', 'yontem/']) {
+    await page.goto(route || './');
+    for (const width of widths) {
+      await page.setViewportSize({
+        width,
+        height: width === 667 ? 320 : 640,
+      });
+      await readable(page);
+    }
+    await page.setViewportSize({ width: 320, height: 640 });
+    await page.addStyleTag({ content: ':root { font-size:200%; }' });
+    await readable(page);
+  }
+});
+
 test('statik tablolar klavyeyle yatay kayar', async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 480 });
   for (const route of ['firsatlar/', 'projeler/atonota/']) {
