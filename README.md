@@ -20,7 +20,7 @@ Katalogda aramayı başlangıç yolu, müşteri türü ve gelir türüyle birle�
 
 Arama, filtre ve sıralama adresin sorgu bölümüne yazılır; adresi paylaşmak aynı filtreli görünümü açar. Karşılaştırma seçimleri ve puan ağırlıkları URL'ye eklenmez. Bunlar ve kontrol listesi işaretleri bu tarayıcının `localStorage` alanında saklanır. Aynı projenin Yapılacaklar ve ayrıntı sayfası aynı adım kaydını kullanır. İşaretler kişisel çalışma notudur; deneyin yapıldığını veya projenin doğrulandığını göstermez. Saklama alanı kapalıysa uyarı görünür ve mevcut sayfada çalışmaya devam edilir. JavaScript kapalıyken temel içerik, gezinme ve adım metinleri okunabilir.
 
-10 Ekim 2026 UX yenilemesinin nihai tarayıcı, görsel inceleme, CI ve canlı yayın sonuçları [doğrulama kaydında](docs/DOGRULAMA.md) ayrı tutulur. Önceki yayının başarısı bu adayın doğrulandığı anlamına gelmez.
+10 Ekim 2026 UX yenilemesinde yerel macOS, Linux CI ve canlı adres ayrı ayrı **54/54** tarayıcı testini geçti. Görsel referanslar bağımsız incelendi; canlı 24 dosya CI yayın artefaktıyla eşleşti. Gerçek cihazlar gibi çalıştırılmayan katmanlar ve ayrıntılar [doğrulama kaydında](docs/DOGRULAMA.md) belirtilir.
 
 ## Yerel çalışma
 

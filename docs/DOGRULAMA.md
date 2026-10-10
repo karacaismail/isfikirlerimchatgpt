@@ -2,7 +2,7 @@
 
 ## UX yenilemesi — 10 Ekim 2026
 
-Bu bölüm yeni UX adayını kapsar. Aşağıdaki önceki yayın kayıtları tarihsel kanıttır; yeni arayüzün tarayıcı, görsel, CI veya canlı yayın sonucu yerine geçmez. Yerel normal tarayıcı tekrarı ve bağımsız görsel kabul tamamlandı. Linux CI ile yeni yayın kanıtı aşağıda ayrı izlenir.
+Bu bölüm yeni UX adayını kapsar. Aşağıdaki önceki yayın kayıtları tarihsel kanıttır; yeni arayüzün tarayıcı, görsel, CI veya canlı yayın sonucu yerine geçmez. Yerel macOS, Linux CI ve canlı adreste normal tarayıcı tekrarları tamamlandı; her birinde 54/54 test geçti. Bağımsız incelemede açık kod veya UI bulgusu kalmadı.
 
 ### Değişen akış
 
@@ -16,18 +16,18 @@ Bu bölüm yeni UX adayını kapsar. Aşağıdaki önceki yayın kayıtları tar
 
 ### Bu adayın durumu
 
-| Kontrol                                                                          | Durum                       | Kapsam                                                                                                                                                       |
-| -------------------------------------------------------------------------------- | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Birim testleri                                                                   | pass                        | 10 Ekim 2026 adayında 13 test; model, rehber eşlemesi, filtre birleşimi, URL/saklama doğrulaması ve belirsiz puan sıralaması                                 |
-| Astro kontrolü                                                                   | pass                        | 10 Ekim 2026 adayında 0 hata, 0 uyarı, 0 ipucu                                                                                                               |
-| Üretim derlemesi ve gizlilik kapısı                                              | pass                        | 10 Ekim 2026 adayında veri doğrulama, statik derleme ve kaynak/çıktı kontrolleri                                                                             |
-| Nihai tam depo formatter kontrolü                                                | pass                        | Ortak değişiklikler sonrası Prettier kontrolü                                                                                                                |
-| Nihai yerel tarayıcı tekrarı                                                     | pass                        | Üç motorda 54/54; görsel karşılaştırma açık, altı Darwin referansında sıfır piksel farkı; atlanan/dalgalı/beklenmeyen 0                                      |
-| Bağımsız UI ve görsel referans incelemesi                                        | kısmi                       | Altı Darwin ve altı Linux adayının önce/sonra/fark görüntüleri ve SHA-256 bağları incelendi. Yüzde 200 Grid bulgusu Linux normal tekrarından sonra kapanacak |
-| Linux CI ve Pages deploy                                                         | nihai çalıştırma bekleniyor | Yeni UX commitine ait run sonucu gerekir                                                                                                                     |
-| Canlı tarayıcı tekrarı ve dosya eşitliği                                         | nihai çalıştırma bekleniyor | Yayımlanan commit ve CI Pages artefaktına bağlanmalı                                                                                                         |
-| Kaynak ürünlerin çalışma doğrulaması                                             | not_run                     | Bu değişiklik katalog arayüzünü kapsar                                                                                                                       |
-| Gerçek Safari, fiziksel telefon, sanal klavye, ekran okuyucu ve gerçek %400 zoom | not_run                     | Playwright motorları ve kök metin büyütme bu katmanların yerine geçmez                                                                                       |
+| Kontrol                                                                          | Durum   | Kapsam                                                                                                                                       |
+| -------------------------------------------------------------------------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| Birim testleri                                                                   | pass    | 10 Ekim 2026 adayında 13 test; model, rehber eşlemesi, filtre birleşimi, URL/saklama doğrulaması ve belirsiz puan sıralaması                 |
+| Astro kontrolü                                                                   | pass    | 10 Ekim 2026 adayında 0 hata, 0 uyarı, 0 ipucu                                                                                               |
+| Üretim derlemesi ve gizlilik kapısı                                              | pass    | 10 Ekim 2026 adayında veri doğrulama, statik derleme ve kaynak/çıktı kontrolleri                                                             |
+| Nihai tam depo formatter kontrolü                                                | pass    | Ortak değişiklikler sonrası Prettier kontrolü                                                                                                |
+| Nihai yerel tarayıcı tekrarı                                                     | pass    | Üç motorda 54/54; görsel karşılaştırma açık, altı Darwin referansında sıfır piksel farkı; atlanan/dalgalı/beklenmeyen 0                      |
+| Bağımsız UI ve görsel referans incelemesi                                        | pass    | 38 dosya bağı, 12 exact görsel referans ve normal macOS/Linux tekrarları incelendi; kontrast, menü odağı ve yüzde 200 Grid bulguları kapandı |
+| Linux CI ve Pages deploy                                                         | pass    | Run 38048957287; 4553eaafc98b1d2ed4823a66f3ae3149b3e3db95, 54/54 ve başarılı Pages deploy                                                    |
+| Canlı tarayıcı tekrarı ve dosya eşitliği                                         | pass    | 10 Ekim 2026 11:39 UTC; 54/54, 24 HTTP 200 dosya ve CI Pages artefaktıyla tam gövde/SHA-256 eşitliği                                         |
+| Kaynak ürünlerin çalışma doğrulaması                                             | not_run | Bu değişiklik katalog arayüzünü kapsar                                                                                                       |
+| Gerçek Safari, fiziksel telefon, sanal klavye, ekran okuyucu ve gerçek %400 zoom | not_run | Playwright motorları ve kök metin büyütme bu katmanların yerine geçmez                                                                       |
 
 ### Ölçülen UX sonuçları
 
@@ -39,12 +39,12 @@ Yeni üretim çıktısında soğuk yerel ölçümün üç motor arasındaki en y
 
 | Rota              | Toplam bayt | Dış JS bayt | CSS bayt | HTML bayt |
 | ----------------- | ----------: | ----------: | -------: | --------: |
-| Genel bakış       |       8.593 |           0 |    3.843 |     4.750 |
-| Fırsatlar         |       9.704 |         382 |    3.843 |     5.479 |
-| AtonotA ayrıntısı |      15.799 |         382 |    3.843 |    11.574 |
-| Katalog           |     244.105 |     159.687 |   39.970 |    44.448 |
+| Genel bakış       |       8.605 |           0 |    3.854 |     4.751 |
+| Fırsatlar         |       9.714 |         382 |    3.854 |     5.478 |
+| AtonotA ayrıntısı |      15.811 |         382 |    3.854 |    11.575 |
+| Katalog           |     244.116 |     159.687 |   39.981 |    44.448 |
 
-Statik sayfalardaki inline betikler ayrıca gzip ile ölçülür; dış JS ile toplamları 2 KiB altında kaldı. Sıfır dış JS, inline davranış olmadığı anlamına gelmez. Katalog bütçeleri geçti. Bu tablo yerel önizlemeye aittir; canlı CDN sonucu ayrı kaydedilir.
+Statik sayfalardaki inline betikler ayrıca gzip ile ölçülür; dış JS ile toplamları 2 KiB altında kaldı. Sıfır dış JS, inline davranış olmadığı anlamına gelmez. Katalog bütçeleri geçti. Bu tablo son Grid düzeltmesinden sonraki yerel önizleme koşusuna aittir; canlı CDN sonucu ayrı ölçümdür. Canlı CDN turunda katalog en çok 249.131 bayt (JS 161.770, CSS 41.544, HTML 45.817), ana sayfa 9.233 bayt ve sıfır dış JS verdi. Aynı bütçeler geçti; inline gezinme/kontrol listesi kodu ayrıca ölçüldü.
 
 ### Gerçek doğrulama komutları
 
@@ -77,6 +77,10 @@ SITE_URL=https://karacaismail.github.io/isfikirlerimchatgpt/ npm run test:browse
 `test-results/browser-results.json` test sonucunu; Playwright ekleri ekran görüntüsü, başarısızlık trace'i ve ağ ölçümlerini taşır. Başarısız veya yeni referansı olmayan görsel aday başarılı sayılmaz. Yalnız bağımsız incelenen adaylar referansa alınabilir; eşik yükseltilmez. Linux ve Darwin görüntüleri ayrı tutulur.
 
 320 CSS px önce gelir; ardından 360, 375, 390, kısa yatay görünüm, tablet, masaüstü ve değişen 48rem/64rem eşiklerinin iki yanı sınanır. Kontroller metin boyutu, yerel tablo kaydırması, fare/klavye odağı, özel seçim paneli ve durumun korunmasını kapsar. Yeni ölçümler eski ağ tablosundan ayrı kaydedilmelidir: ana sayfada artık ortak gezinme ve kontrol listesi için küçük JavaScript vardır. Statik rotalarda aktarılan dış JavaScript gövdesi ve inline betiğin gzip boyutu toplamı 2 KiB altında tutulur; React/katalog paketi istenmemelidir. Katalog bütçesi toplam 500 KiB, JavaScript 180 KiB, CSS 50 KiB, HTML 50 KiB olarak korunur. Bunlar kabul bütçeleridir; nihai ölçüm sonucu değildir.
+
+### UX yayın kanıtı
+
+[Başarılı Linux CI ve Pages yayını](https://github.com/karacaismail/isfikirlerimchatgpt/actions/runs/38048957287), `4553eaafc98b1d2ed4823a66f3ae3149b3e3db95` uygulama sürümünü yayımladı. Yerel ve Linux tekrarları normal snapshot karşılaştırması açıkken 54/54 geçti. 10 Ekim 2026 11:39:23–11:39:52 UTC arasında canlı URL üç motorda 54/54 geçti; atlanan, beklenmeyen ve dalgalı sonuç sıfırdır. Canlı dosya doğrulaması aynı run'ın Pages artefaktına bağlandı: 14 HTML, JSON ve 9 varlık dahil 24 dosyada HTTP 200, bayt eşitliği ve SHA-256 eşitliği sağlandı. Kaynak ürünlerin runtime veya ticari kabulü bu sonuçtan çıkarılmaz.
 
 ## Önceki yayın: karar ve kaynak güncellemesi
 
