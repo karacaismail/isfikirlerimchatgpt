@@ -11,6 +11,9 @@
 | Gizlilik kapısı                                        | pass    | Sıkı alan şeması, kaynak/çıktı taraması, özel dosya türleri ve JSON eşitliği                    |
 | Sentetik sızıntı deneyi                                | pass    | Yapay mutlak yol içeren çıktı reddedildi; deneme kaldırıldıktan sonra temiz çıktı geçti         |
 | `npm run test:browser`                                 | pass    | 30 test; beklenmeyen, atlanan veya dalgalı test 0                                               |
+| Linux CI tarayıcı tekrarı                              | pass    | Ubuntu 24.04 x64 üzerinde 30/30; atlanan, beklenmeyen veya dalgalı test 0                       |
+| Canlı adreste tarayıcı tekrarı                         | pass    | Aynı üç motorla 30/30; üretim URL'sinde gerçek HTTP istekleri                                   |
+| Canlı yayın dosyaları                                  | pass    | 24 dosya HTTP 200; yayımlanan gövdeler CI Pages artefaktıyla SHA-256 ve bayt düzeyinde eşit     |
 | Kaynak ürünlerin çalışma doğrulaması                   | not_run | Hiçbir kaynak ürün başlatılmadı                                                                 |
 | Gerçek Safari ve fiziksel telefon                      | not_run | WebKit otomasyonu bu katmanın yerine geçmez                                                     |
 | Gerçek tarayıcı %400 zoom, sanal klavye, ekran okuyucu | not_run | Kök metin boyutu %200 deneyi ayrı ve geçti                                                      |
@@ -26,7 +29,7 @@ Genişlikler: 320, 360, 375, 390, 667, 767, 768, 769 ve 1280 CSS px. 320×480 ka
 - Etkin placeholder metni 2,07:1 kontrast verdi. Test üç motorda önce başarısız oldu. Semantik `text-muted` rengi ve kâğıt yüzeyiyle en az 4,5:1 kontrolü geçti. Odak göstergesi en az 3:1; üst kapsayıcılarda ek gösterge yok.
 - Eksik finans girdisi `NaN` sonuç üretiyordu. Eksik girdide hesap yapmayan kontrol ve regresyon eklendi.
 - Genel URL doğrulaması yürütülebilir URL şemasını kabul ediyordu. Yayın verisi artık yalnız HTTPS dış kaynak kabul eder; negatif test önce başarısız, sonra başarılı oldu.
-- Linux CI yüzde 200 kök metinde uzun sözcük taşması yakaladı. 320 px ve 32 px kök metin, daha geniş Verdana fontuyla yerelde yeniden üretildi. Metni küçültmeyen son çare sözcük sarımıyla sayfa genişliği tekrar 320 px oldu; tablo hücrelerinde normal sarım korundu. Teknik deneme sayfasındaki erken kontrollü giriş yarışı readiness ve başlangıçta kapalı kontrollerle düzeltildi. Yerel 30 test ve mevcut Darwin referansları normal tekrar geçti; Linux tekrarının sonucu henüz bekleniyor.
+- Linux CI yüzde 200 kök metinde uzun sözcük taşması yakaladı. 320 px ve 32 px kök metin, daha geniş Verdana fontuyla yerelde yeniden üretildi. Metni küçültmeyen son çare sözcük sarımıyla sayfa genişliği tekrar 320 px oldu; tablo hücrelerinde normal sarım korundu. Teknik deneme sayfasındaki erken kontrollü giriş yarışı readiness ve başlangıçta kapalı kontrollerle düzeltildi. Yerel, Linux CI ve canlı adres tekrarlarında bu testler üç motorda geçti. Mevcut Darwin referansları güncellenmedi.
 
 ## Üretim ağı ve görsel kanıt
 
@@ -34,17 +37,19 @@ Her rota yeni soğuk BrowserContext ile, service worker engellenerek ölçüldü
 
 | Rota                     | En yüksek aktarım |      JS |    CSS |   HTML |
 | ------------------------ | ----------------: | ------: | -----: | -----: |
-| Genel bakış              |        5.253 bayt |       0 |  2.221 |  3.032 |
-| Fırsatlar                |        5.484 bayt |     382 |  2.221 |  2.881 |
-| AtonotA ayrıntısı        |       10.471 bayt |     382 |  2.221 |  7.868 |
-| Katalog, ilk arama dahil |      227.607 bayt | 154.929 | 38.348 | 34.330 |
+| Genel bakış              |        5.269 bayt |       0 |  2.237 |  3.032 |
+| Fırsatlar                |        5.500 bayt |     382 |  2.237 |  2.881 |
+| AtonotA ayrıntısı        |       10.488 bayt |     382 |  2.237 |  7.869 |
+| Katalog, ilk arama dahil |      227.653 bayt | 154.957 | 38.364 | 34.332 |
 
 Katalog bütçesi toplam 500 KiB, JS 180 KiB, CSS 50 KiB, HTML 50 KiB altında kaldı. Statik tablolardaki küçük JS klavye desteğidir; React/katalog paketi bu sayfalara taşınmadı. Ana sayfada JS isteği sıfırdır. Ayrı cihaz profili paketleri yoktur.
 
-320 dropdown/pencere/tablo, yatay görünüm ve masaüstü görüntüleri yerel kanıt klasörüne kaydedildi. Pencere görüntüsü opaklık 1 olduktan sonra alındı. Aynı ortamda art arda iki masaüstü yakalaması bayt eşitliğiyle karşılaştırıldı. Altı Darwin ve altı Linux referansı ayrı ayrı bağımsız incelemeden sonra ilk kalıcı baseline olarak kabul edildi. Linux adayları 38041528004 run artefaktından alındı; o run davranış hataları ve eksik referanslar nedeniyle başarısızdı, görsel kabul bu hataları başarılı saymaz. `visual.spec.ts` motor/platform bazında sıfır piksel farkı şartıyla karşılaştırır; Darwin normal tekrarı üç motorda geçti. Linux yeni normal tekrarı henüz bekleniyor. Farklı işletim sistemlerinde piksel eşitliği beklenmez.
+Tablo yerel/CI önizlemesinin en yüksek değerlerini gösterir. Canlı GitHub Pages ölçümünde katalog en çok 232.918 bayt (JS 157.343, CSS 39.944, HTML 35.631), ana sayfa 5.898 bayt ve sıfır JS verdi; aynı bütçeler geçti. CDN aktarımı ile yerel gzip ölçümü ayrı kaydedildi.
+
+320 dropdown/pencere/tablo, yatay görünüm ve masaüstü görüntüleri yerel kanıt klasörüne kaydedildi. Pencere görüntüsü opaklık 1 olduktan sonra alındı. Aynı ortamda art arda iki masaüstü yakalaması bayt eşitliğiyle karşılaştırıldı. Altı Darwin ve altı Linux referansı ayrı ayrı bağımsız incelemeden sonra ilk kalıcı baseline olarak kabul edildi. Linux adayları 38041528004 run artefaktından alındı; o run davranış hataları ve eksik referanslar nedeniyle başarısızdı, görsel kabul bu hataları başarılı saymaz. `visual.spec.ts` motor/platform bazında sıfır piksel farkı şartıyla karşılaştırır; Darwin, Linux ve canlı adres normal tekrarları üç motorda geçti. Farklı işletim sistemlerinde piksel eşitliği beklenmez. Bağımsız salt okunur UI incelemesinde açık bulgu kalmadı; fiziksel cihaz katmanı buna dahil değildir.
 
 ## Yayın iş akışı
 
 Resmî Astro örneği değerlendirildi. Bu proje kilitli `npm ci --ignore-scripts`, kontroller ve tarayıcı testlerinden sonra yalnız `dist` artefaktını resmî Pages upload/deploy actionlarına gönderir. Action sürümleri commit SHA ile sabittir. Build job yalnız içerik okuma; deploy job yalnız Pages yazma ve OIDC yetkisine sahiptir. CI kişisel author/committer kuralını tüm ilgili Git tarihçesinde ayrıca denetler; bu Mac’in hook’unun bulutta çalıştığı varsayılmaz.
 
-GitHub run ve canlı yayın sonuçları ilgili run sayfasında doğrulanır; yukarıdaki yerel sonuçlar tek başına CI veya yayın başarısı sayılmaz. Lisans kullanıcının kararıyla sonraya bırakıldı.
+[İlk başarılı CI ve yayın](https://github.com/karacaismail/isfikirlerimchatgpt/actions/runs/38041906538), `e081bf86f4540b0732f41abf053380214efde12d` commitini yayımladı. 10 Ekim 2026 09:37–09:39 UTC aralığında [canlı adres](https://karacaismail.github.io/isfikirlerimchatgpt/) test edildi. `SITE_URL=https://karacaismail.github.io/isfikirlerimchatgpt/ npm run test:browser` 30/30 geçti. Ayrı HTTP doğrulamasında 14 HTML, JSON ve 9 varlık dahil 24 dosya HTTP 200 ve CI artefaktıyla tam gövde eşitliği verdi. Yerel/CI React HTML'lerinde derleme kimlikleri değişebildiğinden canlı dosya eşitliği yayımlanan CI artefaktına bağlandı; bu fark gizlenmedi. Sonraki run sonuçları GitHub Actions üzerinde ayrıca izlenir. Lisans kullanıcının kararıyla sonraya bırakıldı.

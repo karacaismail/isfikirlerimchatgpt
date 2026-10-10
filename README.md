@@ -1,6 +1,6 @@
 # İş Fikirlerim
 
-Kaynak incelemesiyle iş tanımı, müşteri, mevcut ürün ve ticari yönü birbirinden ayıran Türkçe portföy dokümantasyonu. Hedef depo: `karacaismail/isfikirlerimchatgpt`. Site alt yolu: `/isfikirlerimchatgpt/`.
+Kaynak incelemesiyle iş tanımı, müşteri, mevcut ürün ve ticari yönü birbirinden ayıran Türkçe portföy dokümantasyonu. [Canlı site](https://karacaismail.github.io/isfikirlerimchatgpt/) · [Public depo](https://github.com/karacaismail/isfikirlerimchatgpt).
 
 İlk yayın **kısmi kaynak incelemesine** dayanır. Kaynak ürünler çalıştırılmadı. Katalogdaki puanlar gelir garantisi veya ölçülmüş başarı olasılığı değildir. İnceleme kapsamı ve sınırlamalar sitede görünürdür.
 
@@ -28,5 +28,7 @@ Ham belge, özel kod, müşteri verisi ve yerel kaynak yolu eklemeyin. Yayın ö
 ## Yayın ve lisans
 
 GitHub Actions, yalnız bu depodaki güvenli veriyle Astro statik site üretir. Özel kaynaklara erişim gerekmez. Güncel resmi Astro GitHub Pages yöntemi `docs/TEKNIK-KARARLAR.md` içinde açıklanmıştır.
+
+10 Ekim 2026 ilk yayınında yerel macOS, Linux CI ve canlı adres üzerinde ayrı ayrı 30 tarayıcı testi geçti. [Doğrulama kaydı](docs/DOGRULAMA.md) gerçek cihaz ve kaynak ürün doğrulaması gibi çalıştırılmayan katmanları ayrı belirtir.
 
 Kullanıcı lisans seçimini sonraya bırakmıştır; bu sürümde açık kaynak lisansı eklenmemiştir. Public görünürlük lisans izni yerine geçmez.
