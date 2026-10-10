@@ -1,0 +1,2952 @@
+{
+  "version": "1.0",
+  "date": "2026-10-10",
+  "projects": [
+    {
+      "id": "atonota",
+      "name": "AtonotA",
+      "aliases": ["Atonota", "AtonotA Studio", "AgencyOps"],
+      "ownership": "bana ait",
+      "kind": "Çatı marka ve parçalı ürün/altyapı ailesi",
+      "definition": "WordPress işi yapan ekiplerin site, eklenti ve müşteri işlerini tek merkezde yönetmesini hedefleyen parçalı araç ailesi.",
+      "originalVision": "Studio, WordPress çekirdek eklentisi, müşteri paneli ve otomasyon bileşenleriyle merkezi site/iş yönetimi.",
+      "observed": "Studio tenant modeli ve route bileşimi, WordPress API istemcisi ve test kaynakları var. WordPress connect işlemi gerçek dış bağlantı doğrulaması yapmadan yerel bağlantı durumu yazıyor. Uçtan uca çalışan platform veya müşteri kabul iş akışı kanıtlanmadı.",
+      "proposedDirection": "İlk ticari deneme: ajansın yaptığı değişikliği, kontrol kanıtını ve müşterinin kabulünü tek teslim dosyasına bağlayan dar hizmet/iş akışı. Bu yön analist önerisidir.",
+      "customer": "Önerilen ilk segment: tekrarlayan WordPress bakım ve küçük değişiklik işi yapan küçük ajans.",
+      "user": "Geliştirici kanıt ekler; proje yöneticisi teslimi hazırlar; site sahibi kabul/ret verir.",
+      "payer": "Ajans sahibi veya operasyon yöneticisi; müşterinin kendisiyle aynı kişi olması gerekmez.",
+      "problem": "Dağınık değişiklik ve kontrol çıktısını müşteri raporuna çevirme, kapsamı netleştirme ve kabul izini saklama işi. Sıklığı ve maliyeti ölçülmedi.",
+      "value": "İlk ticari deneme: ajansın yaptığı değişikliği, kontrol kanıtını ve müşterinin kabulünü tek teslim dosyasına bağlayan dar hizmet/iş akışı. Bu yön analist önerisidir. Ölçüm: Deneylerdeki önerilen metrikler; gerçekleşmiş fayda değil. Genel arayüz, checklist ve otomatik metin üretimi kolay kopyalanabilir. Birikebilecek varlık: İzinli, açıklamalı tekrar iş/mapping/kanıt bilgisi; henüz biriktiği doğrulanmadı.",
+      "workflow": [
+        "Mevcut kaynak: Yönetici Studio tenant/workspace/plugin ekranlarını açabilir diye route tanımları var.",
+        "Mevcut kaynak: WordPress paneli status/metrics/connect uçlarını çağırır.",
+        "Mevcut kaynak: Connect gerçek Studio doğrulaması yapmadan yerel bağlantı bayrağı yazar.",
+        "Öneri: Ajans iş talebi ve site kapsamını tanımlar.",
+        "Öneri: Geliştirici önce/sonra ve test kanıtını ekler.",
+        "Öneri: Müşteri yalnız kendi teslim dosyasını görür ve kabul/ret gerekçesi verir.",
+        "Öneri: Kabul edilen iş kapsamı fatura/rapor için dışa aktarılır."
+      ],
+      "alternatives": [
+        "E-posta + görev panosu + elle PDF: Geliştirici çıktıları PM tarafından birleştirilir. Emek maliyeti bilinmiyor. Güçlü yanı: Yeni yazılım geçişi gerektirmez. Açık ihtiyaç hipotezi: Versiyon, iş kapsamı ve kabul izi dağılabilir. Geçiş gerekçesi hipotezi: Aynı bilgi tekrar yazılmadan güvenli teslim."
+      ],
+      "monetization": ["Hizmet", "Abonelik önerisi", "Kurulum"],
+      "commercialOptions": [
+        "Ajans — Değişiklik kanıtı ve müşteri kabulü; Sabit pilot hizmeti; sonra aylık workspace. Öneri.",
+        "WordPress geliştirici — Salt okunur yerel checklist/health bağlayıcısı; Ücretsiz araç + isteğe bağlı barındırma/destek. Öneri; katalog kabulü ve lisans incelenmeli.",
+        "Ana ücret hipotezi: Kabul edilen teslim paketi veya aylık ajans iş akışı için ücret; gerçekleşmiş fiyat yok.",
+        "İkinci seçenekler: Kurulum/uyarlama; Yönetilen barındırma ve destek",
+        "Ücretsiz kapsamın amacı: Anonim örnek teslim ve salt okunur bağlayıcı, ilk değeri gösterir.",
+        "Ücretsiz kapsamın maliyeti: Destek, saklama ve çalışma maliyeti ölçülmedi."
+      ],
+      "platforms": {
+        "current": [
+          "Web uygulaması kodu",
+          "WordPress eklentisi",
+          "API istemcisi"
+        ],
+        "target": [
+          "Web Studio",
+          "WordPress paneli",
+          "Otomasyon/ajan parçaları"
+        ],
+        "proposed": ["Web", "Yönetilen hizmet"],
+        "deferred": [
+          "Otonom site yazma",
+          "Geniş eklenti pazarı",
+          "Yerel iOS/Android"
+        ],
+        "operation": "Önerilen: yönetilen hizmet; doğrulama sonrası SaaS seçeneği.",
+        "relationship": "B2B",
+        "structure": "Ürünleştirilmiş hizmet → kanıtlanırsa abonelik ürünü"
+      },
+      "maturity": {
+        "product": "Prototip kodu",
+        "commercial": "Müşteri varsayımı; ödeme kanıtı yok.",
+        "enterprise": "Tenant modeli ve auth route tanımı mevcut; gerçek izolasyon, geri yükleme, audit ve güvenli güncelleme bilinmiyor.",
+        "scale": "Yük, kullanım maliyeti ve destek kapasitesi ölçülmedi."
+      },
+      "features": [
+        {
+          "name": "Tenant veri modeli",
+          "status": "Kodlanmış fakat doğrulanmamış. İzolasyon/işletim kanıtı yok.",
+          "evidence": ["pa01"]
+        },
+        {
+          "name": "Studio sayfa ve API bileşimi",
+          "status": "Kodlanmış fakat doğrulanmamış. Auth ve API davranışı çalıştırılmadı.",
+          "evidence": ["pa02", "pa07"]
+        },
+        {
+          "name": "WordPress status/metrics istemcisi",
+          "status": "Kodlanmış fakat doğrulanmamış. Karşı sistem çalıştırılmadı.",
+          "evidence": ["pa04", "pa05"]
+        },
+        {
+          "name": "Studio ile lisans üzerinden gerçek bağlantı",
+          "status": "Göstermelik veya boş iskelet. Yerel true yazımı gerçek doğrulama değil.",
+          "evidence": ["pa05"]
+        },
+        {
+          "name": "Müşteri kabul ve ücretli teslim izi",
+          "status": "Planlanmış. Bu analistin daraltma önerisi; mevcut ürün diye sunulmaz.",
+          "evidence": []
+        }
+      ],
+      "scores": {
+        "G": [
+          {
+            "id": "problem",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "payer",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "willingness",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "margin",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "speed",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "repeat",
+            "score": 3,
+            "rationale": "Ajans işi tekrarlayabilir; elde tutma henüz ölçülmedi.",
+            "evidence": ["pa04", "ext-managewp"],
+            "basis": "çıkarım",
+            "change": "Aynı alıcıdan iki dönem ücretli tekrar."
+          },
+          {
+            "id": "difference",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          }
+        ],
+        "V": [
+          {
+            "id": "invite",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "output",
+            "score": 2,
+            "rationale": "Teslim çıktısı başkasına gidebilir; kabul yüzeyi bugün yalnız öneri.",
+            "evidence": ["pa04"],
+            "basis": "çıkarım",
+            "change": "Gerçek paylaşım→aktivasyon ölçümü."
+          },
+          {
+            "id": "recipient",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "activation",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "frequency",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "seed",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "privacy",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          }
+        ],
+        "O": [
+          {
+            "id": "search",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "community",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "ecosystem",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "content",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "partners",
+            "score": 2,
+            "rationale": "İlgili ekosistem ve ortak rolleri var; somut ortak teklif, anlaşma veya pilot doğrulanmadı.",
+            "evidence": ["ext-mainwp"],
+            "basis": "çıkarım",
+            "change": "İki entegrasyon partnerinden nitelikli pilot."
+          },
+          {
+            "id": "access",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          }
+        ],
+        "U": [
+          {
+            "id": "scope",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "assets",
+            "score": 2,
+            "rationale": "Tenant modeli ve istemci parçaları var; gerçek dış bağlantı doğrulanmamış. Ayrı ve sahipliği belirsiz kaynaklardan özellik devralınmadı.",
+            "evidence": ["pa01", "pa05"],
+            "basis": "çıkarım",
+            "change": "Güvenli geçici ortamda temel zincirin çalışması."
+          },
+          {
+            "id": "dependencies",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "operations",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "resources",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "rights",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          }
+        ]
+      },
+      "risks": [
+        "Ucuz/ücretsiz güçlü bakım araçlarından farklı satın alma nedeni henüz gösterilmedi.",
+        "Geniş site yazma yetkisi ve müşteri veri ayrımı güvenlik yükü oluşturur.",
+        "Çatı markadaki farklı demo ve altyapılar bağımsız müşteri sayısı değildir.",
+        "İş kapsamı/kabul akışı için mevcut kodun yeniden kullanılabilirliği belirsiz."
+      ],
+      "blockers": [
+        "Gerçek Studio bağlantısı kanıtlanmadı.",
+        "Güvenli müşteri/site kapsamı ve uçtan uca kabul zinciri eksik."
+      ],
+      "mmp": [
+        "Bir site/iş talebine bağlı teslim dosyası",
+        "Önce/sonra ve kontrol kanıtı",
+        "Güvenli müşteri erişimi, süre/revoke",
+        "Kabul/ret ve dışa aktarma",
+        "Bağımlılık: İzinli sentetik pilot örneği ve veri ayrımı."
+      ],
+      "notNeeded": [
+        "Otonom deploy",
+        "Kendi CI/CD platformu",
+        "Yeni tema/UI kit ailesi"
+      ],
+      "decision": "Daraltarak devam et",
+      "decisionRationale": "Çalışan uçtan uca platformdan çok parçalar var; kabul işi mevcut ücretsiz bakım raporlarından somut fark üretirse daha kısa satış denemesi yapılabilir.",
+      "changeEvidence": "İki ajansın kabul/rapor emeğinde ölçülen azalma ve tekrar ücretli kullanım; aksi halde altyapı olarak korunur.",
+      "distribution": "Önce anonim iki teslim örneği; izinli ajans topluluklarında probleme dönük görüşmeler; ilk 2 pilotun referansıyla benzer 8 ajans. Kurucunun mevcut ağı doğrulanmadı. Kanallar: WordPress toplulukları; Bakım aracı kullanan ajanslarla entegrasyon; Faydalı kabul checklist içeriği. İlk 6–12 saat hazırlık; haftalık satış/destek zamanı ayrıca ölçülmeli.",
+      "viralLoop": "Varsayım; ölçülmedi. Ajans müşteriye teslim linki yollar. Müşteri kendi işini kabul etmek için açar. Başka ajansı/sitesi varsa aynı formatı isteyebilir. Yeni ajans kendi teslimini paylaşır. Müşterinin linki açması bağımsız ücretli kullanıcı kazanımı değildir; gizlilik davet döngüsünü sınırlar.",
+      "experiments": [
+        {
+          "hypothesis": "Ajansın kabul/rapor işi ölçülebilir kayıp üretiyor.",
+          "action": "Beş ajansla son tamamlanan bir işi anlatan problem görüşmesi; veri paylaşmadan süre ve itiraz kaydı.",
+          "metric": "Aynı sorunu son ay yaşamış kişi sayısı ve süre.",
+          "threshold": "5 görüşmenin en az 3’ünde tekrar eden sorun ve en az 1 pilot taahhüdü.",
+          "failure": "Bakım platformu geliştirmesini durdur; başka dar işi araştır.",
+          "effort": "6–10 saat; görüşmeler izinle, yazılım harcaması gerekmez."
+        },
+        {
+          "hypothesis": "Elle birleştirilmiş kanıt teslimi müşteri kabulünü hızlandırır.",
+          "action": "İki sentetik/izinli işte mevcut yöntemle yeni teslim dosyasını karşılaştır.",
+          "metric": "Hazırlama süresi, kabul süresi ve açıklama isteme sayısı.",
+          "threshold": "İki işte hazırlama süresinde önerilen en az %25 düşüş; kritik veri sızıntısı sıfır.",
+          "failure": "Kabul yönünü bırak veya hizmette kal.",
+          "effort": "8–16 saat; otomatik site yazma yok."
+        },
+        {
+          "hypothesis": "Ajans tekrar kullanım için ödeme yapar.",
+          "action": "Net sınırlı kapsamla iki ücretli pilot teklifi hazırla; kullanıcı onayı olmadan dış mesaj gönderme.",
+          "metric": "Kabul edilen teklif ve sonraki dönem talebi.",
+          "threshold": "En az 1 ücretli pilot ve aynı alıcıdan ikinci teslim isteği.",
+          "failure": "Abonelik varsayımını kaldır; talebi yeniden araştır.",
+          "effort": "4–8 saat teklif/satış; gerçekleşen ücret önceden bilinmiyor."
+        }
+      ],
+      "finance": {
+        "status": "Bilinmiyor; gelir veya net kâr tahmini hesaplanmadı.",
+        "assumptions": [
+          "Nitelikli erişim, dönüşüm, gerçekleşen fiyat, tekrar ödeme, kayıp, kullanım maliyeti, kurucu zamanı ve sabit gider ölçülmedi.",
+          "Müşteri, fiyat, dönüşüm, tekrar kullanım, kurucu zamanı ve maliyetler ölçülmeden düşük/temel/yüksek senaryoya sayı yerleştirilmedi."
+        ],
+        "conditions": "İzinli ücretli pilot; gerçekleşen satış fiyatı, destek süresi, müşteri kaybı, saklama/işlem maliyeti ve sabit giderler ölçüldüğünde 1., 3. ve 6. ay senaryoları ayrı hesaplanabilir."
+      },
+      "confidence": {
+        "source": "Kısmi, kayıtlı satır aralıklarıyla; yayımlanan alanlar sahipliği açık kaynakların arındırılmış özetidir.",
+        "runtime": "not_run — Kaynak proje kurulumu, testleri, prod erişimi, ödeme ve gerçek veri işlemi çalıştırılmadı.",
+        "market": "Resmi alternatif sayfaları incelendi; müşteri görüşmesi yapılmadı.",
+        "revenue": "Bilinmiyor; gerçek ödeme ve tekrar gelir kanıtı yok."
+      },
+      "competitors": [
+        {
+          "name": "ManageWP",
+          "customer": "WordPress ajansı",
+          "solution": "Merkezi site yönetimi ve müşteri raporu",
+          "price": "Gelişmiş rapor 1 USD/site/ay; 100 site 25 USD/ay",
+          "free": "Temel yönetim ve manuel rapor ücretsiz",
+          "strength": "Düşük giriş maliyeti ve mevcut bakım iş akışı",
+          "gap": "Kaynak değişikliği, müşteri kabulü ve ücretli iş kapsamı farkı ayrıca ölçülmeli",
+          "switching": "Mevcut aracı terk ettirmeden kabul izi eklemek",
+          "url": "https://managewp.com/pricing/",
+          "accessed": "2026-10-10",
+          "limitation": "Satıcının fiyat/özellik beyanı; kullanıcı tercihi veya yerel ödeme isteği kanıtı değil. Alternatifin güçlü yanı kaynak beyanıdır; açık ihtiyaç ve geçiş gerekçesi analistin müşteriyle sınanmamış hipotezidir."
+        },
+        {
+          "name": "MainWP",
+          "customer": "Kendi ortamını yöneten ajans",
+          "solution": "Sınırsız site yönetimi ve Pro uzantılar",
+          "price": "29 USD/ay veya 199 USD/yıl; 599 USD tek sefer",
+          "free": "Essentials ücretsiz",
+          "strength": "Yerelde barındırma ve geniş bakım araçları",
+          "gap": "Kurulum ve kabul süreci için ek operatör işi olabilir",
+          "switching": "Ölçülen teslim/kabul zamanı kazanımı",
+          "url": "https://mainwp.com/signup/",
+          "accessed": "2026-10-10",
+          "limitation": "Kurulum/hosting/destek toplam maliyeti ayrıca; ödeme adımı veya vergi kontrol edilmedi. Alternatifin güçlü yanı kaynak beyanıdır; açık ihtiyaç ve geçiş gerekçesi analistin müşteriyle sınanmamış hipotezidir."
+        }
+      ],
+      "sources": [
+        {
+          "id": "pa01",
+          "title": "Tenant veri modeli",
+          "kind": "dosya",
+          "locator": "İncelenen satırlar: 1–18",
+          "claim": "Tenant modeli; plan ve etkinlik alanları kodda var.",
+          "accessed": "2026-10-10",
+          "limitation": "Model varlığı uçtan uca tenant izolasyonunu kanıtlamaz. Statik kaynak gözlemi; kaynak uygulama çalıştırılmadı. Özel kaynak konumu yayımlanmaz."
+        },
+        {
+          "id": "pa02",
+          "title": "Studio sayfa tanımları",
+          "kind": "dosya",
+          "locator": "İncelenen satırlar: 1–35",
+          "claim": "Studio dashboard, tenant, plugin, adapter sayfa route tanımları var.",
+          "accessed": "2026-10-10",
+          "limitation": "Şablon render çağrısı çalışan iş akışı kanıtı değil. Statik kaynak gözlemi; kaynak uygulama çalıştırılmadı. Özel kaynak konumu yayımlanmaz."
+        },
+        {
+          "id": "pa03",
+          "title": "Tenant API test kaynakları",
+          "kind": "dosya",
+          "locator": "İncelenen satırlar: 1–119",
+          "claim": "Tenant oluşturma, slug çakışması, güncelleme ve soft-delete için test kaynakları var.",
+          "accessed": "2026-10-10",
+          "limitation": "Testler bu incelemede çalıştırılmadı; dosya geçmiş test başarısı sayılmaz. Statik kaynak gözlemi; kaynak uygulama çalıştırılmadı. Özel kaynak konumu yayımlanmaz."
+        },
+        {
+          "id": "pa04",
+          "title": "WordPress API istemcisi",
+          "kind": "dosya",
+          "locator": "İncelenen satırlar: 1–73",
+          "claim": "WordPress nonce ile status, metrics, connect HTTP istemcisi kodlanmış.",
+          "accessed": "2026-10-10",
+          "limitation": "Gerçek sunucu entegrasyonu çalıştırılmadı. Statik kaynak gözlemi; kaynak uygulama çalıştırılmadı. Özel kaynak konumu yayımlanmaz."
+        },
+        {
+          "id": "pa05",
+          "title": "WordPress bağlantı uçları",
+          "kind": "dosya",
+          "locator": "İncelenen satırlar: 1–118",
+          "claim": "Admin yetkili status/metrics/connect endpointleri var; connect gerçek Studio çağrısı yapmadan yerel connected durumunu true yapıyor.",
+          "accessed": "2026-10-10",
+          "limitation": "Bağlandı cevabı karşı sistemle bağlantıyı kanıtlamıyor. Statik kaynak gözlemi; kaynak uygulama çalıştırılmadı. Özel kaynak konumu yayımlanmaz."
+        },
+        {
+          "id": "pa07",
+          "title": "Studio uygulama bileşimi",
+          "kind": "dosya",
+          "locator": "İncelenen satırlar: 1–86",
+          "claim": "FastAPI factory, PostgreSQL açılış kontrolü, auth ve tenant/workspace/plugin route bileşimi var.",
+          "accessed": "2026-10-10",
+          "limitation": "Gerçek auth, veri ayrımı ve plugin yönetimi test edilmedi. Statik kaynak gözlemi; kaynak uygulama çalıştırılmadı. Özel kaynak konumu yayımlanmaz."
+        },
+        {
+          "id": "ext-mainwp",
+          "title": "MainWP Signup",
+          "kind": "dış kaynak",
+          "locator": "Resmî sayfa; erişim sonucu: reviewed",
+          "claim": "Kendi ortamına kurulan sınırsız siteli ücretsiz Essentials; Pro 29 USD/ay, 199 USD/yıl, 599 USD ömür boyu.",
+          "url": "https://mainwp.com/signup/",
+          "accessed": "2026-10-10",
+          "limitation": "Kurulum/hosting/destek toplam maliyeti ayrıca; ödeme adımı veya vergi kontrol edilmedi."
+        },
+        {
+          "id": "ext-managewp",
+          "title": "ManageWP Pricing",
+          "kind": "dış kaynak",
+          "locator": "Resmî sayfa; erişim sonucu: reviewed",
+          "claim": "Ücretsiz temel yönetim; gelişmiş client report eklentisi 1 USD/site/ay veya 100 siteye kadar 25 USD/ay.",
+          "url": "https://managewp.com/pricing/",
+          "accessed": "2026-10-10",
+          "limitation": "Satıcının fiyat/özellik beyanı; kullanıcı tercihi veya yerel ödeme isteği kanıtı değil."
+        },
+        {
+          "id": "ext-managewp-reports",
+          "title": "ManageWP Client Report",
+          "kind": "dış kaynak",
+          "locator": "Resmî sayfa; erişim sonucu: reviewed",
+          "claim": "Ücretsiz PDF müşteri raporu; premium zamanlama, markalama ve toplu gönderim sunuluyor.",
+          "url": "https://managewp.com/features/client-report/",
+          "accessed": "2026-10-10",
+          "limitation": "Kabul ve iş kapsamı sürecini bu sayfa üzerinden uçtan uca test etmedik."
+        }
+      ],
+      "contradictions": [
+        "Kaynak vizyonu, statik uygulama gözlemi ve önerilen ticari yön ayrı katmanlardır; bu kayıt uçtan uca ürün veya satış kabulü değildir.",
+        "Yerel bağlantı bayrağının true olması gerçek dış sistem bağlantısı anlamına gelmiyor."
+      ],
+      "relationships": [
+        "Çatı marka altındaki farklı kaynak adayları aynı ticari ürün sayılmadı. Sahipliği veya ürün ilişkisi netleşmeyen kaynakların adları ve içerikleri bu yayına alınmadı."
+      ],
+      "reviewDate": "2026-10-10",
+      "provisional": true,
+      "publishability": "arındırılmış özet"
+    },
+    {
+      "id": "titanlar",
+      "name": "Titanlar",
+      "aliases": [
+        "Titanlar v1",
+        "Titanlar e-ticaret girişimciliği",
+        "Titanlar Kâr Pusulası"
+      ],
+      "ownership": "bana ait",
+      "kind": "Eğitim/hizmet markası; hesaplayıcı aday yan ürün",
+      "definition": "E-ticarete başlayanın iş kurma adımlarını eğitim ve mentorlukla uygulamasını; satıcının da ürün fiyatını maliyetlerle değerlendirmesini hedefleyen iki teklif ailesi.",
+      "originalVision": "Kaynak pazarlama sayfasında 10 haftalık canlı ders, ödev, mentor ve topluluk programı; ayrı kaynakta ürün maliyeti/kâr hesaplayıcısı.",
+      "observed": "Program ve fiyat metni olan statik site var. Newsletter yalnız başarı simülasyonu. Ayrı hesaplayıcıda maliyet alanları, fiyat/marj dalları ve parametre paylaşımı kodu var; hesap doğruluğu ve gerçek öğrenci/ödeme doğrulanmadı.",
+      "proposedDirection": "İlk gelir denemesi geniş 10 hafta program yerine belirli satıcı grubuyla iki oturumluk ürün fiyatlama/ilk listeleme atölyesi. Hesaplayıcı bu hizmetin aracı olabilir; bağımsız SaaS talebi ayrıca sınanmalı.",
+      "customer": "Önerilen: bir ürünü satışa hazır olan fakat maliyet/fiyat kararı veremeyen küçük üretici veya yeni satıcı.",
+      "user": "Katılımcı/mağaza sahibi; hesaplayıcıyı kendisi veya danışman kullanır.",
+      "payer": "Bireysel katılımcı; kurumsal grup eğitiminde işletme sahibi farklı ödeyici olabilir.",
+      "problem": "Genel eğitim tüketmekle gerçek fiyatlama/ilk listeleme işini tamamlamak arasında boşluk; işçilik/kargo/komisyon gibi giderlerin eksik hesaba katılması. Kaybın büyüklüğü ölçülmedi.",
+      "value": "İlk gelir denemesi geniş 10 hafta program yerine belirli satıcı grubuyla iki oturumluk ürün fiyatlama/ilk listeleme atölyesi. Hesaplayıcı bu hizmetin aracı olabilir; bağımsız SaaS talebi ayrıca sınanmalı. Ölçüm: Deneylerdeki önerilen metrikler; gerçekleşmiş fayda değil. Genel arayüz, checklist ve otomatik metin üretimi kolay kopyalanabilir. Birikebilecek varlık: İzinli, açıklamalı tekrar iş/mapping/kanıt bilgisi; henüz biriktiği doğrulanmadı.",
+      "workflow": [
+        "Mevcut kaynak: Statik sayfa programı ve kaynak fiyatını gösteriyor.",
+        "Mevcut kaynak: Newsletter formu bekleyip başarı mesajı üretiyor; kayıt kanıtı oluşmuyor.",
+        "Mevcut kaynak: Hesaplayıcı alış, işçilik, kargo ve diğer girdileri DOM’dan okuyup çıktılar üretmek üzere kodlanmış.",
+        "Öneri: Katılımcı tek ürünün gerçek maliyet kalemlerini hazırlar.",
+        "Öneri: Mentor kapsamı tanımlı hesap üzerinde eksikleri gözden geçirir.",
+        "Öneri: Katılımcı fiyat/katkı aralığı ve bir listeleme taslağıyla ayrılır.",
+        "Öneri: İkinci oturumda kararı uygular, sonuç ve tekrar talebi kaydedilir."
+      ],
+      "alternatives": [
+        "Excel + kendi araştırması / insan danışman: Maliyet tablosu, video ve elle kontrol. Araç mevcutsa emek; danışman fiyatı bilinmiyor. Güçlü yanı: Ucuz, esnek ve veri yerelde. Açık ihtiyaç hipotezi: Formül hatası ve gider atlama ihtimali. Geçiş gerekçesi hipotezi: Doğrulanabilir hesap ve açıklamalı çıktıyla zaman kazanmak."
+      ],
+      "monetization": ["Eğitim", "Danışmanlık", "Tek seferlik satış"],
+      "commercialOptions": [
+        "Yeni satıcı — İki oturumda tek ürün maliyeti/fiyatı ve listeleme çıktısı; Tek sefer eğitim/hizmet. Öneri.",
+        "Küçük üretici — Açıklamalı maliyet hesaplayıcısı; Ücretsiz araç + ücretli değerlendirme; bağımsız abonelik doğrulanmadı. Kod var, davranış/ticari talep bilinmiyor.",
+        "Ana ücret hipotezi: Sınırlı atölye veya mentorlu ürün fiyatlama teslimi için tek sefer ücret.",
+        "İkinci seçenekler: Kurumsal küçük grup eğitimi; Geri bildirim paketi",
+        "Ücretsiz kapsamın amacı: Ücretsiz örnek hesap ve kısa içerik nitelikli görüşme sağlar; kendiliğinden satış varsayılmaz.",
+        "Ücretsiz kapsamın maliyeti: Mentor zamanı ve destek kapasitesi ölçülmeli."
+      ],
+      "platforms": {
+        "current": [
+          "Statik web pazarlama sayfaları",
+          "Tarayıcı hesaplayıcı kodu"
+        ],
+        "target": ["Web eğitim", "Mentorluk/topluluk", "Web hesaplayıcı"],
+        "proposed": ["Web", "Canlı atölye"],
+        "deferred": ["Özel LMS", "iOS/Android", "Tam mağaza BI SaaS"],
+        "operation": "Yönetilen eğitim/hizmet; hesaplayıcı yerel web aracı olabilir.",
+        "relationship": "B2C; kurumsal eğitim seçeneğinde B2B",
+        "structure": "Ürünleştirilmiş hizmet ve dijital eğitim ürünü"
+      },
+      "maturity": {
+        "product": "Pazarlama prototipi",
+        "commercial": "Kaynak teklif fiyatı var; somut kayıt, pilot, ödeme ve tekrar alım doğrulanmadı.",
+        "enterprise": "Grup sözleşmesi, teslim/iade, katılımcı gizliliği ve destek süreçleri bilinmiyor.",
+        "scale": "Mentor zamanı potansiyel darboğaz; otomasyon/yük ölçülmedi."
+      },
+      "features": [
+        {
+          "name": "Eğitim/mentor teklif sayfası",
+          "status": "Kodlanmış fakat doğrulanmamış. 5.000 TL kaynak teklifidir, gerçekleşmiş satış değil; Nisan 2026 tarihi güncel değil.",
+          "evidence": ["pt02"]
+        },
+        {
+          "name": "Newsletter kayıt servisi",
+          "status": "Göstermelik veya boş iskelet. API çağrısı yerine bekleme var.",
+          "evidence": ["pt01"]
+        },
+        {
+          "name": "Ürün fiyat/maliyet hesaplayıcısı",
+          "status": "Kodlanmış fakat doğrulanmamış. Vergi ve kâr doğruluğu test edilmedi.",
+          "evidence": ["pt03"]
+        },
+        {
+          "name": "Hesabı URL parametreleriyle paylaşma",
+          "status": "Kodlanmış fakat doğrulanmamış. Kopyalanan URL ve hassas maliyetlerin görünürlüğü test edilmedi.",
+          "evidence": ["pt03"]
+        },
+        {
+          "name": "Ders erişimi, ödeme ve öğrenci takibi",
+          "status": "Belirsiz. Sayfadaki linkler işleyen LMS veya tahsilat kanıtı değil.",
+          "evidence": ["pt02"]
+        }
+      ],
+      "scores": {
+        "G": [
+          {
+            "id": "problem",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "payer",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "willingness",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "margin",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "speed",
+            "score": 3,
+            "rationale": "Dar insan teslimi yazılımı tamamlamadan teklif edilebilir; alıcı erişimi bilinmiyor.",
+            "evidence": ["pt02"],
+            "basis": "çıkarım",
+            "change": "En az 3 gerçek ücretli katılımcı."
+          },
+          {
+            "id": "repeat",
+            "score": 2,
+            "rationale": "Eğitim tek sefer iş olabilir; hesap tekrar kullanımı abonelik kanıtı değil.",
+            "evidence": ["pt02", "pt03"],
+            "basis": "çıkarım",
+            "change": "İkinci eğitim/teslim satın alma."
+          },
+          {
+            "id": "difference",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          }
+        ],
+        "V": [
+          {
+            "id": "invite",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "output",
+            "score": 3,
+            "rationale": "URL parametreli paylaşım kodu var.",
+            "evidence": ["pt03"],
+            "basis": "çıkarım",
+            "change": "Gerçek link→bağımsız aktivasyon ölçümü."
+          },
+          {
+            "id": "recipient",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "activation",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "frequency",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "seed",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "privacy",
+            "score": 1,
+            "rationale": "Ürün maliyetlerini URL ile paylaşmak gizlilik engeli taşır.",
+            "evidence": ["pt03"],
+            "basis": "çıkarım",
+            "change": "Anonim güvenli paylaşım ve kullanıcı rızasıyla ölçüm."
+          }
+        ],
+        "O": [
+          {
+            "id": "search",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "community",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "ecosystem",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "content",
+            "score": 3,
+            "rationale": "Ücretsiz hesap/örnek eğitim içerikle nitelikli talebe dönüşebilir.",
+            "evidence": ["pt03", "ext-profit"],
+            "basis": "çıkarım",
+            "change": "Ölçülen organik ziyaret→görüşme dönüşümü."
+          },
+          {
+            "id": "partners",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "access",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          }
+        ],
+        "U": [
+          {
+            "id": "scope",
+            "score": 3,
+            "rationale": "Dar atölye mevcut görüşme araçlarıyla sınanabilir; öğretim kalitesi bilinmiyor.",
+            "evidence": ["pt02"],
+            "basis": "çıkarım",
+            "change": "Tamamlanan pilot ve ölçülen hazırlık saati."
+          },
+          {
+            "id": "assets",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "dependencies",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "operations",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "resources",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "rights",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          }
+        ]
+      },
+      "risks": [
+        "Ücretsiz güçlü eğitim içeriğine karşı sonuç odaklı fark gösterilmeli.",
+        "10 haftalık geniş program kurucu zamanını peşinen bağlar.",
+        "Hesaplayıcıdaki net kâr/vergi etiketleri doğruluk ve güncellik kanıtı olmadan ticari karar yanıltabilir."
+      ],
+      "blockers": [
+        "Gerçek başvuru/ödeme akışı kanıtlanmadı.",
+        "Hesap motoru ve kapsam sınırları doğrulanmadı."
+      ],
+      "mmp": [
+        "Dar hedef ve tek somut eğitim çıktısı",
+        "Doğrulanmış sentetik örnek maliyet hesabı",
+        "İki canlı oturum ve kabul/iade sınırları",
+        "Ölçülen hazırlık ve destek zamanı",
+        "Bağımlılık: Güvenilir alan uzmanlığı ve hedef katılımcı görüşmeleri."
+      ],
+      "notNeeded": [
+        "10 hafta içerik üretimi",
+        "Özel topluluk platformu",
+        "Yeni mobil uygulama"
+      ],
+      "decision": "Önce müşteriyle doğrula",
+      "decisionRationale": "İnsanla verilen dar hizmet ürün yazılımı tamamlanmadan sınanabilir; eğitim içeriği veya sahte form başarısı talep kanıtı değil.",
+      "changeEvidence": "İlk atölyede ücret ödeyen ve kendi çıktısını tamamlayan katılımcılar; ikinci teslim isteği ve sürdürülebilir mentor saati.",
+      "distribution": "Ücretsiz tek ürün maliyet örneği → izinli üretici/satıcı topluluğunda görüşme → ilk 3 ücretli atölye → katılımcının rızalı örneği ve tavsiyesiyle sonraki 7 kişi. Kanallar: Niş üretici toplulukları; Faydalı fiyatlama aracı ve açıklamalar; E-ticaret hizmet sağlayıcı ortaklıkları. İlk 6–10 saat içerik; her dönem satış ve mentor emeği ayrıca.",
+      "viralLoop": "Kısmi kod mekanizması; büyüme sonucu ölçülmedi. Satıcı hesabı paylaşım linkiyle danışmana/ortağına yollar. Alıcı kendi ürününü hesaplamak isterse aracı açar. Kendi girdileriyle ilk hesabı yapar. Kendi örneğini tekrar paylaşabilir. Maliyet verisini paylaşmak ticari mahremiyet engeli; eğitim tavsiyesi ürün içi viral kullanım ile aynı değil.",
+      "experiments": [
+        {
+          "hypothesis": "Yeni satıcı genel eğitimden çok belirli maliyet/fiyat çıktısına ihtiyaç duyuyor.",
+          "action": "Beş potansiyel katılımcıyla son ürün kararını ve mevcut tablosunu kişisel veri almadan incele.",
+          "metric": "Aynı darboğazı yaşayan ve dar atölye isteyen kişi sayısı.",
+          "threshold": "5 kişiden en az 3 aynı darboğaz; en az 2 açık tarihli katılım niyeti.",
+          "failure": "Geniş kohort üretimini beklet; problemi değiştir.",
+          "effort": "5–8 saat; topluluk erişimi varsayım, gönderim izni ayrıca."
+        },
+        {
+          "hypothesis": "Hesaplayıcı güvenilir ve anlaşılır karar çıktısı veriyor.",
+          "action": "10 sentetik sınır vakasını bağımsız uzman hesabıyla karşılaştır; kullanıcıya bir örneği açıklat.",
+          "metric": "Kritik fark sayısı, girdileri doğru yorumlayan kişi.",
+          "threshold": "10 vakada kritik hesap farkı sıfır; 5 kullanıcıdan 4 kapsamı doğru açıklar.",
+          "failure": "Ücretli kullanımda hesaplayıcıyı kullanma; önce düzeltme/uzman doğrulaması.",
+          "effort": "8–16 saat; gerçek vergi uygunluğu için ayrı kapsam."
+        },
+        {
+          "hypothesis": "Dar atölye için ödeme ve sürdürülebilir teslim oluşuyor.",
+          "action": "İki oturumluk sınırlı ücretli pilotu 3–5 katılımcıyla kullanıcı yetkisi içinde teklif et.",
+          "metric": "Ödeme, tamamlanan çıktı, katılımcı başına mentor saati ve tekrar talebi.",
+          "threshold": "En az 3 ücretli katılımcı; 3 somut çıktı; kişi başına en çok 2 saat destek.",
+          "failure": "Programı daralt veya tek sefer danışmanlıkta kal.",
+          "effort": "12–24 saat; fiyat deney varsayımı, gerçekleşmiş gelir değil."
+        }
+      ],
+      "finance": {
+        "status": "Bilinmiyor; gelir veya net kâr tahmini hesaplanmadı.",
+        "assumptions": [
+          "Nitelikli erişim, dönüşüm, gerçekleşen fiyat, tekrar ödeme, kayıp, kullanım maliyeti, kurucu zamanı ve sabit gider ölçülmedi.",
+          "Müşteri, fiyat, dönüşüm, tekrar kullanım, kurucu zamanı ve maliyetler ölçülmeden düşük/temel/yüksek senaryoya sayı yerleştirilmedi."
+        ],
+        "conditions": "İzinli ücretli pilot; gerçekleşen satış fiyatı, destek süresi, müşteri kaybı, saklama/işlem maliyeti ve sabit giderler ölçüldüğünde 1., 3. ve 6. ay senaryoları ayrı hesaplanabilir."
+      },
+      "confidence": {
+        "source": "Kısmi, kayıtlı satır aralıklarıyla; yayımlanan alanlar sahipliği açık kaynakların arındırılmış özetidir.",
+        "runtime": "not_run — Kaynak proje kurulumu, testleri, prod erişimi, ödeme ve gerçek veri işlemi çalıştırılmadı.",
+        "market": "Resmi alternatif sayfaları incelendi; müşteri görüşmesi yapılmadı.",
+        "revenue": "Bilinmiyor; gerçek ödeme ve tekrar gelir kanıtı yok."
+      },
+      "competitors": [
+        {
+          "name": "Shopify Academy",
+          "customer": "Shopify kullanan satıcı ve partner",
+          "solution": "Resmi kurs ve öğrenme yolları",
+          "price": "Ücretsiz ve ücretli içerik; sınavlar ayrı ücret",
+          "free": "Bazı kurslar ücretsiz; ücretsiz kurs rozet vermez",
+          "strength": "Platform bilgisi ve hazır eğitim",
+          "gap": "Türkçe dar müşteriyle canlı uygulama/hesap kontrolü ayrıca gerekebilir",
+          "switching": "Kendi somut çıktısını mentorla tamamlamak",
+          "url": "https://help.shopify.com/en/partners/grow-your-business/shopify-academy",
+          "accessed": "2026-10-10",
+          "limitation": "Türkçe mentorlu teslimin değerini ölçmez; eğitim tamamlamanın işletme geliri ürettiğini göstermez. Alternatifin güçlü yanı kaynak beyanıdır; açık ihtiyaç ve geçiş gerekçesi analistin müşteriyle sınanmamış hipotezidir."
+        },
+        {
+          "name": "Udemy e-ticaret kursları",
+          "customer": "Kendi hızında öğrenen kişi",
+          "solution": "Tek sefer kurs veya abonelik içeriği",
+          "price": "Fiyat kampanya/bölge/yüzeye göre değişir; kesin TL fiyat yok",
+          "free": "Ücretsiz içerik sınırlı ve kursa bağlı",
+          "strength": "Düşük satın alma sürtünmesi ve geniş içerik",
+          "gap": "Kişinin kendi ürününe geri bildirim/uygulama takibi değişebilir",
+          "switching": "İki oturum sonunda gerçek iş çıktısı ve birebir kontrol",
+          "url": "https://support.udemy.com/hc/tr/articles/229606248-Udemy-kurs-fiyatland%C4%B1rmas%C4%B1-%C3%96%C4%9Frenciler-i%C3%A7in-SSS",
+          "accessed": "2026-10-10",
+          "limitation": "Belirli bir Türkçe kurs için kesin gerçekleşen fiyat doğrulanmadı. Alternatifin güçlü yanı kaynak beyanıdır; açık ihtiyaç ve geçiş gerekçesi analistin müşteriyle sınanmamış hipotezidir."
+        },
+        {
+          "name": "Shopify kâr marjı aracı",
+          "customer": "Ürün fiyatlayan satıcı",
+          "solution": "Tarayıcıda maliyet/markup/marj hesabı",
+          "price": "Ücretsiz araç",
+          "free": "Araç kullanımı ücretsiz",
+          "strength": "Hızlı ve basit ilk değer",
+          "gap": "Türkiye kanal maliyeti/tax kapsamı ayrıca incelenmeli",
+          "switching": "Güncel kanal ve kendi emek girdisiyle açıklamalı kapsam",
+          "url": "https://www.shopify.com/tools/profit-margin-calculator",
+          "accessed": "2026-10-10",
+          "limitation": "Türkiye vergi veya pazaryeri mutabakat doğruluğu bu araç sayfasından çıkarılamaz. Alternatifin güçlü yanı kaynak beyanıdır; açık ihtiyaç ve geçiş gerekçesi analistin müşteriyle sınanmamış hipotezidir."
+        }
+      ],
+      "sources": [
+        {
+          "id": "pt01",
+          "title": "Bülten formu davranışı",
+          "kind": "dosya",
+          "locator": "İncelenen satırlar: 1–72",
+          "claim": "Newsletter submit yalnız 1200 ms bekleyip başarı görünümü gösteriyor.",
+          "accessed": "2026-10-10",
+          "limitation": "Gerçek kayıt veya e-posta entegrasyonu yok; başvuru sayısı kanıtlanmaz. Statik kaynak gözlemi; kaynak uygulama çalıştırılmadı. Özel kaynak konumu yayımlanmaz."
+        },
+        {
+          "id": "pt02",
+          "title": "Eğitim teklif sayfası",
+          "kind": "dosya",
+          "locator": "İncelenen satırlar: 180–232, 270–325",
+          "claim": "10 hafta eğitim, canlı ders, mentor desteği ve 5.000 TL başlangıç fiyatı pazarlama metninde yazıyor.",
+          "accessed": "2026-10-10",
+          "limitation": "Tarih Nisan 2026; fiyat ve program gerçekleşmesi doğrulanmadı. Sayfanın bütünü okunmadı; görsel denetim yapılmadı. Statik kaynak gözlemi; kaynak uygulama çalıştırılmadı. Özel kaynak konumu yayımlanmaz."
+        },
+        {
+          "id": "pt03",
+          "title": "Ürün maliyet hesaplayıcısı",
+          "kind": "dosya",
+          "locator": "İncelenen satırlar: 1–50, 800–900, 1432–1520",
+          "claim": "Alış, işçilik, ambalaj, kargo, komisyon ve vergi girdileri; fiyat/marj hesap dalları ve URL ile parametre paylaşma kodu var.",
+          "accessed": "2026-10-10",
+          "limitation": "Formüllerin doğruluğu, güncelliği, sıfır/bölme sınırları ve paylaşılan URL çalışması test edilmedi; tüm dosya okunmadı. Statik kaynak gözlemi; kaynak uygulama çalıştırılmadı. Özel kaynak konumu yayımlanmaz."
+        },
+        {
+          "id": "ext-profit",
+          "title": "Shopify Profit Margin Calculator",
+          "kind": "dış kaynak",
+          "locator": "Resmî sayfa; erişim sonucu: reviewed",
+          "claim": "Ücretsiz web aracı; ürün maliyeti, markup, kargo ve müşteri edinme maliyetiyle kâr/marj hesabı sunuyor.",
+          "url": "https://www.shopify.com/tools/profit-margin-calculator",
+          "accessed": "2026-10-10",
+          "limitation": "Türkiye vergi veya pazaryeri mutabakat doğruluğu bu araç sayfasından çıkarılamaz."
+        },
+        {
+          "id": "ext-shopifyacademy",
+          "title": "Shopify Academy Help",
+          "kind": "dış kaynak",
+          "locator": "Resmî sayfa; erişim sonucu: reviewed",
+          "claim": "Shopify eğitiminde ücretsiz ve ücretli içerik; beceri değerlendirmeleri ücretli, ücretsiz kurslar rozet vermiyor.",
+          "url": "https://help.shopify.com/en/partners/grow-your-business/shopify-academy",
+          "accessed": "2026-10-10",
+          "limitation": "Türkçe mentorlu teslimin değerini ölçmez; eğitim tamamlamanın işletme geliri ürettiğini göstermez."
+        },
+        {
+          "id": "ext-udemy",
+          "title": "Udemy Kurs Fiyatlandırması Öğrenci SSS",
+          "kind": "dış kaynak",
+          "locator": "Resmî sayfa; erişim sonucu: reviewed",
+          "claim": "Tek kurs satın alımı tekrar ücret gerektirmez; fiyat bölge, kampanya ve uygulama yüzeyine göre değişebilir.",
+          "url": "https://support.udemy.com/hc/tr/articles/229606248-Udemy-kurs-fiyatland%C4%B1rmas%C4%B1-%C3%96%C4%9Frenciler-i%C3%A7in-SSS",
+          "accessed": "2026-10-10",
+          "limitation": "Belirli bir Türkçe kurs için kesin gerçekleşen fiyat doğrulanmadı."
+        }
+      ],
+      "contradictions": [
+        "Kaynak vizyonu, statik uygulama gözlemi ve önerilen ticari yön ayrı katmanlardır; bu kayıt uçtan uca ürün veya satış kabulü değildir.",
+        "Teklif sayfasındaki 5.000 TL, gerçekleşmiş satış değildir. Nisan 2026 program tarihi güncel kayıt takvimi olarak kullanılamaz.",
+        "Bülten formundaki başarı görünümü veri kaydı kanıtı değildir."
+      ],
+      "relationships": [
+        "Eğitim hizmeti ve ayrı kâr hesaplayıcısı farklı müşteri işleri olarak değerlendirildi. Başka adaylarla içerik eşitliği veya aynı ticari ürün ilişkisi doğrulanmadı."
+      ],
+      "reviewDate": "2026-10-10",
+      "provisional": true,
+      "publishability": "arındırılmış özet"
+    },
+    {
+      "id": "hrms",
+      "name": "HRMS",
+      "aliases": ["Kişisel HRMS", "HR Product SaaS"],
+      "ownership": "bana ait",
+      "kind": "Geniş ürün gereksinimi; ilişkili temel uygulama",
+      "definition": "Türkiye’deki işletmelerin çalışan, izin, zaman ve bordro işlerini yerel kurallarla yönetmesini hedefleyen İK ürün fikri.",
+      "originalVision": "Yerel İK alanları, puantaj/bordro, çalışan portalı, ATS, performans, öğrenme, analitik ve entegrasyonları kapsayan geniş SaaS.",
+      "observed": "166 satırlık kişisel gereksinim kaynağı mevcut; ilk sektör, çekirdek modül ve fiyat soruları açık. Bu kaynağın sınırında çalışan kişisel HRMS uygulaması, müşteri veya ödeme kanıtı doğrulanmadı.",
+      "proposedDirection": "Önce tek tekrar işini seç: örneğin izin talebi/onay/kalan hak kontrolü. Bordro ve resmî bildirim kapsamı, uzman doğrulama ve çalışma kanıtı olmadan ilk satışa eklenmesin.",
+      "customer": "Önerilen: mevcut tabloyla izin/puantaj takibi yapan tek sektör işletmesi; çalışan bandı görüşmede seçilmeli.",
+      "user": "İK operasyonu, çalışan ve yönetici farklı roller.",
+      "payer": "İşletme sahibi/İK yöneticisi; bütçe ve satın alma süreci bilinmiyor.",
+      "problem": "İzin, puantaj, özlük ve muhasebe arasında tekrar veri girişi; hatalı veya geciken onay. Kaynak problemleri öneriyor, gerçek sıklık/maliyet ölçülmedi.",
+      "value": "Önce tek tekrar işini seç: örneğin izin talebi/onay/kalan hak kontrolü. Bordro ve resmî bildirim kapsamı, uzman doğrulama ve çalışma kanıtı olmadan ilk satışa eklenmesin. Ölçüm: Deneylerdeki önerilen metrikler; gerçekleşmiş fayda değil. Genel arayüz, checklist ve otomatik metin üretimi kolay kopyalanabilir. Birikebilecek varlık: İzinli, açıklamalı tekrar iş/mapping/kanıt bilgisi; henüz biriktiği doğrulanmadı.",
+      "workflow": [
+        "Mevcut kaynak: Gereksinim belgesinde çalışan, yönetici ve İK rolleri ile geniş süreçler tarif edilmiş; çalışan kişisel uygulama akışı doğrulanmadı.",
+        "Öneri: İK sentetik izin hakkı ve çalışan kapsamını kurar.",
+        "Öneri: Çalışan talep girer.",
+        "Öneri: Yönetici gerekçeli kabul/ret verir.",
+        "Öneri: İK hak/bakiye ve onay izini dışa aktarır."
+      ],
+      "alternatives": [
+        "Excel + e-posta/mesaj + SMMM: İzin/puantaj listeleri ve dış bordro uzmanı. Emek/uzman ücretleri bilinmiyor. Güçlü yanı: Geçiş maliyeti yok ve tanıdık. Açık ihtiyaç hipotezi: Çift kayıt, sürüm ve onay izleri dağılabilir. Geçiş gerekçesi hipotezi: Aynı işi güvenle daha az sürede bitirme."
+      ],
+      "monetization": ["Abonelik önerisi", "Kurulum"],
+      "commercialOptions": [
+        "Tek sektör küçük işletme — İzin ve onay izi; Kurum bazlı pilot ve abonelik. Öneri.",
+        "Kurulum yapabilen şirket — Mevcut açık kaynak İK için Türkiye süreç/işletim hizmeti; Kurulum + destek. Alternatif; kod/işveren hakları ayrı.",
+        "Ana ücret hipotezi: Kurum veya çalışan bandı üzerinden abonelik; ücret dayanağı müşteri görüşmesi gerektirir.",
+        "İkinci seçenekler: Veri taşıma/kurulum; Yerel süreç uyarlama",
+        "Ücretsiz kapsamın amacı: Sentetik dar demo; ücretsiz gerçek personel verisi toplama önerilmiyor.",
+        "Ücretsiz kapsamın maliyeti: Çalışan başına destek, saklama ve kurulum maliyeti bilinmiyor."
+      ],
+      "platforms": {
+        "current": ["Gereksinim belgesi; kişisel HRMS uygulaması doğrulanmadı"],
+        "target": ["Web SaaS", "Çalışan portalı", "Opsiyonel mobil check-in"],
+        "proposed": ["Web"],
+        "deferred": [
+          "Bordro ödeme",
+          "sosyal sigorta canlı bildirim",
+          "ATS/OKR/öğrenme paketi",
+          "Yerel mobil uygulamalar"
+        ],
+        "operation": "Hedef SaaS; ilk öneri sınırlı yönetilen pilot.",
+        "relationship": "B2B",
+        "structure": "Abonelik ürünü + kurulum/uyarlama hizmeti — öneri"
+      },
+      "maturity": {
+        "product": "Araştırma",
+        "commercial": "Müşteri varsayımı; ilk sektör ve satın alma merkezi açık.",
+        "enterprise": "Kişisel veri, rol, audit, restore ve üretim kimlik doğrulaması doğrulanmadı.",
+        "scale": "Çalışan/kurum yükü, bordro kapanış kapasitesi ve destek maliyeti bilinmiyor."
+      },
+      "features": [
+        {
+          "name": "Türkiye İK ihtiyaçları ve modül haritası",
+          "status": "Planlanmış. Gereksinim kaynağı uygulama değil.",
+          "evidence": ["ph01"]
+        },
+        {
+          "name": "Bordro, vardiya, izin ve ATS uçtan uca",
+          "status": "Belirsiz. Bu incelemede entegre kişisel ürün kanıtı yok.",
+          "evidence": ["ph01"]
+        },
+        {
+          "name": "KVKK, izolasyon, audit, yedek/restore",
+          "status": "Planlanmış. Belgedeki hedef, güvenlik kabulü değildir.",
+          "evidence": ["ph01"]
+        }
+      ],
+      "scores": {
+        "G": [
+          {
+            "id": "problem",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "payer",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "willingness",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "margin",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "speed",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "repeat",
+            "score": 3,
+            "rationale": "İK işi ve abonelik kategorisi tekrar kullanıma uygun; retention ölçülmedi.",
+            "evidence": ["ph01", "ext-kolayik"],
+            "basis": "çıkarım",
+            "change": "Aynı kurumda iki dönem tekrar."
+          },
+          {
+            "id": "difference",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          }
+        ],
+        "V": [
+          {
+            "id": "invite",
+            "score": 1,
+            "rationale": "Kurum içi davet olası; dış müşteriye doğal dönüşüm yok.",
+            "evidence": ["ph01"],
+            "basis": "çıkarım",
+            "change": "Kurumlar arası rızalı referral→aktivasyon."
+          },
+          {
+            "id": "output",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "recipient",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "activation",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "frequency",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "seed",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "privacy",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          }
+        ],
+        "O": [
+          {
+            "id": "search",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "community",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "ecosystem",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "content",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "partners",
+            "score": 2,
+            "rationale": "Uygulama/İK partnerleri dağıtım yüzeyi olabilir; anlaşma yok.",
+            "evidence": ["ext-frappehr"],
+            "basis": "çıkarım",
+            "change": "İki somut partner pilotu."
+          },
+          {
+            "id": "access",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          }
+        ],
+        "U": [
+          {
+            "id": "scope",
+            "score": 1,
+            "rationale": "Geniş gereksinim, entegre ürün ve üretim auth kanıtı yok.",
+            "evidence": ["ph01"],
+            "basis": "çıkarım",
+            "change": "Dar pilot tamamlanması."
+          },
+          {
+            "id": "assets",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "dependencies",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "operations",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "resources",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "rights",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          }
+        ]
+      },
+      "risks": [
+        "Kaynak kapsamı ilk müşteriye göre çok geniş.",
+        "Yerel bordro mevzuatı ve kişisel veriler uzmanlık/işletim yükü yaratır.",
+        "Ucuz açık kaynak ve yerel yerleşik ürünler karşısında dar farklılaşma bulunmalı."
+      ],
+      "blockers": [
+        "Kişisel kaynak/işveren kaynak sınırı ve kullanılabilir varlıklar netleştirilmeli.",
+        "İlk modül ve dar müşteri seçilmedi.",
+        "Gerçek auth ve veri ayrımı çalıştırma kanıtı eksik."
+      ],
+      "mmp": [
+        "Tek sektör ve tek İK işi",
+        "Çalışan/yönetici kapsamı",
+        "Talep→onay/ret→bakiye/dışa aktarma",
+        "Sentetik veriyle hak/izin kuralı ve izolasyon testleri",
+        "Bağımlılık: Hak sahipliği, uzman kural kontrolü, üretim kimliği ve kişisel veri sınırları."
+      ],
+      "notNeeded": [
+        "Tam bordro",
+        "Geniş modül paketi",
+        "Yerel mobil check-in",
+        "Geniş BI"
+      ],
+      "decision": "Önce müşteriyle doğrula",
+      "decisionRationale": "Kaynak soruları henüz ilk alıcı ve çekirdek işi seçmiyor; geniş HRMS geliştirmesi ödeme gerekçesi bulunmadan ağır.",
+      "changeEvidence": "Seçilmiş bir sektörde beş görüşmede aynı tekrar iş, iki pilot taahhüdü ve güvenli uçtan uca pilot.",
+      "distribution": "Dar sektör görüşmeleri → 2 sınırlı pilot → izinli anonim vaka → aynı sektör uzman/uygulama partnerleri üzerinden 8 benzer işletme. Mevcut müşteri ağı varsayılmadı. Kanallar: İK uzman toplulukları; Frappe uygulama ortakları; Somut izin/puantaj kontrol içerikleri. Kurucu satış ve veri taşıma zamanı ayrıca ölçülmeli.",
+      "viralLoop": "Ürün içi dış yayılma kanıtı yok. İK çalışanı davet eder. Çalışan kurumun işini yapmak için kullanır. Bu davet aynı kurum içinde koltuk aktivasyonudur. Çalışan daveti yeni bağımsız ödeme yapan kurum kazanımı değildir; referans/partner dağıtımı ayrı mekanizma.",
+      "experiments": [
+        {
+          "hypothesis": "Tek sektörün aynı İK işi tekrar eden kayıp üretiyor.",
+          "action": "Bir sektörden 5 İK sorumlusuyla son ayın izin/puantaj kapanışını konuş.",
+          "metric": "Tekrarlayan hata, çift giriş ve görüşme başına aynı iş oranı.",
+          "threshold": "5 kişiden 3 aynı iş; 2 pilot niyeti.",
+          "failure": "İlk modülü veya segmenti değiştir; tam HRMS’i beklet.",
+          "effort": "6–10 saat; kişi/maaş verisi toplanmaz."
+        },
+        {
+          "hypothesis": "Dar izin/onay akışı güvenli ve daha hızlı.",
+          "action": "Sentetik iki kurum/üç rol örneğinde talep, ret, tekrar ve export yolunu geçici kopyada sınanacak plan oluştur.",
+          "metric": "Doğru bakiye, çapraz kapsam reddi, kullanıcı tamamlama süresi.",
+          "threshold": "Kritik kapsam sızıntısı sıfır; 5 kullanıcının 4’ü yardımsız tamamlar.",
+          "failure": "Gerçek personel pilotunu açma; temel akışı düzelt.",
+          "effort": "16–32 saat; uygulama hazır sayılmaz."
+        },
+        {
+          "hypothesis": "Kurulum maliyeti karşılanan bir fiyat kabul edilir.",
+          "action": "İki pilot için kapsam, taşıma, destek ve ücret içeren teklif taslağı hazırla.",
+          "metric": "Kabul edilen teklif, onboarding saati, ikinci ay kullanım.",
+          "threshold": "1 ücretli pilot; kurum başına en çok 8 saat ilk kurulum; ikinci ay tekrar.",
+          "failure": "SaaS yerine kurulum hizmetini değerlendir veya beklet.",
+          "effort": "8–16 saat satış/kurulum; fiyat bilinmiyor."
+        }
+      ],
+      "finance": {
+        "status": "Bilinmiyor; gelir veya net kâr tahmini hesaplanmadı.",
+        "assumptions": [
+          "Nitelikli erişim, dönüşüm, gerçekleşen fiyat, tekrar ödeme, kayıp, kullanım maliyeti, kurucu zamanı ve sabit gider ölçülmedi.",
+          "Müşteri, fiyat, dönüşüm, tekrar kullanım, kurucu zamanı ve maliyetler ölçülmeden düşük/temel/yüksek senaryoya sayı yerleştirilmedi."
+        ],
+        "conditions": "İzinli ücretli pilot; gerçekleşen satış fiyatı, destek süresi, müşteri kaybı, saklama/işlem maliyeti ve sabit giderler ölçüldüğünde 1., 3. ve 6. ay senaryoları ayrı hesaplanabilir."
+      },
+      "confidence": {
+        "source": "Kısmi, kayıtlı satır aralıklarıyla; yayımlanan alanlar sahipliği açık kaynakların arındırılmış özetidir.",
+        "runtime": "not_run — Kaynak proje kurulumu, testleri, prod erişimi, ödeme ve gerçek veri işlemi çalıştırılmadı.",
+        "market": "Resmi alternatif sayfaları incelendi; müşteri görüşmesi yapılmadı.",
+        "revenue": "Bilinmiyor; gerçek ödeme ve tekrar gelir kanıtı yok."
+      },
+      "competitors": [
+        {
+          "name": "Kolay İK",
+          "customer": "Türkiye’de İK süreçlerini yöneten şirket",
+          "solution": "Personel, izin, bordro, vardiya, PDKS, ATS",
+          "price": "Çalışan sayısına göre teklif; sayısal fiyat doğrulanmadı",
+          "free": "15 gün deneme; kalıcı ücretsiz plan doğrulanmadı",
+          "strength": "Yerel kapsam ve tek platform",
+          "gap": "İlk hedef sektörün karşılanmayan işi müşteriyle bulunmalı",
+          "switching": "Somut bir süreçte daha az giriş ve daha hızlı kabul",
+          "url": "https://kolayik.com/",
+          "accessed": "2026-10-10",
+          "limitation": "Satıcının beyanı; gerçek fiyat teklifi alınmadı, güvenlik pazarlama iddiaları teknik kabul sayılmadı. Alternatifin güçlü yanı kaynak beyanıdır; açık ihtiyaç ve geçiş gerekçesi analistin müşteriyle sınanmamış hipotezidir."
+        },
+        {
+          "name": "Frappe HR",
+          "customer": "Kurulum ve uyarlama yapabilen şirket",
+          "solution": "İK/bordro uygulaması + barındırma/uygulama hizmeti",
+          "price": "Yazılım ücretsiz; cloud 5 USD/aydan, uygulama ayrı",
+          "free": "Açık kaynak kod; hosting/support ücretsiz değil",
+          "strength": "Mevcut geniş ürün ve ekosistem",
+          "gap": "Türkiye kural, işletim ve veri taşıma doğruluğu ayrı iş",
+          "switching": "Yerel dar süreç ve güvenli geçiş hizmeti",
+          "url": "https://frappe.io/hr/pricing",
+          "accessed": "2026-10-10",
+          "limitation": "Türkiye bordro uygunluğu ve her plana dahil kapasite bu fiyat sayfasından doğrulanmaz. Alternatifin güçlü yanı kaynak beyanıdır; açık ihtiyaç ve geçiş gerekçesi analistin müşteriyle sınanmamış hipotezidir."
+        }
+      ],
+      "sources": [
+        {
+          "id": "ph01",
+          "title": "Kişisel İK gereksinim belgesi",
+          "kind": "dosya",
+          "locator": "İncelenen satırlar: 1–166",
+          "claim": "Türkiye İK lokalizasyonu; bordro, puantaj, izin, ATS, performans, yetki ve paketleme hedefleri tanımlanmış; müşteri/çekirdek modül soruları açık.",
+          "accessed": "2026-10-10",
+          "limitation": "Gereksinim listesi uygulanmış özellik veya müşteri doğrulaması değildir; diğer kaynaklarla sahiplik ve ürün özdeşliği varsayılmadı. Statik kaynak gözlemi; kaynak uygulama çalıştırılmadı. Özel kaynak konumu yayımlanmaz."
+        },
+        {
+          "id": "ext-frappehr",
+          "title": "Frappe HR Pricing",
+          "kind": "dış kaynak",
+          "locator": "Resmî sayfa; erişim sonucu: reviewed",
+          "claim": "Yazılım ücretsiz açık kaynak; hosting ve uygulama hizmeti ayrı. Frappe Cloud site planları 5 USD/aydan başlıyor.",
+          "url": "https://frappe.io/hr/pricing",
+          "accessed": "2026-10-10",
+          "limitation": "Türkiye bordro uygunluğu ve her plana dahil kapasite bu fiyat sayfasından doğrulanmaz."
+        },
+        {
+          "id": "ext-kolayik",
+          "title": "Kolay İK Personel Yönetim Yazılımı",
+          "kind": "dış kaynak",
+          "locator": "Resmî sayfa; erişim sonucu: reviewed",
+          "claim": "Personel, izin, bordro ve vardiya modülleri; çalışan sayısına göre ücret, sayısal teklif form üzerinden; 15 gün deneme.",
+          "url": "https://kolayik.com/",
+          "accessed": "2026-10-10",
+          "limitation": "Satıcının beyanı; gerçek fiyat teklifi alınmadı, güvenlik pazarlama iddiaları teknik kabul sayılmadı."
+        }
+      ],
+      "contradictions": [
+        "Kaynak vizyonu, statik uygulama gözlemi ve önerilen ticari yön ayrı katmanlardır; bu kayıt uçtan uca ürün veya satış kabulü değildir.",
+        "Gereksinimdeki geniş modül listesi, uygulanmış ve test edilmiş ürün olarak kabul edilmedi."
+      ],
+      "relationships": [
+        "Benzer alanı hedefleyen diğer uygulamalarla sahiplik veya ürün özdeşliği doğrulanmadı; kod, özellik ve ticari hak aktarılmadı."
+      ],
+      "reviewDate": "2026-10-10",
+      "provisional": true,
+      "publishability": "arındırılmış özet"
+    },
+    {
+      "id": "metaframer",
+      "name": "MetaFramer / MetaFramework",
+      "aliases": [
+        "Metaframer",
+        "Metaframework",
+        "MetaFramer Kernel",
+        "Meta Framework Domain Checklist"
+      ],
+      "ownership": "bana ait",
+      "kind": "Ortak teknik altyapı; aynı adla bağımsız küçük araç",
+      "definition": "Birden fazla iş uygulamasının yetki, veri ve işlem sözleşmelerini ortak çekirdek üzerinden kurmayı hedefleyen altyapı.",
+      "originalVision": "Kernel, SDK, application-owned persistence, host bridge ve güvenli işletim kapılarıyla farklı iş uygulamalarına temel sağlama.",
+      "observed": "Gerçek doğrulama/schema/bridge kodu ve test kaynakları var. Yol haritası güçlü readiness bayraklarını false tutuyor ve çalışan uçtan uca SaaS olmadığını söylüyor. Aynı isimli ayrı kök yalnız domain shortlist aracıdır; tek ürün veya kopya sayılmadı.",
+      "proposedDirection": "İlk değer iç ürünlerin dar bir iş akışında tekrar geliştirmeyi azaltmak. Dışarı bağımsız platform satışı, en az iki bağımsız tüketici aynı yararı göstermeden ertelensin. Domain checklist yardımcı iç araç olarak korunabilir.",
+      "customer": "Önerilen iç müşteri: aynı yetki/işlem ihtiyacını tekrarlayan kişisel ürünler; dış müşteri hipotezi küçük yazılım ekipleri.",
+      "user": "Uygulama geliştiricisi ve platform/operasyon mühendisi.",
+      "payer": "İç kullanımda ayrı ödeyici yok; dış satışta mühendislik yöneticisi/şirket, bütçe bilinmiyor.",
+      "problem": "Her üründe kimlik, yetki, kayıt, audit, retry ve dağıtım sözleşmelerini yeniden kurmak. Geliştirici saat kazancı ölçülmedi.",
+      "value": "İlk değer iç ürünlerin dar bir iş akışında tekrar geliştirmeyi azaltmak. Dışarı bağımsız platform satışı, en az iki bağımsız tüketici aynı yararı göstermeden ertelensin. Domain checklist yardımcı iç araç olarak korunabilir. Ölçüm: Deneylerdeki önerilen metrikler; gerçekleşmiş fayda değil. Genel arayüz, checklist ve otomatik metin üretimi kolay kopyalanabilir. Birikebilecek varlık: İzinli, açıklamalı tekrar iş/mapping/kanıt bilgisi; henüz biriktiği doğrulanmadı.",
+      "workflow": [
+        "Mevcut kaynak: Schema canonicalizer alanları/tipleri kontrol etmek üzere kodlanmış.",
+        "Mevcut kaynak: Host factory yalnız açık komutlu ASGI bridge kuruyor.",
+        "Mevcut kaynak: Test dosyaları sözleşme beklentilerini tanımlıyor; bu çalışmada çalıştırılmadı.",
+        "Öneri: Tek tüketici uygulama dar business action tanımlar.",
+        "Öneri: Policy ve tenant kapsamı kontrol edilir.",
+        "Öneri: İşlem/audit/outbox sonucu deterministik makbuzla döner.",
+        "Öneri: İkinci bağımsız tüketici aynı paketi yeniden kullanır; kurulum süresi ölçülür."
+      ],
+      "alternatives": [
+        "Framework + PostgreSQL + elle entegrasyon: Uygulama içinde yetki ve işlem kuralları. Mühendis zamanı ve işletim maliyeti bilinmiyor. Güçlü yanı: Bağımlılık ve tasarım kontrolü. Açık ihtiyaç hipotezi: Tekrarlı geliştirme ve tutarsız sözleşme riski. Geçiş gerekçesi hipotezi: İki tüketicide ölçülen tekrar azaltımı."
+      ],
+      "monetization": ["İç maliyet tasarrufu", "Destek önerisi"],
+      "commercialOptions": [
+        "Kişisel uygulamalar — Paylaşılan policy/işlem altyapısı; İç maliyet azaltımı. Önerilen öncelik.",
+        "Yazılım ekipleri — Sınırları tanımlı SDK/host entegrasyonu; Açık kaynak + ücretli destek/kurulum; lisans mevcut dosya kapsamında ayrıca incelenir. Önce bağımsız tüketici doğrulaması.",
+        "İsim seçen ajans — Domain shortlist aracı; Ücretsiz yardımcı araç; ayrı hizmet fiyatı bilinmiyor. Bağımsız iş fikri olma kanıtı zayıf.",
+        "Ana ücret hipotezi: Önce iç ürünlerde geliştirme/işletim maliyeti tasarrufu; gerçek para geliri sayılmaz.",
+        "İkinci seçenekler: Bağımsız tüketici ihtiyacı oluşursa destek/kurulum; Gerekirse yönetilen işletim",
+        "Ücretsiz kapsamın amacı: Örnek tüketici ve belgeler geliştirici ilk değerini gösterir.",
+        "Ücretsiz kapsamın maliyeti: Bakım, sürüm uyumu ve destek yüksek olabilir; ölçüm yok."
+      ],
+      "platforms": {
+        "current": [
+          "JavaScript modülleri/SDK kaynakları",
+          "Python ASGI bridge",
+          "PostgreSQL sözleşmeleri",
+          "Ayrı statik web domain aracı"
+        ],
+        "target": [
+          "SDK/API",
+          "Host adapter",
+          "Birden çok iş uygulaması temeli"
+        ],
+        "proposed": ["SDK/API"],
+        "deferred": [
+          "Barındırılmış genel platform",
+          "Marketplace",
+          "Son kullanıcı mobil uygulaması"
+        ],
+        "operation": "İç altyapı / müşterinin ortamına kurulan bileşen; dış yönetilen hizmet henüz öneri.",
+        "relationship": "İç kullanım; olası dış B2B",
+        "structure": "Lisanslı altyapı + destek/uyarlama hizmeti — talep doğrulanmadı"
+      },
+      "maturity": {
+        "product": "Altyapı kodu",
+        "commercial": "Bağımsız ödeme yapan tüketici kanıtı yok.",
+        "enterprise": "Policy/izolasyon/audit sözleşmeleri ve operasyon test kaynakları var; bu incelemede gerçek kabul yok.",
+        "scale": "Belgede performans/DR çalışmaları anlatılıyor; yük/HA sonucu yeniden doğrulanmadı."
+      },
+      "features": [
+        {
+          "name": "Customer kaydı canonicalization ve JSON freeze",
+          "status": "Kodlanmış fakat doğrulanmamış. Statik kaynak okundu.",
+          "evidence": ["pm06"]
+        },
+        {
+          "name": "RLS ve runtime grant descriptor",
+          "status": "Kodlanmış fakat doğrulanmamış. Descriptor veritabanı izolasyonunun kendisi değil.",
+          "evidence": ["pm06"]
+        },
+        {
+          "name": "Python ASGI bridge factory",
+          "status": "Kodlanmış fakat doğrulanmamış. Interop convenience; ürün davranışı değil.",
+          "evidence": ["pm04"]
+        },
+        {
+          "name": "Sözleşme testleri",
+          "status": "Kodlanmış fakat doğrulanmamış. Çalıştırılmadı.",
+          "evidence": ["pm05"]
+        },
+        {
+          "name": "Paket/HA/DR kapanışları",
+          "status": "Belirsiz. Belge CI/drill iddia ediyor; hosted ürün/otomatik HA demiyor.",
+          "evidence": ["pm02"]
+        },
+        {
+          "name": "Domain puanlama/JSON export",
+          "status": "Kodlanmış fakat doğrulanmamış. Ayrı araç; tarihî availability güncel sayılmaz.",
+          "evidence": ["pm08"]
+        }
+      ],
+      "scores": {
+        "G": [
+          {
+            "id": "problem",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "payer",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "willingness",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "margin",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "speed",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "repeat",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "difference",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          }
+        ],
+        "V": [
+          {
+            "id": "invite",
+            "score": 0,
+            "rationale": "Mevcut kernel işinin son kullanıcıyı doğal davet ettiren akışı gösterilmedi.",
+            "evidence": ["pm04", "pm06"],
+            "basis": "çıkarım",
+            "change": "Gerçek dış kullanıcı döngüsü."
+          },
+          {
+            "id": "output",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "recipient",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "activation",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "frequency",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "seed",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "privacy",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          }
+        ],
+        "O": [
+          {
+            "id": "search",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "community",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "ecosystem",
+            "score": 2,
+            "rationale": "Paket/açık kaynak ekosistemi keşfi mümkün; yayımlanmış dağıtım başarısı yok.",
+            "evidence": ["pm01"],
+            "basis": "çıkarım",
+            "change": "İzlenen bağımsız consumer aktivasyonu."
+          },
+          {
+            "id": "content",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "partners",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "access",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          }
+        ],
+        "U": [
+          {
+            "id": "scope",
+            "score": 1,
+            "rationale": "Global readiness false; dış ürün satılabilir kapsamı eksik.",
+            "evidence": ["pm02"],
+            "basis": "çıkarım",
+            "change": "İki bağımsız kullanıcı yolculuğu."
+          },
+          {
+            "id": "assets",
+            "score": 3,
+            "rationale": "Gerçek canonicalizer, bridge ve test kaynağı var; kullanışlılık runtime doğrulanmadı.",
+            "evidence": ["pm04", "pm05", "pm06"],
+            "basis": "çıkarım",
+            "change": "Bağımsız consumer çalıştırması."
+          },
+          {
+            "id": "dependencies",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "operations",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "resources",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "rights",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          }
+        ]
+      },
+      "risks": [
+        "Tüketici ihtiyaçlarından bağımsız geniş çekirdek maliyeti.",
+        "Alpha sürüm sözleşme değişikliği ve çok tüketici uyumu.",
+        "23/25 paket sayısı ürün hazır olma veya müşteri değeri kanıtı değil.",
+        "Kaynak paketi AGPL beyan ediyor; dış dağıtım/karma ürün hakları kullanıcıyla ayrıca netleşmeli."
+      ],
+      "blockers": [
+        "Bağımsız tüketici ve uçtan uca iş yolculuğu eksik.",
+        "Dış alıcının bütçesi ve satın alma gerekçesi bilinmiyor."
+      ],
+      "mmp": [
+        "Tek gerçek tüketici işi",
+        "Sürüm sözleşmesi ve dar SDK",
+        "Başarılı işlem + yanlış tenant/retry/rollback sınırı",
+        "Temiz tüketici kurulum örneği ve destek sınırı",
+        "Bağımlılık: Uygulama ihtiyacına bağlı somut entegrasyon ve bağımsız tüketici geri bildirimi."
+      ],
+      "notNeeded": [
+        "Tüm enterprise özellikleri",
+        "Yeni frontend kabuğu",
+        "Domain aracıyla tek ürün yapmak"
+      ],
+      "decision": "Yalnızca altyapı olarak koru",
+      "decisionRationale": "Kod/test yatırımı mevcut ama ticari ürün ve bağımsız kullanıcı kanıtı yok; iç uygulamaya bağlanan ölçülür dar fayda öncelikli.",
+      "changeEvidence": "İki bağımsız tüketicide daha az entegrasyon saati, kabul edilen sürüm sözleşmesi ve en az bir ücretli destek talebi.",
+      "distribution": "Kendi iki tüketicisinde ölçülen örnek → açık ve sentetik kurulum rehberi → izinli geliştirici topluluğu → bağımsız tüketici/uygulama partnerleri. On müşteri hedefi ilk aşamada gerçekçi biçimde kanıtlanmadı. Kanallar: Açık kaynak belgeler; Örnek consumer; Uygulama/entegrasyon ortakları. Teknik destek ve sürüm bakımı süreleri ölçülmeli.",
+      "viralLoop": "Son kullanıcı viral döngüsü yok. Geliştirici örneği veya paketi başka ekibe önerir. Diğer ekip kendi ihtiyacı varsa bağımsız deneme yapar. Paket kurulumu veya GitHub ilgisi aktif/ödeyen tüketici değildir; ekosistem dağıtımı virallikle aynı değil.",
+      "experiments": [
+        {
+          "hypothesis": "Ortak çekirdek tüketici başına tekrar işi azaltır.",
+          "action": "Bir dar action için mevcut yöntemle Kernel entegrasyonunu eş kapsamla zamanla.",
+          "metric": "Geliştirme/kurulum saati, özel adapter satırı ve hata sayısı.",
+          "threshold": "İkinci tüketicide ilkine göre önerilen en az %30 daha az entegrasyon süresi; kritik izin hatası sıfır.",
+          "failure": "Çekirdeği daralt veya uygulama içi çözümde kal.",
+          "effort": "16–32 saat; iki sentetik tüketici."
+        },
+        {
+          "hypothesis": "Başka geliştirici belgelerle ilk değere ulaşır.",
+          "action": "İki bağımsız geliştiriciye temiz sentetik consumer örneğini kurdurma deneyi.",
+          "metric": "İlk başarılı/ret işlemi süresi ve yardım sayısı.",
+          "threshold": "2 geliştirici 2 saat içinde; kişi başına en çok 2 açıklama.",
+          "failure": "SDK/dokümantasyonu düzelt; hosted platforma geçme.",
+          "effort": "8–16 saat artı katılımcı zamanı."
+        },
+        {
+          "hypothesis": "Dış ekip destek/entegrasyon için ödeme ister.",
+          "action": "Beş ekipte aynı yetki/işlem darboğazını görüş; sınırlı destek teklifinin değerini sor.",
+          "metric": "Aynı sorun, pilot talebi ve bütçe aralığı.",
+          "threshold": "5 ekipten 2 somut tüketici pilotu ve 1 ücretli destek niyeti.",
+          "failure": "İç altyapı olarak koru; dış ticari önceliği kaldır.",
+          "effort": "6–10 saat; erişim veya satış sonucu varsayılmadı."
+        }
+      ],
+      "finance": {
+        "status": "Bilinmiyor; gelir veya net kâr tahmini hesaplanmadı.",
+        "assumptions": [
+          "Nitelikli erişim, dönüşüm, gerçekleşen fiyat, tekrar ödeme, kayıp, kullanım maliyeti, kurucu zamanı ve sabit gider ölçülmedi.",
+          "Müşteri, fiyat, dönüşüm, tekrar kullanım, kurucu zamanı ve maliyetler ölçülmeden düşük/temel/yüksek senaryoya sayı yerleştirilmedi."
+        ],
+        "conditions": "İzinli ücretli pilot; gerçekleşen satış fiyatı, destek süresi, müşteri kaybı, saklama/işlem maliyeti ve sabit giderler ölçüldüğünde 1., 3. ve 6. ay senaryoları ayrı hesaplanabilir."
+      },
+      "confidence": {
+        "source": "Kısmi, kayıtlı satır aralıklarıyla; yayımlanan alanlar sahipliği açık kaynakların arındırılmış özetidir.",
+        "runtime": "not_run — Kaynak proje kurulumu, testleri, prod erişimi, ödeme ve gerçek veri işlemi çalıştırılmadı.",
+        "market": "Resmi alternatif sayfaları incelendi; müşteri görüşmesi yapılmadı.",
+        "revenue": "Bilinmiyor; gerçek ödeme ve tekrar gelir kanıtı yok."
+      },
+      "competitors": [
+        {
+          "name": "Supabase",
+          "customer": "PostgreSQL backend isteyen ekip",
+          "solution": "Yönetilen veritabanı, auth ve backend servisleri",
+          "price": "Pro 25 USD/aydan; kullanım artışı ayrıca",
+          "free": "500 MB DB, 50 bin MAU, iki aktif proje",
+          "strength": "Hazır altyapı ve hızlı başlangıç",
+          "gap": "İş domaininin policy/işlem sözleşmesi yine uygulama sorumluluğu",
+          "switching": "Ölçülen domain audit/approval faydası",
+          "url": "https://supabase.com/pricing",
+          "accessed": "2026-10-10",
+          "limitation": "Bunlar barındırma plan limitleri; kurumsal yetkilendirme ve MetaFramer ile eşdeğer domain kapsamı anlamına gelmez. Alternatifin güçlü yanı kaynak beyanıdır; açık ihtiyaç ve geçiş gerekçesi analistin müşteriyle sınanmamış hipotezidir."
+        },
+        {
+          "name": "Directus",
+          "customer": "Veri tabanı üzerinden iş aracı kuran ekip",
+          "solution": "Şema üstü backend ve işbirliği arayüzü",
+          "price": "Koşullu self-host ücretsiz; grant cloud 99 USD/ay; Team 499 USD/ay yıllık taahhüt",
+          "free": "Uygun kuruluş koşullarına bağlı; sınırsız ücretsiz açık kaynak varsayılmaz",
+          "strength": "Hazır veri yönetimi ve kullanıcı yüzeyi",
+          "gap": "Kernelin hedef işlem/policy sözleşmesiyle eşdeğerlik test edilmeli",
+          "switching": "Daha az tekrar kod ve güvenilir dar iş akışı",
+          "url": "https://directus.com/pricing",
+          "accessed": "2026-10-10",
+          "limitation": "Lisans uygunluğu ayrıca incelenmeli; yalnızca bu koşullar herkes için ücretsiz açık kaynak lisansı anlamına gelmez. Alternatifin güçlü yanı kaynak beyanıdır; açık ihtiyaç ve geçiş gerekçesi analistin müşteriyle sınanmamış hipotezidir."
+        },
+        {
+          "name": "Namecheap domain araması + tablo",
+          "customer": "İsim seçen girişimci/ajans",
+          "solution": "Güncel kayıt araması ve elle shortlist",
+          "price": "Arama ücretsiz; kayıt alan adına göre",
+          "free": "Arama yüzeyi ücretsiz",
+          "strength": "Güncel kayıt işlemiyle yakın",
+          "gap": "Karar notu/puan/export işi ayrıca",
+          "switching": "Yerel karşılaştırma kolaylığı; bağımsız ücretli talep yok",
+          "url": "https://www.namecheap.com/domains/domain-name-search/",
+          "accessed": "2026-10-10",
+          "limitation": "Tarihsel adayların güncel boşluğu veya marka hakkı doğrulanmadı; satın alma yapılmadı. Alternatifin güçlü yanı kaynak beyanıdır; açık ihtiyaç ve geçiş gerekçesi analistin müşteriyle sınanmamış hipotezidir."
+        }
+      ],
+      "sources": [
+        {
+          "id": "pm01",
+          "title": "Kernel paket sözleşmesi",
+          "kind": "dosya",
+          "locator": "İncelenen satırlar: 1–26",
+          "claim": "Kernel paketi alpha sürüm ve AGPL-3.0-only beyan ediyor; check ve test scriptleri tanımlı.",
+          "accessed": "2026-10-10",
+          "limitation": "Scriptlerin varlığı çalıştırıldığını göstermez; bu görev lisansı seçmez veya değiştirmez. Statik kaynak gözlemi; kaynak uygulama çalıştırılmadı. Özel kaynak konumu yayımlanmaz."
+        },
+        {
+          "id": "pm02",
+          "title": "Kernel hazırlık yol haritası",
+          "kind": "dosya",
+          "locator": "İncelenen satırlar: 1–123",
+          "claim": "23/25 paket tamamlandı iddiası yanında bütün güçlü readiness bayrakları false ve uçtan uca SaaS yolculuğu yok deniyor.",
+          "accessed": "2026-10-10",
+          "limitation": "Paket kapanış ve CI/drill anlatımı ikincil belgesel kanıttır; bu incelemede yeniden çalıştırılmadı. Statik kaynak gözlemi; kaynak uygulama çalıştırılmadı. Özel kaynak konumu yayımlanmaz."
+        },
+        {
+          "id": "pm04",
+          "title": "ASGI köprü fabrikası",
+          "kind": "dosya",
+          "locator": "İncelenen satırlar: 1–39",
+          "claim": "Açık subprocess komutu alan ASGI bridge factory kodu var; dosya kendi başına ürün davranışı uygulamadığını söylüyor.",
+          "accessed": "2026-10-10",
+          "limitation": "Sunucu veya ticari ürün iş akışı değil. Statik kaynak gözlemi; kaynak uygulama çalıştırılmadı. Özel kaynak konumu yayımlanmaz."
+        },
+        {
+          "id": "pm05",
+          "title": "Kernel sözleşme test kaynakları",
+          "kind": "dosya",
+          "locator": "İncelenen satırlar: 1–190",
+          "claim": "Customer şeması tam alanlar, yanlış tipleri reddetme ve RLS sözleşmesi için test kodu var.",
+          "accessed": "2026-10-10",
+          "limitation": "Testler çalıştırılmadı; şema descriptor testi gerçek veritabanı izolasyon testi değil. Statik kaynak gözlemi; kaynak uygulama çalıştırılmadı. Özel kaynak konumu yayımlanmaz."
+        },
+        {
+          "id": "pm06",
+          "title": "Müşteri kayıt şeması",
+          "kind": "dosya",
+          "locator": "İncelenen satırlar: 1–133",
+          "claim": "Altı alanlı customer kaydı, canonicalize doğrulaması, dondurulmuş JSON ve tenant RLS descriptor kodlanmış.",
+          "accessed": "2026-10-10",
+          "limitation": "Descriptor gerçek SQL migration uygulaması veya canlı izolasyon garantisi değil. Statik kaynak gözlemi; kaynak uygulama çalıştırılmadı. Özel kaynak konumu yayımlanmaz."
+        },
+        {
+          "id": "pm07",
+          "title": "Ayrı alan adı aracı tanımı",
+          "kind": "dosya",
+          "locator": "İncelenen satırlar: 1–11",
+          "claim": "MetaFramework adındaki başka kök 950 domain adaylı checklist aracını tarif ediyor.",
+          "accessed": "2026-10-10",
+          "limitation": "950 güncel boş domain sayısı doğrulanmadı; kernel ile aynı ürün olduğu varsayılmadı. Statik kaynak gözlemi; kaynak uygulama çalıştırılmadı. Özel kaynak konumu yayımlanmaz."
+        },
+        {
+          "id": "pm08",
+          "title": "Ayrı alan adı karşılaştırma aracı",
+          "kind": "dosya",
+          "locator": "İncelenen satırlar: 1–50, 90–135, 150–293",
+          "claim": "Domain puanlama, eleme, shortlist, arama, JSON export ve registrar linkleri kodda var.",
+          "accessed": "2026-10-10",
+          "limitation": "Uzun sabit domain dizisi ve dosyanın aradaki bölümleri anlamsal olarak okunmadı; RDAP canlı kontrolü doğrulanmadı. Statik kaynak gözlemi; kaynak uygulama çalıştırılmadı. Özel kaynak konumu yayımlanmaz."
+        },
+        {
+          "id": "ext-directus",
+          "title": "Directus Pricing",
+          "kind": "dış kaynak",
+          "locator": "Resmî sayfa; erişim sonucu: reviewed",
+          "claim": "Veri tabanı üstünde işbirlikli backend; belirli küçük kuruluşlar için ücretsiz self-host erişimi, bulut grant 99 USD/ay; Team yıllık taahhütte 499 USD/ay.",
+          "url": "https://directus.com/pricing",
+          "accessed": "2026-10-10",
+          "limitation": "Lisans uygunluğu ayrıca incelenmeli; yalnızca bu koşullar herkes için ücretsiz açık kaynak lisansı anlamına gelmez."
+        },
+        {
+          "id": "ext-domain",
+          "title": "Namecheap Domain Name Search",
+          "kind": "dış kaynak",
+          "locator": "Resmî sayfa; erişim sonucu: reviewed",
+          "claim": "Ücretsiz domain arama yüzeyi; kayıt maliyeti alan adına ve uzantıya göre değişir.",
+          "url": "https://www.namecheap.com/domains/domain-name-search/",
+          "accessed": "2026-10-10",
+          "limitation": "Tarihsel adayların güncel boşluğu veya marka hakkı doğrulanmadı; satın alma yapılmadı."
+        },
+        {
+          "id": "ext-supabase",
+          "title": "Supabase Pricing",
+          "kind": "dış kaynak",
+          "locator": "Resmî sayfa; erişim sonucu: reviewed",
+          "claim": "Free 500 MB veritabanı, 50 bin aylık aktif kullanıcı ve iki aktif proje; Pro 25 USD/aydan başlıyor.",
+          "url": "https://supabase.com/pricing",
+          "accessed": "2026-10-10",
+          "limitation": "Bunlar barındırma plan limitleri; kurumsal yetkilendirme ve MetaFramer ile eşdeğer domain kapsamı anlamına gelmez."
+        }
+      ],
+      "contradictions": [
+        "Kaynak vizyonu, statik uygulama gözlemi ve önerilen ticari yön ayrı katmanlardır; bu kayıt uçtan uca ürün veya satış kabulü değildir.",
+        "Yol haritasındaki 23/25 paket tamamlandı beyanı yanında güçlü hazırlık bayrakları false; çalışan uçtan uca ürün sayılmadı."
+      ],
+      "relationships": [
+        "Kernel teknik altyapı ailesi ile aynı isme yakın alan adı karşılaştırma aracı ayrı varlık aileleridir; tek ticari ürün veya içerik kopyası oldukları kanıtlanmadı."
+      ],
+      "reviewDate": "2026-10-10",
+      "provisional": true,
+      "publishability": "arındırılmış özet"
+    },
+    {
+      "id": "pim",
+      "name": "PIM",
+      "aliases": [
+        "PIM v2",
+        "Product Information Management",
+        "Ürün Bilgi Yönetimi"
+      ],
+      "ownership": "bana ait",
+      "kind": "Ürün gereksinimi / yeniden yazım araştırması",
+      "definition": "Satıcının ürün bilgilerini tek katalogda düzenleyip eksikleri görerek farklı satış kanallarına doğru biçimde aktarmasını hedefleyen yazılım.",
+      "originalVision": "Mevcut sistem diye tarif edilen ürün/varyant/öznitelik/kanal/AI/MDM yeteneklerini ERP’den bağımsız SaaS’a taşıma.",
+      "observed": "604 satırlık gereksinim analizi baştan sona okundu. Belge yaklaşık 120 DocType/16 adapter ve mevcut uygulama iddia ediyor; atıf yapılan uygulama kaynakları dar kaynak aramasında bulunamadı. Bu sayılar ve özellikler uygulanmış sayılmadı.",
+      "proposedDirection": "Önce tek sektörün tedarikçi tablosunu tek kanal için hazır hale getiren kalite/mapping teslimi. İlk müşteride yayına yazma yerine açıklamalı doğrulama ve export; geniş PIM/MDM/AI platformu sonraya.",
+      "customer": "Önerilen: çok ürünlü ama tek/iki satış kanalında veri hazırlama sorunu yaşayan küçük marka/distribütör; sektör ve SKU aralığı henüz seçilmedi.",
+      "user": "Ürün veri sorumlusu, e-ticaret operasyonu, gerektiğinde tedarikçi.",
+      "payer": "Marka/distribütör sahibi veya e-ticaret yöneticisi; satın alma bütçesi bilinmiyor.",
+      "problem": "Tedarikçi dosyası, kanal zorunlu alanları ve görseller arasında eksik/uyumsuz ürün verisi; yayın gecikmesi ve tekrar düzeltme. Kaynakta tanımlı, müşteri maliyeti ölçülmedi.",
+      "value": "Önce tek sektörün tedarikçi tablosunu tek kanal için hazır hale getiren kalite/mapping teslimi. İlk müşteride yayına yazma yerine açıklamalı doğrulama ve export; geniş PIM/MDM/AI platformu sonraya. Ölçüm: Deneylerdeki önerilen metrikler; gerçekleşmiş fayda değil. Genel arayüz, checklist ve otomatik metin üretimi kolay kopyalanabilir. Birikebilecek varlık: İzinli, açıklamalı tekrar iş/mapping/kanıt bilgisi; henüz biriktiği doğrulanmadı.",
+      "workflow": [
+        "Mevcut kaynak: Gereksinim belgesinde import, ürün modeli, kalite, onay ve publish zinciri tasarlanmış.",
+        "Mevcut kaynak: Bu incelemede kaynak kodlu PIM iş akışı çalıştırılmadı veya bulunmuş sayılmadı.",
+        "Öneri: İzinli/sentetik tedarikçi tablosu seçilir.",
+        "Öneri: Alanlar tek sektör sözlüğüne eşlenir.",
+        "Öneri: Tek kanal için zorunlu alan, tip ve görsel eksikleri raporlanır.",
+        "Öneri: İnsan düzeltmeleri kabul eder.",
+        "Öneri: Kaynak izli bir export üretilir; gerçek kanala otomatik gönderilmez."
+      ],
+      "alternatives": [
+        "Excel/Sheets + kanal paneli: Her kanal şablonunu elle doldurma. Emek maliyeti ve hata bedeli bilinmiyor. Güçlü yanı: Basit başlangıç ve geçiş maliyeti yok. Açık ihtiyaç hipotezi: Sürüm, eksik alan ve tekrar düzeltme. Geçiş gerekçesi hipotezi: Kaynak hücreye bağlı açıklamalı kalite/mapping raporu."
+      ],
+      "monetization": ["Hizmet", "Abonelik önerisi", "Kurulum"],
+      "commercialOptions": [
+        "Küçük marka/distribütör — Tek tedarikçi dosyası → tek kanal hazır çıktı; Sabit kapsam hizmeti. Öneri.",
+        "Ürün veri ekibi — Tekrarlayan kalite ve mapping; SKU/kanal bandı aboneliği. Tekrar talebi doğrulanmalı.",
+        "Ana ücret hipotezi: Kabul edilen katalog hazırlama/kanal mapping teslimi için ücret; tekrar görülürse ürün/adet/kanal bandıyla abonelik.",
+        "İkinci seçenekler: Kurulum ve veri taşıma; Sektör/kanal mapping desteği",
+        "Ücretsiz kapsamın amacı: Açık sentetik örnek veya sınırlı checker gerçek değeri gösterir.",
+        "Ücretsiz kapsamın maliyeti: Dosya işleme, depolama, AI ve support maliyeti bilinmiyor; AI ilk kapsam için şart değil."
+      ],
+      "platforms": {
+        "current": [
+          "Gereksinim belgesi; kaynakta tarif edilen uygulama doğrulanmadı"
+        ],
+        "target": ["Web SaaS", "API", "Kanal adapterleri"],
+        "proposed": ["Web", "Yerel dosya aracı", "Yönetilen hizmet"],
+        "deferred": [
+          "16 canlı kanal",
+          "MDM/GS1/GDSN",
+          "Geniş AI otomasyonu",
+          "Yerel mobil uygulamalar"
+        ],
+        "operation": "Önerilen yönetilen veri hazırlama hizmeti; doğrulamadan sonra SaaS.",
+        "relationship": "B2B",
+        "structure": "Ürünleştirilmiş hizmet → abonelik ürünü"
+      },
+      "maturity": {
+        "product": "Araştırma",
+        "commercial": "Müşteri varsayımı; pilot/gerçek ödeme yok.",
+        "enterprise": "İzolasyon/audit/izin/restore hedefleri belge düzeyinde; kabul yok.",
+        "scale": "100 bin ürün/p95 hedefi ölçüm değil; maliyet ve yük testi yok."
+      },
+      "features": [
+        {
+          "name": "Ürün/varyant/öznitelik modeli",
+          "status": "Planlanmış. Belgedeki mevcut sistem iddiası uygulama kaynağıyla teyit edilmedi.",
+          "evidence": ["pp01"]
+        },
+        {
+          "name": "Kalite skoru ve kanal hazırlığı",
+          "status": "Planlanmış. İlk ticari yön için önerilen dar parça.",
+          "evidence": ["pp01"]
+        },
+        {
+          "name": "AI üretim/çeviri ve onay",
+          "status": "Planlanmış. Sağlayıcı adı entegrasyon kanıtı değil.",
+          "evidence": ["pp01"]
+        },
+        {
+          "name": "16 kanal adapteri",
+          "status": "Belirsiz. Kod ve güncel sandbox kanıtı yok.",
+          "evidence": ["pp01"]
+        },
+        {
+          "name": "Gerçek multi-tenant SaaS",
+          "status": "Planlanmış. Mevcut site izolasyonu ile hedef RLS ayrılmış; çalışan ürün sayılmaz.",
+          "evidence": ["pp01"]
+        }
+      ],
+      "scores": {
+        "G": [
+          {
+            "id": "problem",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "payer",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "willingness",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "margin",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "speed",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "repeat",
+            "score": 3,
+            "rationale": "Ürün verisi güncellemeleri tekrar işe uygun; alıcının retention’ı ölçülmedi.",
+            "evidence": ["pp01", "ext-akeneo"],
+            "basis": "çıkarım",
+            "change": "İkinci dosya/ay ücretli tekrar."
+          },
+          {
+            "id": "difference",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          }
+        ],
+        "V": [
+          {
+            "id": "invite",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "output",
+            "score": 2,
+            "rationale": "Kaynak izli katalog/rapor paylaşılabilir; bugün öneri.",
+            "evidence": ["pp01"],
+            "basis": "çıkarım",
+            "change": "Paylaşım→bağımsız kullanıcı ölçümü."
+          },
+          {
+            "id": "recipient",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "activation",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "frequency",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "seed",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "privacy",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          }
+        ],
+        "O": [
+          {
+            "id": "search",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "community",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "ecosystem",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "content",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "partners",
+            "score": 2,
+            "rationale": "İlgili ekosistem ve ortak rolleri var; somut ortak teklif, anlaşma veya pilot doğrulanmadı.",
+            "evidence": ["ext-akeneo"],
+            "basis": "çıkarım",
+            "change": "İki partnerin pilot getirmesi."
+          },
+          {
+            "id": "access",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          }
+        ],
+        "U": [
+          {
+            "id": "scope",
+            "score": 1,
+            "rationale": "13 fazlı kapsam ve kaynak uygulama yokluğu kalan işi belirsiz kılıyor.",
+            "evidence": ["pp01"],
+            "basis": "çıkarım",
+            "change": "Dar checker ve kaynak uygulamanın bulunması."
+          },
+          {
+            "id": "assets",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "dependencies",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "operations",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "resources",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "rights",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          }
+        ]
+      },
+      "risks": [
+        "Geniş 13 faz/çok varlık kapsamı ilk satıştan önce büyük maliyet.",
+        "Kanal API ve alan kuralları sürekli değişir.",
+        "Ürün/görsel telifleri ve dış sağlayıcıya veri gönderimi ayrı yetki gerektirir.",
+        "MDM/AI ve canlı publish yanlış veriyi geniş çapta yayabilir.",
+        "Eski belge GittiGidiyor gibi tarihsel kanal adları içeriyor; güncel entegrasyon varsayılmaz."
+      ],
+      "blockers": [
+        "Atıf yapılan mevcut PIM uygulaması/uygulama hakkı ve gerçek kod bulunmalı.",
+        "Dar sektör, kanal ve müşteri sorunu seçilmedi."
+      ],
+      "mmp": [
+        "Tek kanal/tek ürün sınıfı sözlüğü",
+        "Güvenli dosya içe alımı",
+        "Eksik/tip/uyumsuzluk kontrolü",
+        "İnsan kabulü ve kaynak izli export",
+        "Bağımlılık: İzinli/sentetik örnek ve güncel kanal şeması; mevcut kod hakları."
+      ],
+      "notNeeded": [
+        "Tam MDM",
+        "16 adapter",
+        "Otomatik AI",
+        "Yeni teknolojiye tam yeniden yazım"
+      ],
+      "decision": "Önce müşteriyle doğrula",
+      "decisionRationale": "İş problemi tanımlanabiliyor, mevcut ürünün varlığı yalnız raporda; önce dar veri tesliminin satın alma gerekçesi ve tekrarını sınamak gerekir.",
+      "changeEvidence": "Üç farklı izinli dosyada kabul edilen kalite bulguları, tekrar dönem talebi ve mevcut uygulama kaynak/çalışma kanıtı.",
+      "distribution": "Anonim kaynak→bulgu→export örneği → niş katalog topluluğu ve e-ticaret entegrasyon partneri → 2 pilot → kabul edilen vaka üzerinden 8 benzer işletme. Kanallar: Kanal/tedarikçi veri checklisti; E-ticaret uygulama ortakları; Sektör ürün veri toplulukları. Mapping ve müşteri dosyasına özel destek saatleri ölçülmeli.",
+      "viralLoop": "Olası işbirliği döngüsü; uygulama yok. Marka tedarikçiye eksik alan raporu gönderir. Tedarikçi kendi verisini düzeltmek için yanıtlar. Birden fazla markayla aynı formatı kullanmak isterse bağımsız ilk değer oluşabilir. Tedarikçi yanıtı yeni ücretli PIM müşterisi değildir; gizlilik ve ticari ilişki engelleri var.",
+      "experiments": [
+        {
+          "hypothesis": "Tek sektör veri hazırlığı tekrar eden pahalı iş.",
+          "action": "5 katalog sorumlusuyla son yayın dosyasını veri paylaşmadan süreç üzerinden incele.",
+          "metric": "Dosya başına süre, ret/düzeltme ve tekrar sıklığı.",
+          "threshold": "5 kişiden 3 aynı problem; 2 izinli/sentetik pilot niyeti.",
+          "failure": "Sektörü/kanalı değiştir; geniş PIM yeniden yazımını beklet.",
+          "effort": "6–10 saat."
+        },
+        {
+          "hypothesis": "Dar checker yararlı ve güvenilir bulgu üretir.",
+          "action": "10 doğru/bozuk sentetik katalog ve tek güncel kanal şemasıyla bulgu listesini uzman etiketlesin.",
+          "metric": "Doğru bulgu, kritik yanlış pozitif, kaynak izlenebilirliği.",
+          "threshold": "Kritik yanlış pozitif sıfır; önerilen en az %90 bulgu kabulü.",
+          "failure": "Canlı publish açma; kural ve mapping’i daralt.",
+          "effort": "12–24 saat; sonuç bilinmiyor."
+        },
+        {
+          "hypothesis": "Alıcı düzenli veri teslimine ödeme yapar.",
+          "action": "Bir dar sabit kapsam ücretli dosya teslimini teklif et; ikinci dosya için tekrar talebini izle.",
+          "metric": "Ödeme, teslim saati ve tekrar sipariş.",
+          "threshold": "En az 1 ücretli teslim ve 30 gün içinde ikinci benzer dosya talebi.",
+          "failure": "Hizmette kal veya beklet; abonelik geliştirme.",
+          "effort": "8–16 saat teslim/satış; gerçek fiyat bilinmiyor."
+        }
+      ],
+      "finance": {
+        "status": "Bilinmiyor; gelir veya net kâr tahmini hesaplanmadı.",
+        "assumptions": [
+          "Nitelikli erişim, dönüşüm, gerçekleşen fiyat, tekrar ödeme, kayıp, kullanım maliyeti, kurucu zamanı ve sabit gider ölçülmedi.",
+          "Müşteri, fiyat, dönüşüm, tekrar kullanım, kurucu zamanı ve maliyetler ölçülmeden düşük/temel/yüksek senaryoya sayı yerleştirilmedi."
+        ],
+        "conditions": "İzinli ücretli pilot; gerçekleşen satış fiyatı, destek süresi, müşteri kaybı, saklama/işlem maliyeti ve sabit giderler ölçüldüğünde 1., 3. ve 6. ay senaryoları ayrı hesaplanabilir."
+      },
+      "confidence": {
+        "source": "Kısmi, kayıtlı satır aralıklarıyla; yayımlanan alanlar sahipliği açık kaynakların arındırılmış özetidir.",
+        "runtime": "not_run — Kaynak proje kurulumu, testleri, prod erişimi, ödeme ve gerçek veri işlemi çalıştırılmadı.",
+        "market": "Resmi alternatif sayfaları incelendi; müşteri görüşmesi yapılmadı.",
+        "revenue": "Bilinmiyor; gerçek ödeme ve tekrar gelir kanıtı yok."
+      },
+      "competitors": [
+        {
+          "name": "Akeneo",
+          "customer": "Marka/üretici/distribütör",
+          "solution": "PIM kalite, ürün bilgisi, iş akışı ve kanal paketi",
+          "price": "İleri paketler teklif; kesin gerçekleşen fiyat bilinmiyor",
+          "free": "Community ücretsiz açık kaynak; bulut/özellik sınırları ayrı",
+          "strength": "Geniş ürün ve ekosistem",
+          "gap": "Dar yerel kanal/ilk kurulum maliyeti müşteriyle ölçülmeli",
+          "switching": "Tek dosyadan tek kanal için kabul edilen çıktı",
+          "url": "https://www.akeneo.com/compare-packages/",
+          "accessed": "2026-10-10",
+          "limitation": "Sayfadaki başlangıç fiyatı ve deneme ayrı; Türkçe dar müşteri için toplam maliyet/başarı ölçülmedi. Alternatifin güçlü yanı kaynak beyanıdır; açık ihtiyaç ve geçiş gerekçesi analistin müşteriyle sınanmamış hipotezidir."
+        },
+        {
+          "name": "Pimcore",
+          "customer": "PIM/MDM/DAM isteyen kuruluş",
+          "solution": "Ürün/varlık/veri yönetimi temeli",
+          "price": "POCL koşullarına bağlı ücretsiz; ticari üst kapsam ücretli",
+          "free": "Belirli kuruluş/kullanım kapsamı; herkese sınırsız ücretsiz değil",
+          "strength": "Birleşik veri ve varlık kapsamı",
+          "gap": "Lisans/kurulum/işletim karmaşıklığı alıcıya göre değişir",
+          "switching": "Dar, düşük kurulum yükü ve açık kapsam",
+          "url": "https://pimcore.com/en/products/edition/community",
+          "accessed": "2026-10-10",
+          "limitation": "POCL koşulu OSI açık kaynak lisansı diye etiketlenmedi; fiyat ve kurulum maliyeti teklif gerektirir. Alternatifin güçlü yanı kaynak beyanıdır; açık ihtiyaç ve geçiş gerekçesi analistin müşteriyle sınanmamış hipotezidir."
+        }
+      ],
+      "sources": [
+        {
+          "id": "pp01",
+          "title": "Ürün bilgisi gereksinim analizi",
+          "kind": "dosya",
+          "locator": "İncelenen satırlar: 1–604",
+          "claim": "Ürün/varyant/öznitelik, veri kalitesi, kanal yayını, AI onay ve ERP bağımsız SaaS hedefleyen 13 fazlı gereksinim analizi var.",
+          "accessed": "2026-10-10",
+          "limitation": "Doküman otomatik kaynak analizinden üretildiğini söylüyor; atıf yapılan custom_pim ve pim-ui uygulama kodları bu dar incelemede bulunamadı. Yaklaşık 120 DocType/16 adapter mevcut ürün kanıtı sayılmadı. Statik kaynak gözlemi; kaynak uygulama çalıştırılmadı. Özel kaynak konumu yayımlanmaz."
+        },
+        {
+          "id": "ext-akeneo",
+          "title": "Akeneo Compare Packages",
+          "kind": "dış kaynak",
+          "locator": "Resmî sayfa; erişim sonucu: reviewed",
+          "claim": "PIM veri merkezi, kalite, iş akışı ve kanal yönetimi paketleri; Community ücretsiz açık kaynak, ileri paketlerde teklif gerekir.",
+          "url": "https://www.akeneo.com/compare-packages/",
+          "accessed": "2026-10-10",
+          "limitation": "Sayfadaki başlangıç fiyatı ve deneme ayrı; Türkçe dar müşteri için toplam maliyet/başarı ölçülmedi."
+        },
+        {
+          "id": "ext-pimcore",
+          "title": "Pimcore Community Edition",
+          "kind": "dış kaynak",
+          "locator": "Resmî sayfa; erişim sonucu: reviewed",
+          "claim": "PIM/MDM/DAM temel yetenekleri; POCL kapsamında belirtilen küçük şirket/akademik/deneysel kullanımlarda ücretsiz, diğer ticari kullanımlar için üst sürüm gerekir.",
+          "url": "https://pimcore.com/en/products/edition/community",
+          "accessed": "2026-10-10",
+          "limitation": "POCL koşulu OSI açık kaynak lisansı diye etiketlenmedi; fiyat ve kurulum maliyeti teklif gerektirir."
+        }
+      ],
+      "contradictions": [
+        "Kaynak vizyonu, statik uygulama gözlemi ve önerilen ticari yön ayrı katmanlardır; bu kayıt uçtan uca ürün veya satış kabulü değildir.",
+        "Belgedeki yaklaşık 120 DocType ve 16 adapter iddiasının uygulama kaynakları sınırlı aramada doğrulanmadı; mevcut özellik veya ölçek başarısı sayılmadı."
+      ],
+      "relationships": [
+        "Ürün bilgisi gereksinimi, başka altyapı kaynaklarıyla aynı paket veya aynı ticari ürün olarak birleştirilmedi."
+      ],
+      "reviewDate": "2026-10-10",
+      "provisional": true,
+      "publishability": "arındırılmış özet"
+    },
+    {
+      "id": "ibys",
+      "name": "İBYS / İSG operasyon ürünü",
+      "aliases": [
+        "İBYS",
+        "IBYS",
+        "İNYS — kaynak yazımı",
+        "İSG SaaS",
+        "OSGB operasyon yazılımı"
+      ],
+      "ownership": "bana ait",
+      "kind": "Regüle ürün araştırması",
+      "definition": "OSGB ve İSG profesyonellerinin işyeri, eğitim ve takip kayıtlarını yönetip gerekli veriyi yetkili entegrasyon üzerinden Bakanlığa göndermesini hedefleyen ürün fikri.",
+      "originalVision": "İSG operasyon çekirdeği, uyum/kanıt deposu, İBYS gateway ve ayrı sosyal sigorta adapter katmanları; OSGB birincil alıcı.",
+      "observed": "1989 satırlık araştırma belgesinin 357 kayıtlı satırı incelendi. Kodlu ürün, test servisi erişimi, entegratör yetkisi ve canlı gönderim kanıtı bulunmadı. Belge kendi içinde ISO27001 ve şirket türü şartı hakkında çelişkili.",
+      "proposedDirection": "Önce OSGB’nin tek eğitim/ziyaret planlama veya eksik kayıt takip işini mevcut yetkili yazılım yanında sınamak. Canlı İBYS ürün vaadi, güncel resmî başvuru şartları ve yetki doğrulanana kadar açılmamalı.",
+      "customer": "Önerilen ilk segment: mevcut yetkili yazılım kullanıp kayıt/planlama tekrarı yaşayan küçük OSGB. Kurumsal EHS/çok tesis ilk aşamada hedef dışı.",
+      "user": "İş güvenliği uzmanı, işyeri hekimi, operasyon sorumlusu; sağlık verisi rolleri ayrı.",
+      "payer": "OSGB sahibi/operasyon yöneticisi; hizmet alan işveren her durumda ayrı yazılım alıcısı değildir.",
+      "problem": "Çok işyeri/profesyonel arasında eğitim, ziyaret, eksik veri ve gönderim hatasını takip etme. Zorunluluk ödeme isteğinin veya rakip değiştirme kararının kendisi değildir.",
+      "value": "Önce OSGB’nin tek eğitim/ziyaret planlama veya eksik kayıt takip işini mevcut yetkili yazılım yanında sınamak. Canlı İBYS ürün vaadi, güncel resmî başvuru şartları ve yetki doğrulanana kadar açılmamalı. Ölçüm: Deneylerdeki önerilen metrikler; gerçekleşmiş fayda değil. Genel arayüz, checklist ve otomatik metin üretimi kolay kopyalanabilir. Birikebilecek varlık: İzinli, açıklamalı tekrar iş/mapping/kanıt bilgisi; henüz biriktiği doğrulanmadı.",
+      "workflow": [
+        "Mevcut kaynak: Araştırma rol ve devlet entegrasyon sınırlarını tarif ediyor.",
+        "Mevcut kaynak: Kodlu ürün veya resmî test/canlı gönderim bu incelemede yok.",
+        "Öneri: OSGB sentetik işyeri ve eğitim planını tanımlar.",
+        "Öneri: Uzman kayıt/eksik takibini işler.",
+        "Öneri: Operasyon sorumlusu yaklaşan/eksik işleri görür.",
+        "Öneri: İnsan mevcut yetkili sisteme aktarım kararını verir.",
+        "Öneri: Gateway ancak güncel erişim ve yetki kapıları kapandıktan sonra ayrı doğrulanır."
+      ],
+      "alternatives": [
+        "Excel + takvim + mevcut yetkili yazılım: Planlama elle; regüle gönderim mevcut yetkili yazılımda. Emek ve mevcut yazılım bedeli bilinmiyor. Güçlü yanı: Yetkili sistemi koruyarak çalışma. Açık ihtiyaç hipotezi: Çift kayıt ve takibi kaçırma. Geçiş gerekçesi hipotezi: Aynı işi daha az tekrar ve açık kanıtla bitirme."
+      ],
+      "monetization": ["Abonelik önerisi", "Kurulum"],
+      "commercialOptions": [
+        "Küçük OSGB — Tek planlama/eksik kayıt işi; Sınırlı ücretli pilot. Öneri, mevcut yetkili yazılım yanında.",
+        "Yetkili entegratör ihtiyacı olan OSGB — Regüle gönderim ve hata takibi; Abonelik/işlem bandı. Güncel resmî şart ve yetki sonrası değerlendirilebilir.",
+        "Ana ücret hipotezi: OSGB’ye operasyon kapsamı için abonelik; fiyat ve bütçe bilinmiyor.",
+        "İkinci seçenekler: Kurulum/veri taşıma; Gerekli yetki sonrası entegrasyon/işletim desteği",
+        "Ücretsiz kapsamın amacı: Sentetik demo ve checklist; sağlık/gerçek çalışan verisiyle ücretsiz geniş pilot açılmaz.",
+        "Ücretsiz kapsamın maliyeti: İmza, yurt içi işletim, güvenlik, destek ve bakım maliyeti ölçülmedi."
+      ],
+      "platforms": {
+        "current": ["Araştırma belgesi"],
+        "target": [
+          "Web SaaS",
+          "Mobil saha erişimi",
+          "İBYS gateway",
+          "Ayrı sosyal sigorta adapterleri"
+        ],
+        "proposed": ["Web"],
+        "deferred": [
+          "Canlı İBYS gateway yetki öncesi",
+          "sosyal sigorta/e-reçete",
+          "Kurumsal EHS",
+          "Yerel iOS/Android"
+        ],
+        "operation": "Hedef SaaS/yönetilen hizmet; ülke ve regülasyon bağımlılıkları ayrıca netleşmeli.",
+        "relationship": "B2B; OSGB’nin işyerlerine hizmet vermesi B2B2B dağıtım ilişkisi olabilir.",
+        "structure": "Abonelik ürünü; regüle entegrasyon kapsamı ayrı"
+      },
+      "maturity": {
+        "product": "Araştırma",
+        "commercial": "Müşteri varsayımı; yasal ihtiyaç ücretli talep sayılmadı.",
+        "enterprise": "Sağlık verisi, kapsam ayrımı, imza, audit, restore ve olay yönetimi doğrulanmadı.",
+        "scale": "Gönderim hacmi, destek, maliyet ve yedek/işletim testleri yok."
+      },
+      "features": [
+        {
+          "name": "OSGB/profesyonel rol ve domain araştırması",
+          "status": "Planlanmış. Kısmi belge incelemesi.",
+          "evidence": ["pi01"]
+        },
+        {
+          "name": "Eğitim/sağlık/planlama uygulaması",
+          "status": "Belirsiz. Kodlu uygulama bulunmadı.",
+          "evidence": ["pi01"]
+        },
+        {
+          "name": "İBYS test erişimi",
+          "status": "Belirsiz. Erişim belgesi/sonuç yok.",
+          "evidence": ["pi01"]
+        },
+        {
+          "name": "Bakanlık entegratör yetkisi",
+          "status": "Belirsiz. Yetkili firma adı/statüsü doğrulanmadı.",
+          "evidence": []
+        },
+        {
+          "name": "Canlı gönderim/e-imza/sosyal sigorta",
+          "status": "Planlanmış. Gerçek gönderim ve yetki kanıtı yok.",
+          "evidence": ["pi01"]
+        }
+      ],
+      "scores": {
+        "G": [
+          {
+            "id": "problem",
+            "score": null,
+            "rationale": "Resmî sürece bağlı iş bulundu; hedef müşterinin ölçülmüş ekonomik kaybı ve bütçesi bilinmiyor. Yasal gereklilik, ekonomik problem puanı veya ödeme isteği sayılmadı.",
+            "evidence": ["ext-csgb"],
+            "basis": "belirsiz",
+            "change": "OSGB görüşmesinde ölçülen ekonomik kayıp."
+          },
+          {
+            "id": "payer",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "willingness",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "margin",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "speed",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "repeat",
+            "score": 3,
+            "rationale": "Kayıt/planlama işi tekrar eder; retention bilinmiyor.",
+            "evidence": ["pi01", "ext-isgtakibi"],
+            "basis": "çıkarım",
+            "change": "İki dönem aynı alıcı tekrar kullanımı."
+          },
+          {
+            "id": "difference",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          }
+        ],
+        "V": [
+          {
+            "id": "invite",
+            "score": 1,
+            "rationale": "İşyeri/profesyonel daveti hizmet ilişkisi içinde, bağımsız alıcı döngüsü değil.",
+            "evidence": ["ext-csgb"],
+            "basis": "çıkarım",
+            "change": "Rızalı rapor alıcısının bağımsız ürün aktivasyonu."
+          },
+          {
+            "id": "output",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "recipient",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "activation",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "frequency",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "seed",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "privacy",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          }
+        ],
+        "O": [
+          {
+            "id": "search",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "community",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "ecosystem",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "content",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "partners",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "access",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          }
+        ],
+        "U": [
+          {
+            "id": "scope",
+            "score": 1,
+            "rationale": "Araştırma aşaması ve regüle kapılar koddan önce açıklık gerektiriyor.",
+            "evidence": ["pi01"],
+            "basis": "çıkarım",
+            "change": "Dar prototip ve resmî şartların teyidi."
+          },
+          {
+            "id": "assets",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "dependencies",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "operations",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "resources",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          },
+          {
+            "id": "rights",
+            "score": null,
+            "rationale": "Bu ölçütü puanlayacak yeterli gözlem yok.",
+            "evidence": [],
+            "basis": "belirsiz",
+            "change": "Müşteri, kullanım veya güvenli çalıştırma kanıtı."
+          }
+        ]
+      },
+      "risks": [
+        "Yetkili/tescilli entegratör süreci ve gerçek servis erişimi.",
+        "Sağlık/çalışan verisi, profesyonel sorumluluk ve gizlilik.",
+        "Mevcut yetkili yazılımdan geçiş ve çift kayıt.",
+        "Belgedeki pazar/şart ifadeleri çelişkili ve tarihli; yeniden resmî doğrulama gerekir.",
+        "Yasal zorunluluk rakipsiz veya kolay pazar anlamına gelmez."
+      ],
+      "blockers": [
+        "Güncel başvuru ve test erişim şartları tam okunamadı; İBYS alt sayfaları timeout.",
+        "Kodlu ürün, test yetkisi ve canlı entegratör statüsü kanıtı yok.",
+        "İlk OSGB işi ve ödeme isteği doğrulanmadı."
+      ],
+      "mmp": [
+        "Tek operasyon işi ve sentetik veri",
+        "İşyeri/profesyonel kapsamı",
+        "Eksik/plan raporu ve insan kontrolü",
+        "Yetki başvurusu düşünülüyorsa güncel resmî evrak/erişim/güvenlik değerlendirmesi",
+        "Bağımlılık: Alan uzmanı, resmî başvuru teyidi, güvenlik ve gizlilik sınırları."
+      ],
+      "notNeeded": [
+        "Tüm EHS/ERP modülleri",
+        "Canlı gönderim iddiası",
+        "sosyal sigorta/e-reçete",
+        "AI ajanı"
+      ],
+      "decision": "Önce müşteriyle doğrula",
+      "decisionRationale": "Gerçek tanımlanabilir domain var; regüle geçiş ve işletim yükü yüksek, ürün ve talep kanıtı yok. Araştırma ve dar operasyon deneyi öncelikli.",
+      "changeEvidence": "Üç OSGB’de aynı dar sorun, mevcut yetkili sistem yanında kabul edilen pilot ve güncel resmî erişim/yetki yolunun belgelenmesi.",
+      "distribution": "Resmî açık OSGB/meslek çevrelerinde izinli problem görüşmeleri → 2 sentetik dar pilot → rızalı anonim vaka → benzer 8 OSGB. Doğrulanmış kurucu ağı yok. Kanallar: İSG profesyonel toplulukları; Alan uzmanı ortaklığı; Faydalı açık görev/eksik kayıt checklisti. Güvenlik, alan desteği ve satış zamanı birikimli; kısa vadede hafif ürün sayılmaz.",
+      "viralLoop": "Dış büyüme döngüsü doğrulanmadı. OSGB hizmet alan işyerine görev/eksik raporu yollar. İşveren kendi görevini tamamlar. Hizmet alanın görev ekranını kullanması bağımsız yazılım satın alımı değildir; resmî SSS her işverene ikinci yazılım gerekmediğini söylüyor.",
+      "experiments": [
+        {
+          "hypothesis": "OSGB mevcut yazılım yanında aynı tekrar işini yaşıyor.",
+          "action": "5 OSGB sorumlusuyla son haftadaki eğitim/ziyaret/eksik takip işini veri almadan görüş.",
+          "metric": "Tekrarlanan iş ve değiştirme/ek araç isteği.",
+          "threshold": "5 görüşmeden 3 aynı iş; 2 sınırlı pilot niyeti.",
+          "failure": "İş/segmenti değiştir; geniş gateway geliştirmesini beklet.",
+          "effort": "8–12 saat; gerçek çalışan/sağlık verisi toplanmaz."
+        },
+        {
+          "hypothesis": "Regüle ürün için erişim yolu ve maliyet sınırı uygulanabilir.",
+          "action": "Resmî güncel başvuru paketi, test erişimi, imza ve güvenlik gereksinimlerini yeniden oku; kullanıcı yetkisiyle yazılı teyit taslağı hazırla.",
+          "metric": "Doğrulanmış gereksinimler, bilinmeyenler, maliyet/süre teklifi.",
+          "threshold": "Tüm kritik kapılar için birincil kaynak veya yazılı teyit; açık engeller listesi.",
+          "failure": "Canlı entegrasyon vaadini kaldır; yalnız yardımcı operasyon ürünü.",
+          "effort": "8–16 saat; başvuru/mesaj/ücret otomatik yapılmaz."
+        },
+        {
+          "hypothesis": "Dar planlama/eksik kayıt ekranı ölçülebilir emek azaltır.",
+          "action": "İki OSGB’de sentetik/anonim senaryoyla mevcut yöntem ve prototipin görev süresini karşılaştır.",
+          "metric": "Tamamlama süresi, kaçan kritik görev ve ikinci kullanım isteği.",
+          "threshold": "Önerilen %25 süre azalması; kritik görev kaybı sıfır; 1 ücretli pilot niyeti.",
+          "failure": "Özelliği daralt veya beklet; regüle ürün kabulü sayma.",
+          "effort": "16–32 saat; gerçek entegrasyon/ödeme yok."
+        }
+      ],
+      "finance": {
+        "status": "Bilinmiyor; gelir veya net kâr tahmini hesaplanmadı.",
+        "assumptions": [
+          "Nitelikli erişim, dönüşüm, gerçekleşen fiyat, tekrar ödeme, kayıp, kullanım maliyeti, kurucu zamanı ve sabit gider ölçülmedi.",
+          "Müşteri, fiyat, dönüşüm, tekrar kullanım, kurucu zamanı ve maliyetler ölçülmeden düşük/temel/yüksek senaryoya sayı yerleştirilmedi."
+        ],
+        "conditions": "İzinli ücretli pilot; gerçekleşen satış fiyatı, destek süresi, müşteri kaybı, saklama/işlem maliyeti ve sabit giderler ölçüldüğünde 1., 3. ve 6. ay senaryoları ayrı hesaplanabilir."
+      },
+      "confidence": {
+        "source": "Kısmi, kayıtlı satır aralıklarıyla; yayımlanan alanlar sahipliği açık kaynakların arındırılmış özetidir.",
+        "runtime": "not_run — Kaynak proje kurulumu, testleri, prod erişimi, ödeme ve gerçek veri işlemi çalıştırılmadı.",
+        "market": "Resmi alternatif sayfaları incelendi; müşteri görüşmesi yapılmadı.",
+        "revenue": "Bilinmiyor; gerçek ödeme ve tekrar gelir kanıtı yok."
+      },
+      "competitors": [
+        {
+          "name": "İSG Takibi",
+          "customer": "OSGB/işyeri/kurum",
+          "solution": "Web planlama, eğitim, DİF takibi",
+          "price": "Güncel sayısal fiyat bulunamadı",
+          "free": "Hesap aç yüzeyi var; ücretsiz sınır doğrulanmadı",
+          "strength": "Saha/sekreterya/yönetici işlerini mevcut üründe birleştirme",
+          "gap": "Dar eksik kayıt/tekrar iş sorunu müşteriyle ölçülmeli",
+          "switching": "Mevcut ürünü değiştirmeden daha az takip emeği",
+          "url": "https://isgtakibi.com/",
+          "accessed": "2026-10-10",
+          "limitation": "Sayfadan güncel sayısal fiyat veya Bakanlık yetki statüsü doğrulanamadı. Alternatifin güçlü yanı kaynak beyanıdır; açık ihtiyaç ve geçiş gerekçesi analistin müşteriyle sınanmamış hipotezidir."
+        },
+        {
+          "name": "MediPACS",
+          "customer": "OSGB ve çok şubeli kuruluş",
+          "solution": "Muayene, sağlık, laboratuvar, İSG ve faturalama",
+          "price": "Teklif/özel fiyat",
+          "free": "Demo; kalıcı ücretsiz plan doğrulanmadı",
+          "strength": "Geniş sağlık ve operasyon entegrasyonu",
+          "gap": "İlk dar planlama işi için geniş olabilir",
+          "switching": "Dar, düşük geçiş yükü olan ek kontrol",
+          "url": "https://www.osgbyazilim.com/pricing",
+          "accessed": "2026-10-10",
+          "limitation": "İBYS entegratör yetkisi bu fiyat sayfasından doğrulanamaz; tıbbi görüntüleme kapsamı ilk öneriden daha geniş. Alternatifin güçlü yanı kaynak beyanıdır; açık ihtiyaç ve geçiş gerekçesi analistin müşteriyle sınanmamış hipotezidir."
+        },
+        {
+          "name": "İSG Asistan",
+          "customer": "OSGB",
+          "solution": "Evrak, muhasebe, saha görevleri ve firma portalı",
+          "price": "16.000 TL/yıl KDV dahil; 10 hesap/20 GB; 2027 artış duyurusu var",
+          "free": "Ücretsiz plan doğrulanmadı",
+          "strength": "Şeffaf paket ve geniş operasyon kapsamı",
+          "gap": "Satıcının İSG-KATİP senkronizasyonu İBYS yetki kanıtı değil",
+          "switching": "Ölçülen eksik/tekrar işi için açık dar fayda",
+          "url": "https://www.isgasistan.tr/pricing",
+          "accessed": "2026-10-10",
+          "limitation": "Satıcının tarihli fiyat beyanı; checkout ve Bakanlık İBYS yetkisi doğrulanmadı; İSG-KATİP senkronizasyonu İBYS yetkisi sayılmaz. Alternatifin güçlü yanı kaynak beyanıdır; açık ihtiyaç ve geçiş gerekçesi analistin müşteriyle sınanmamış hipotezidir."
+        }
+      ],
+      "sources": [
+        {
+          "id": "pi01",
+          "title": "İSG operasyon araştırması",
+          "kind": "dosya",
+          "locator": "İncelenen satırlar: 1–105, 185–279, 315–377, 379–472",
+          "claim": "İSG/OSGB operasyon ürünü ve ayrı ÇSGB/sosyal sigorta gateway vizyonu; OSGB alıcı, profesyoneller kullanıcı olarak ele alınıyor.",
+          "accessed": "2026-10-10",
+          "limitation": "1989 satırın yalnız kaydedilen bölümleri okundu; ilk bölüm ISO27001/şirket türü şartı derken sonraki bölüm bunları doğrulanamamış sayıyor. Ürün kodu veya canlı yetki kanıtı bulunmadı. Statik kaynak gözlemi; kaynak uygulama çalıştırılmadı. Özel kaynak konumu yayımlanmaz."
+        },
+        {
+          "id": "ext-csgb",
+          "title": "ÇSGB İSGGM Sıkça Sorulan Sorular",
+          "kind": "dış kaynak",
+          "locator": "Resmî sayfa; erişim sonucu: reviewed",
+          "claim": "OSGB hizmetinde yazılım yükümlülüğü OSGB tarafındadır; işveren için ikinci yazılım gerekmiyor; gönderim belge düzenleme yükümlülüğünü kaldırmıyor.",
+          "url": "https://www.csgb.gov.tr/sikca-sorulan-sorular/is-sagligi-ve-guvenligi-genel-mudurlugu/",
+          "accessed": "2026-10-10",
+          "limitation": "Genel SSS güncel başvuru paketinin tüm şartlarını vermez; İBYS başvuru/test alt sayfaları bu incelemede timeout verdi."
+        },
+        {
+          "id": "ext-isgasistan",
+          "title": "İSG Asistan Fiyatlandırma",
+          "kind": "dış kaynak",
+          "locator": "Resmî sayfa; erişim sonucu: reviewed",
+          "claim": "Yıllık 16.000 TL KDV dahil, 10 hesap ve 20 GB; evrak, görev, saha ve firma portalı; sayfa 1 Ocak 2027 için 20.000 TL duyuruyor.",
+          "url": "https://www.isgasistan.tr/pricing",
+          "accessed": "2026-10-10",
+          "limitation": "Satıcının tarihli fiyat beyanı; checkout ve Bakanlık İBYS yetkisi doğrulanmadı; İSG-KATİP senkronizasyonu İBYS yetkisi sayılmaz."
+        },
+        {
+          "id": "ext-isgtakibi",
+          "title": "İSG Takibi",
+          "kind": "dış kaynak",
+          "locator": "Resmî sayfa; erişim sonucu: reviewed",
+          "claim": "OSGB/işyeri/kurum için web üzerinden planlama, eğitim ve DİF takip ürünü.",
+          "url": "https://isgtakibi.com/",
+          "accessed": "2026-10-10",
+          "limitation": "Sayfadan güncel sayısal fiyat veya Bakanlık yetki statüsü doğrulanamadı."
+        },
+        {
+          "id": "ext-medipacs",
+          "title": "MediPACS OSGB Fiyatlandırma",
+          "kind": "dış kaynak",
+          "locator": "Resmî sayfa; erişim sonucu: reviewed",
+          "claim": "Hasta, muayene, raporlama, İSG ve laboratuvar süreçlerini kapsayan OSGB paketleri; fiyat iletişim/özel teklif.",
+          "url": "https://www.osgbyazilim.com/pricing",
+          "accessed": "2026-10-10",
+          "limitation": "İBYS entegratör yetkisi bu fiyat sayfasından doğrulanamaz; tıbbi görüntüleme kapsamı ilk öneriden daha geniş."
+        },
+        {
+          "id": "ext-ibys-1",
+          "title": "İBYS Firma Başvuru",
+          "kind": "dış kaynak",
+          "locator": "Resmî sayfa; erişim sonucu: unavailable",
+          "claim": "Sayfa erişimi tamamlanamadı; güncel şartlar bu kaynaktan doğrulanamadı.",
+          "url": "https://ibys.csgb.gov.tr/FirmaBasvuru.aspx",
+          "accessed": "2026-10-10",
+          "limitation": "Web aracı HTTP 400 timeout; içerik okunamadı."
+        },
+        {
+          "id": "ext-ibys-2",
+          "title": "İBYS Test Başvuru",
+          "kind": "dış kaynak",
+          "locator": "Resmî sayfa; erişim sonucu: unavailable",
+          "claim": "Sayfa erişimi tamamlanamadı; güncel şartlar bu kaynaktan doğrulanamadı.",
+          "url": "https://ibys.csgb.gov.tr/testbasvuru.aspx",
+          "accessed": "2026-10-10",
+          "limitation": "Web aracı HTTP 400 timeout; içerik okunamadı."
+        },
+        {
+          "id": "ext-ibys-3",
+          "title": "İBYS SSS",
+          "kind": "dış kaynak",
+          "locator": "Resmî sayfa; erişim sonucu: unavailable",
+          "claim": "Sayfa erişimi tamamlanamadı; güncel şartlar bu kaynaktan doğrulanamadı.",
+          "url": "https://ibys.csgb.gov.tr/pages.aspx?id=9",
+          "accessed": "2026-10-10",
+          "limitation": "Web aracı HTTP 400 timeout; içerik okunamadı."
+        }
+      ],
+      "contradictions": [
+        "Kaynak vizyonu, statik uygulama gözlemi ve önerilen ticari yön ayrı katmanlardır; bu kayıt uçtan uca ürün veya satış kabulü değildir.",
+        "Araştırma belgesi ISO27001 ve şirket türü koşulları hakkında çelişkili. Güncel resmî başvuru alt sayfaları erişim hatası nedeniyle bu tur doğrulanamadı.",
+        "Rakibin senkronizasyon/entegrasyon beyanı, resmî İBYS entegratör yetkisi kanıtı olarak kullanılmadı."
+      ],
+      "relationships": [
+        "Operasyon planlama ürünü ile regüle canlı gönderim/gateway ayrı kapsam ve kabul kapılarıdır."
+      ],
+      "reviewDate": "2026-10-10",
+      "provisional": true,
+      "publishability": "arındırılmış özet"
+    }
+  ],
+  "coverage": {
+    "date": "2026-10-10",
+    "inventoryFiles": 3701459,
+    "inventoryBytes": 79184815813,
+    "originalFiles": 332116,
+    "uniqueOriginalHashes": 127578,
+    "reviewedFull": 88,
+    "reviewedPartial": 14,
+    "reviewedLines": 7463,
+    "originalLines": null,
+    "linkedReviewed": 104,
+    "protectedFiles": 467,
+    "pendingFiles": 332026,
+    "runtimeProjects": 0,
+    "localIdeas": 20,
+    "personalFound": 6,
+    "ownership": {
+      "personal": 6,
+      "employer": 0,
+      "friend": 0,
+      "uncertain": 33
+    },
+    "inventoryComplete": false,
+    "contentComplete": false,
+    "limitations": [
+      "Bu ilk değerlendirme tamamlanmış portföy incelemesi değildir; kaynakların büyük bölümü henüz okunmadı.",
+      "Dosya sistemi metaveri geçişi tamamlandı; daha sonraki bağımsız sayım değişen ağaç nedeniyle eşleşmedi. Sayılar sabit ve güncel bir snapshot değil, tarama aralığının gözlemidir.",
+      "Arşiv içi envanter tamamlanmadığı ve metaveri tutarlılık kontrolü başarısız olduğu için genel envanter tamamlandı olarak işaretlenmedi.",
+      "3.270.663 bağımlılık/derleme adayı koşullu dışlandı. Bu dosyalarda özgün değişiklik bulunmadığı bütünüyle kanıtlanmadı.",
+      "332.116 aday yol ve 127.578 farklı içerik özeti farklı ölçümlerdir; 41 büyük aday için içerik özeti alınmadı. Benzersiz özgün içerik inceleme oranı hesaplanamadı.",
+      "88 tam ve 14 kısmi inceleme dosya yolu bazındadır. Ayrıca 2 yol, içerik özeti eşitliğiyle incelenmiş kopyaya bağlandı; bu kopyaların satırları yeniden okunmuş sayılmadı.",
+      "Bekleyen aday sayısı kısmen okunmuş dosyaların kalan bölümlerini de içerir. Tamamı incelenen alt küme bütün portföyün temsili örneklemi değildir.",
+      "2.733 arşiv dosyası sayıldı. 690 arşivde metaveri denendi: 660 ZIP/TAR listelendi, 4 GZIP yalnız başlık/son bilgi düzeyinde kaldı, 3 RAR için liste satırları alındı, 23 listeleme hatası kaldı. Arşiv gövdeleri incelenmedi.",
+      "173.502 arşiv üyesi metaveri kaydı, normal dosya sayısına veya anlamsal inceleme toplamına eklenmedi. 14 korumalı arşiv üyesi açılmadı.",
+      "Sembolik bağlantılar izlenmedi. Bağlı Git worktree kökleri ve dış kaynaklar için kapsam boşluğu sürüyor.",
+      "Sahiplik sayıları yalnız bu turdaki 6 kaynakla eşleştirilmiş kişisel aileyi ve 33 diğer yerel kaydı anlatır. Kullanıcı beyanındaki işveren/arkadaş sınırları korunur; sıfır, bu tür projelerin bulunmadığı anlamına gelmez.",
+      "20 diğer bağımsız fikir adayı yerel incelemede tutuldu; sahiplikleri doğrulanmadığı için adları, ayrıntıları, arama kayıtları ve dışa aktarımları bu yayına alınmadı.",
+      "Kaynak uygulamalar çalıştırılmadı. Bu sitenin derlenmesi ve arayüz testleri, kaynak ürünlerin çalıştığını veya müşteriye teslim edilebildiğini kanıtlamaz.",
+      "Dış kaynaklar satıcı veya kurum beyanıdır. Gerçek müşteri görüşmesi, kullanım, ödeme ve tekrar gelir doğrulaması yapılmadı.",
+      "Bazı ek kaynak kayıtlarının toplam satır sayısı bilinmiyor; kayıtlı inceleme aralıkları korundu. Sonradan envanterden eklenen içerik özetleri incelenen sürüme yeniden bağlanmadı."
+    ]
+  }
+}

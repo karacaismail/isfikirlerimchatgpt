@@ -1,0 +1,28 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { portfolio } from '../lib/data';
+---
+
+<Layout title="İlişkili fikirler">
+  <h1>Bir marka, birden fazla ticari yol.</h1>
+  <p class="lede">
+    Ortak altyapı kullanmak, iki fikri aynı ürün veya aynı sahiplik haline
+    getirmez. Kesinleşmeyen eşleşmeler aday ilişki olarak kalır.
+  </p>
+  {portfolio.projects.map((p) => (
+    <section class="reading">
+      <h2>{p.name}</h2>
+      <ul>
+        {p.relationships.map((x) => (
+          <li>{x}</li>
+        ))}
+      </ul>
+      <h3>Ticari seçenekler</h3>
+      <ul>
+        {p.commercialOptions.map((x) => (
+          <li>{x}</li>
+        ))}
+      </ul>
+    </section>
+  ))}
+</Layout>

@@ -1,0 +1,76 @@
+---
+import Layout from '../layouts/Layout.astro';
+import TableScroll from '../components/TableScroll.astro';
+import { portfolio } from '../lib/data';
+import { scoreLabel } from '../lib/model';
+const base = import.meta.env.BASE_URL;
+---
+
+<Layout title="Fırsat haritası">
+  <p class="eyebrow">Gelir, yük ve kanıt</p>
+  <h1>Potansiyel, hazırlıkla aynı şey değil.</h1>
+  <p class="lede">
+    Eksik puanlar tek bir nokta veya kesin başarı sırası gibi çizilmez. Bu
+    harita olası yönleri ve kanıt boşluklarını yan yana tutar.
+  </p>
+  <h2>Gelir ile uygulama ve işletme yükü</h2>
+  <p>
+    Uygunluk puanında yüksek değer, daha yönetilebilir yük anlamına gelir. Bu
+    eksen ters risk puanı değildir.
+  </p>
+  <div class="project-grid">
+    {portfolio.projects.map((p) => (
+      <article class="project-entry">
+        <h3>
+          <a href={`${base}projeler/${p.id}/`}>{p.name}</a>
+        </h3>
+        <p>
+          <strong>Gelir:</strong> {scoreLabel('G', p.scores.G)}
+        </p>
+        <p>
+          <strong>Uygunluk:</strong> {scoreLabel('U', p.scores.U)}
+        </p>
+        <p>{p.decisionRationale}</p>
+      </article>
+    ))}
+  </div>
+  <h2>Gelir ile ürün içi yayılma</h2>
+  <div class="project-grid">
+    {portfolio.projects.map((p) => (
+      <article class="project-entry">
+        <h3>{p.name}</h3>
+        <p>
+          Gelir: {scoreLabel('G', p.scores.G)} · Yayılma:{' '}
+          {scoreLabel('V', p.scores.V)}
+        </p>
+        <p>{p.viralLoop}</p>
+      </article>
+    ))}
+  </div>
+  <h2>Potansiyel ile kanıt gücü</h2>
+  <TableScroll label="Potansiyel ve kanıt karşılaştırması">
+    <table>
+      <thead>
+        <tr>
+          <th>Proje</th>
+          <th>Kaynak</th>
+          <th>Pazar</th>
+          <th>Gelir kanıtı</th>
+        </tr>
+      </thead>
+      <tbody>
+        {portfolio.projects.map((p) => (
+          <tr>
+            <th scope="row">{p.name}</th>
+            <td>{p.confidence.source}</td>
+            <td>{p.confidence.market}</td>
+            <td>{p.confidence.revenue}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </TableScroll>
+  <p>
+    <a href={`${base}iliskiler/`}>Ortak altyapı ve aday ilişkiler</a>
+  </p>
+</Layout>

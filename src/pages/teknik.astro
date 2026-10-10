@@ -1,0 +1,14 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Proof from '../components/Proof';
+---
+
+<Layout title="Teknik doğrulama">
+  <h1>Astro ve Mantine doğrulaması</h1>
+  <p class="reading">
+    Sağlayıcı ve onu kullanan giriş, seçim ve pencere aynı React ağacındadır. Bu
+    deneme ürünlerin çalıştığını kanıtlamaz; yalnız dokümantasyon arayüzünün
+    uyumluluğunu sınar.
+  </p>
+  <Proof client:load />
+</Layout>

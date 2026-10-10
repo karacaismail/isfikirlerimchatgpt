@@ -1,0 +1,32 @@
+# İş Fikirlerim
+
+Kaynak incelemesiyle iş tanımı, müşteri, mevcut ürün ve ticari yönü birbirinden ayıran Türkçe portföy dokümantasyonu. Hedef depo: `karacaismail/isfikirlerimchatgpt`. Site alt yolu: `/isfikirlerimchatgpt/`.
+
+İlk yayın **kısmi kaynak incelemesine** dayanır. Kaynak ürünler çalıştırılmadı. Katalogdaki puanlar gelir garantisi veya ölçülmüş başarı olasılığı değildir. İnceleme kapsamı ve sınırlamalar sitede görünürdür.
+
+## Yerel çalışma
+
+Node 24.21.0 ve npm 11.19.0 ile:
+
+```sh
+npm ci --ignore-scripts
+npm run check
+npm test
+npm run build
+npm run test:browser
+npm run preview
+```
+
+Önizleme: `http://127.0.0.1:4179/isfikirlerimchatgpt/`. Playwright tarayıcıları yoksa proje sürümünün Chromium, Firefox ve WebKit paketleri gerekir. Bu testler gerçek Safari/iOS/Android sertifikasyonu değildir.
+
+## Veri güncelleme
+
+`src/data/portfolio.json` yalnız arındırılmış kişisel özetleri içerir. Özel analiz ayrı tutulur ve derlemede gerekli değildir. Alanlar `src/lib/model.ts` strict şemasıyla doğrulanır. Yeni kayıtta benzersiz kimlik, var olan kanıt bağları, dört ayrı ölçüt grubu ve üç önerilen deney gerekir. Eksik puan sıfır yerine null olmalıdır.
+
+Ham belge, özel kod, müşteri verisi ve yerel kaynak yolu eklemeyin. Yayın öncesinde staged dosyaları, veri, statik çıktı ve indirilebilir JSON incelenir. `npm run build` otomatik izin listesi/örüntü kontrollerini de çalıştırır; bu kontrol tek başına gizlilik garantisi değildir.
+
+## Yayın ve lisans
+
+GitHub Actions, yalnız bu depodaki güvenli veriyle Astro statik site üretir. Özel kaynaklara erişim gerekmez. Güncel resmi Astro GitHub Pages yöntemi `docs/TEKNIK-KARARLAR.md` içinde açıklanmıştır.
+
+Kullanıcı lisans seçimini sonraya bırakmıştır; bu sürümde açık kaynak lisansı eklenmemiştir. Public görünürlük lisans izni yerine geçmez.

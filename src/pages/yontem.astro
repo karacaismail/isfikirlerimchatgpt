@@ -1,0 +1,210 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { portfolio } from '../lib/data';
+import { criteria, groupIds, groupNames } from '../lib/model';
+const c = portfolio.coverage;
+const n = (x: number) => x.toLocaleString('tr-TR');
+---
+
+<Layout title="Yöntem ve kapsam">
+  <p class="eyebrow">Model 1.0 · {portfolio.date}</p>
+  <h1>Bir iddia, dayanağı kadar güçlü.</h1>
+  <section class="reading">
+    <h2>Dört ayrı kapsam ölçümü</h2>
+    <dl>
+      <dt>1. Envanter kapsaması</dt>
+      <dd>
+        {n(c.inventoryFiles)} dosyanın metaverisi kayıtlı. Dosya sistemi
+        taraması {c.inventoryComplete ? 'tamamlandı' : 'tamamlanmadı'}. Arşivler
+        ve sembolik bağlantılar ayrıca sınırlıdır; bağlantılar izlenmedi.
+      </dd>
+      <dt>2. İçerik incelemesi</dt>
+      <dd>
+        {n(c.originalFiles)} bağımlılık/derleme dışı inceleme adayı;{' '}
+        {n(c.uniqueOriginalHashes)} farklı kayıtlı içerik özeti.{' '}
+        {n(c.reviewedFull)} dosya yolu tam, {n(c.reviewedPartial)} dosya yolu
+        kısmen incelendi. {n(c.reviewedLines)} satır inceleme kaydı var; bütün
+        özgün satırların sayısı{' '}
+        {c.originalLines === null ? 'belirlenemedi' : n(c.originalLines)}. Dosya
+        yolu sayısı benzersiz incelenmiş içerik sayısıyla aynı değildir. İçerik
+        incelemesi tamamlanmadı.
+      </dd>
+      <dt>3. Projeye bağlama</dt>
+      <dd>
+        {n(c.linkedReviewed)} inceleme kaydı bir proje, ortak araştırma veya
+        açık belirsizlikle ilişkilendirildi. Bu yalnız incelenmiş alt kümenin
+        eşlemesidir; bütün kaynağın tamamlandığını göstermez.
+      </dd>
+      <dt>4. Çalıştırma doğrulaması</dt>
+      <dd>
+        {c.runtimeProjects} kaynak proje çalıştırıldı. Kaynak ürünler için
+        çalışma sonucu: not_run. Dokümantasyonun derlenmesi ürün iş akışını
+        doğrulamaz.
+      </dd>
+    </dl>
+    <h3>Korumalı ve bekleyen içerik</h3>
+    <p>
+      {n(c.protectedFiles)} korumalı dosya; {n(c.pendingFiles)} içerik
+      incelemesi bekleyen aday. Kimlik bilgileri ve müşteri verileri iş analizi
+      gerekçesiyle açığa çıkarılmaz.
+    </p>
+    <ul>
+      {c.limitations.map((x) => (
+        <li>{x}</li>
+      ))}
+    </ul>
+  </section>
+  <section class="reading">
+    <h2>Sahiplik ve yayın sınırı</h2>
+    <p>
+      Kişisel kaynakla ilişkilendirilen kayıt: {c.ownership.personal}. Diğer
+      yerel kayıtlar: işveren {c.ownership.employer}, arkadaş{' '}
+      {c.ownership.friend}, belirsiz {c.ownership.uncertain}. Bunlar ilk geçiş
+      kayıtlarıdır; eksiksiz portföy sayımı değildir.
+    </p>
+    <p>
+      Kullanıcı beyanında kişisel olarak adı geçen Crybro için incelenen alt
+      kümede iş tanımını kurmaya yetecek kaynak bulunamadı. Bu, bütün
+      bilgisayarda veya kalan kaynaklarda bulunmadığı anlamına gelmez.
+    </p>
+    <p>
+      Ham belgeler, özel kod, yerel dizin yapısı ve özel inceleme günlükleri bu
+      depoya alınmaz. Kamuya açık veri alanları sıkı şemayla izinli hale
+      getirilir; yayımlanamaz kayıtlar veri dosyası, arama ve dışa aktarımdan da
+      çıkarılır.
+    </p>
+    <p>
+      Yeni deponun lisansını kullanıcı sonraya bıraktı. Public görünürlük, açık
+      kaynak lisansı verilmiş olduğu anlamına gelmez.
+    </p>
+  </section>
+  <section class="reading">
+    <h2>Kanıt türleri</h2>
+    <ul>
+      <li>
+        Doğrudan dosya kanıtı: ilgili satır veya bölüm gözlemi; çalıştırma
+        kanıtı değildir.
+      </li>
+      <li>
+        Güvenli çalıştırma: yalnız gerçekten yapılan testin ölçtüğü davranış.
+      </li>
+      <li>
+        Güncel dış kaynak: erişim tarihi ve iddia sınırı belirtilmiş resmî
+        belge.
+      </li>
+      <li>Analistin çıkarımı: kaynakla gerekçelendirilmiş öneri.</li>
+      <li>Doğrulanmamış varsayım: henüz müşteri veya ölçüm kanıtı yok.</li>
+      <li>Çelişkili/yetersiz bilgi: kesinleştirilmeden görünür tutulur.</li>
+    </ul>
+    <p>
+      İçerik özeti (hash) eşitliği kopya bağını kanıtlar; benzer dosya adı
+      kanıtlamaz. Dosya zamanı proje başlangıç tarihi sayılmaz. Araçla metin
+      çıkarılması, metnin incelendiği anlamına gelmez.
+    </p>
+  </section>
+  <section class="reading">
+    <h2>Olgunluk dört eksende</h2>
+    <p>
+      Ürün geliştirme; fikir, araştırma, prototip veya uygulanmış parçalar
+      olarak belirtilir. Asgari uygulanabilir ürün (MVP, Minimum Viable Product)
+      için dar kullanıcı değerinin uçtan uca sunulması ayrıca doğrulanmalıdır.
+    </p>
+    <p>
+      Ticari doğrulama; müşteri varsayımı, talep, pilot, ödeme ve tekrar gelir
+      kanıtlarını ayırır. Kurumsal hazırlık; izin, veri ayrımı, yedekleme,
+      işletim ve desteğe bakar. Büyümeye hazırlık; gerçek yük, maliyet ve destek
+      ölçümlerini gerektirir.
+    </p>
+    <p>
+      Uzun teknoloji listesi, derleme başarısı veya belgede “üretime hazır”
+      yazması bu eksenlerde kabul kanıtı değildir.
+    </p>
+  </section>
+  <section class="reading">
+    <h2>Puanlama ve eksik veri</h2>
+    <p>
+      Her ölçüt 0–5 arasında değerlendirilir; bilinmeyen değer null olarak
+      saklanır. Puan = ağırlık × ölçüt / 5 katkılarının toplamı. Her grubun
+      ağırlığı 100’dür.
+    </p>
+    <p>
+      Eksik ölçüt varsa alt sınır bilinen katkılar, üst sınır alt sınır +
+      bilinmeyen ağırlıktır. Bu aralık istatistiksel güven aralığı değildir.
+      Eksik ölçütlü kayıtlar kesin puan sıralamasına girmez.
+    </p>
+    <p>
+      Hızlı gelir tercihi: %45 gelir + %30 reklamsız edinim + %25 uygunluk.
+      Yayılma tercihi: %30 gelir + %35 yayılma + %20 reklamsız edinim + %15
+      uygunluk. Bunlar önerilen karar tercihleridir. Katalogda değiştirilebilir;
+      toplam 100 olmalıdır.
+    </p>
+    <p>
+      Hak sahipliği ve kritik güvenlik engelleri ortalama puan içinde gizlenmez.
+      Kurucu kitle erişimi, fiyat, müşteriler veya marj doğrulanmadığında
+      varsayılmaz.
+    </p>
+  </section>
+  {groupIds.map((g) => (
+    <section>
+      <h2>{groupNames[g]} ölçüt sözlüğü</h2>
+      <p>Ölçekler karar desteğidir; ölçülmüş başarı olasılığı değildir.</p>
+      {criteria[g].map((d) => (
+        <details>
+          <summary>
+            {d.title} · ağırlık {d.weight}
+          </summary>
+          <ol start="0">
+            {d.anchors.map((a) => (
+              <li>{a}</li>
+            ))}
+          </ol>
+        </details>
+      ))}
+    </section>
+  ))}
+  <section class="reading">
+    <h2>Arayüzün teknik sınırları</h2>
+    <p>
+      Astro ile sayfalar derleme sırasında statik üretilir (SSG, Static Site
+      Generation). Mantine’in sağlayıcısı ve etkileşimli katalog aynı React
+      ağacında bulunur. Bağımsız bölümlerin bağlam paylaşacağı varsayılmaz. Ana
+      içerik ve temel gezinme JavaScript kapalıyken okunabilir.
+    </p>
+    <p>
+      Mantine’in{' '}
+      <a href="https://help.mantine.dev/q/can-i-use-mantine-with-astro">
+        3 Ocak 2024 tarihli Astro notu
+      </a>{' '}
+      ile{' '}
+      <a href="https://docs.astro.build/en/guides/framework-components/">
+        güncel Astro bileşen belgeleri
+      </a>{' '}
+      birlikte ele alındı; uyumluluk bu projedeki küçük örnekle ayrıca sınandı.
+    </p>
+    <p>
+      320 CSS piksel desteği eski iPhone 4 tarayıcısında test yapıldığı anlamına
+      gelmez.{' '}
+      <a href="https://mantine.dev/browser-support/">
+        Mantine’in modern tarayıcı sınırı
+      </a>{' '}
+      geçerlidir. WebKit otomasyonu gerçek Safari testi değildir.
+    </p>
+    <p>
+      Web İçeriği Erişilebilirlik Yönergeleri (WCAG, Web Content Accessibility
+      Guidelines) 2.2 AA tasarım hedefidir; tam uyumluluk sertifikası verilmez.{' '}
+      <a href="https://www.w3.org/WAI/WCAG22/Understanding/reflow.html">
+        Yeniden akış
+      </a>{' '}
+      ve{' '}
+      <a href="https://www.w3.org/WAI/WCAG22/Understanding/resize-text.html">
+        metin büyütme
+      </a>{' '}
+      ayrı kontrol edilir.
+    </p>
+    <p>
+      <a href={`${import.meta.env.BASE_URL}teknik/`}>
+        Teknik etkileşim örneğini aç
+      </a>
+    </p>
+  </section>
+</Layout>

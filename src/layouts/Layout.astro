@@ -1,0 +1,56 @@
+---
+import '../styles/global.css';
+interface Props {
+  title: string;
+  description?: string;
+}
+const {
+  title,
+  description = 'İş fikirlerini kaynak, müşteri ve gelir kanıtıyla değerlendiren Türkçe portföy.',
+} = Astro.props;
+const base = import.meta.env.BASE_URL;
+const nav = [
+  ['', 'Genel bakış'],
+  ['katalog/', 'Katalog'],
+  ['karsilastir/', 'Karşılaştırma'],
+  ['firsatlar/', 'Fırsatlar'],
+  ['yontem/', 'Yöntem'],
+  ['kararlar/', 'Kararlar'],
+];
+---
+
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#1e543f" />
+    <title>{title} · İş Fikirlerim</title>
+  </head>
+  <body>
+    <a href="#icerik" class="skip">
+      İçeriğe geç
+    </a>
+    <header class="site-header">
+      <a class="brand" href={base}>
+        İş Fikirlerim
+      </a>
+      <nav aria-label="Ana gezinme">
+        {nav.map(([path, label]) => (
+          <a href={`${base}${path}`}>{label}</a>
+        ))}
+      </nav>
+    </header>
+    <main class="page" id="icerik">
+      <slot />
+    </main>
+    <footer class="site-footer">
+      <p>
+        Kaynak, gözlem ve öneri ayrı tutulur. Bu katalog yatırım getirisi veya
+        gelir garantisi sunmaz.
+      </p>
+      <a href={`${base}yontem/`}>İnceleme sınırları ve yöntem</a>
+    </footer>
+  </body>
+</html>

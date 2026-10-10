@@ -1,0 +1,20 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Catalog from '../components/Catalog';
+import { portfolio } from '../lib/data';
+---
+
+<Layout title="Karşılaştırma">
+  <p class="eyebrow">İki ile dört proje</p>
+  <h1>Aynı soruları yan yana sor.</h1>
+  <p class="lede">
+    Gelir, yayılma, reklamsız edinim ve uygulama yükü ayrı değerlendirilir.
+    Bilinmeyenler sıfıra dönüşmez.
+  </p>
+  <Catalog
+    projects={portfolio.projects}
+    base={import.meta.env.BASE_URL}
+    mode="compare"
+    client:load
+  />
+</Layout>

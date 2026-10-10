@@ -1,0 +1,33 @@
+---
+import { groupIds, groupNames, scoreLabel, type Project } from '../lib/model';
+interface Props {
+  project: Project;
+}
+const { project: p } = Astro.props;
+const base = import.meta.env.BASE_URL;
+---
+
+<article class="project-entry">
+  <p class="eyebrow">
+    {p.maturity.product} ·{' '}
+    {p.provisional ? 'Geçici değerlendirme' : 'İncelenmiş değerlendirme'}
+  </p>
+  <h2>
+    <a href={`${base}projeler/${p.id}/`}>{p.name}</a>
+  </h2>
+  <p>{p.definition}</p>
+  <p>
+    <strong>Ödeme yapan:</strong> {p.payer}
+  </p>
+  <p>
+    <strong>Karar:</strong> {p.decision} — {p.decisionRationale}
+  </p>
+  <div class="score-list">
+    {groupIds.map((g) => (
+      <p>
+        <strong>{groupNames[g]}:</strong> {scoreLabel(g, p.scores[g])}
+      </p>
+    ))}
+  </div>
+  <p class="meta">Çalıştırma: {p.confidence.runtime}</p>
+</article>

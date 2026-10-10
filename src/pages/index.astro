@@ -1,0 +1,85 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ProjectSummary from '../components/ProjectSummary.astro';
+import { portfolio } from '../lib/data';
+const { coverage: c, projects } = portfolio;
+const base = import.meta.env.BASE_URL;
+const number = (n: number) => n.toLocaleString('tr-TR');
+---
+
+<Layout title="Genel bakış">
+  <p class="eyebrow">İş Fikirlerim · {portfolio.date} · İnceleme sürüyor</p>
+  <div class="hero">
+    <div>
+      <h1>Hangi fikir, kimin işini kolaylaştırır?</h1>
+      <p class="lede">
+        Bir klasör listesi yerine; müşteri, ödeme gerekçesi, mevcut ürün ve
+        eksik kanıt üzerinden okunan bir portföy.
+      </p>
+      <div class="actions">
+        <a class="button-link" href={`${base}katalog/`}>
+          Projeleri incele
+        </a>
+        <a href={`${base}yontem/`}>Kanıt sınırlarını oku</a>
+      </div>
+    </div>
+    <aside class="notice">
+      <h2>Önce kararın dayanağı</h2>
+      <p>
+        Dosyada anlatılan vizyon, kodda görülen özellik ve güvenli çalıştırmayla
+        doğrulanan davranış ayrı tutulur.
+      </p>
+      <p>
+        <strong>Bu incelemede kaynak projeler çalıştırılmadı.</strong> Gelir ve
+        müşteri varsayımları doğrulanmış satış değildir.
+      </p>
+    </aside>
+  </div>
+  <section aria-label="Portföy sayıları" class="metrics">
+    <div class="metric">
+      <strong>{projects.length}</strong>Yayımlanan kişisel proje özeti
+    </div>
+    <div class="metric">
+      <strong>{c.localIdeas}</strong>Yerelde ayrılan bağımsız fikir adayı
+    </div>
+    <div class="metric">
+      <strong>{number(c.reviewedFull)}</strong>Tamamı incelenen dosya yolu
+    </div>
+    <div class="metric">
+      <strong>{number(c.inventoryFiles)}</strong>Metaverisi kaydedilen dosya
+    </div>
+  </section>
+  <section class="notice">
+    <h2>Bu yayının sınırı</h2>
+    <p>
+      Kaynak envanteri{' '}
+      {c.inventoryComplete
+        ? 'dosya sistemi düzeyinde tamamlandı'
+        : 'devam ediyor'}
+      . İçerik incelemesi {c.contentComplete ? 'tamamlandı' : 'tamamlanmadı'}.{' '}
+      {number(c.reviewedPartial)} dosya kısmen incelendi; kalan özgün içerikler
+      için kararlar geçicidir.
+    </p>
+    <p>
+      İşverene, arkadaşlara veya sahipliği belirsiz içeriklere ait ayrıntılar
+      kamuya açık veri kümesine alınmadı. Bazı projelerin yalnız araştırma veya
+      gereksinim kanıtı var.
+    </p>
+  </section>
+  <h2>Kaynaklardan ayrıştırılan kişisel projeler</h2>
+  <div class="project-grid">
+    {projects.map((project) => (
+      <ProjectSummary project={project} />
+    ))}
+  </div>
+  <section>
+    <h2>Önceliği değiştirecek kanıt</h2>
+    <p class="reading">
+      İlk ücretli pilot, uçtan uca iş akışı ve gerçek destek maliyeti çoğu
+      kararı değiştirebilir. Kod miktarı tek başına ödeme isteğini göstermez.
+    </p>
+    <a class="button-link" href={`${base}kararlar/`}>
+      Doğrulama deneylerine git
+    </a>
+  </section>
+</Layout>

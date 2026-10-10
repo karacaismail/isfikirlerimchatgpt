@@ -1,0 +1,49 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { portfolio } from '../lib/data';
+const base = import.meta.env.BASE_URL;
+---
+
+<Layout title="Karar ve eylem listesi">
+  <p class="eyebrow">Önce bilgi açığını kapat</p>
+  <h1>İlk satıştan önce hangi varsayım sınanmalı?</h1>
+  <p class="lede">
+    Geçmiş emek, otomatik geliştirme önceliği değildir. Hak, güvenlik ve kritik
+    iş akışı engelleri puanın dışında görünür tutulur.
+  </p>
+  <div class="notice">
+    <p>
+      Kurucunun haftalık zamanı ve bütçesi belirlenemedi. Kapasite önerisi: aynı
+      anda bir müşteri doğrulaması ve bir dar teknik deney; diğer işleri
+      sonuçlara göre sıraya al. Bu bir kaynak tahsisi yapılmış olduğu anlamına
+      gelmez.
+    </p>
+  </div>
+  {portfolio.projects.map((p) => (
+    <section>
+      <h2>
+        <a href={`${base}projeler/${p.id}/`}>{p.name}</a> · {p.decision}
+      </h2>
+      <p class="reading">{p.decisionRationale}</p>
+      <h3>Kritik engeller</h3>
+      <ul>
+        {p.blockers.map((x) => (
+          <li>{x}</li>
+        ))}
+      </ul>
+      <h3>Kararı değiştirecek bilgi</h3>
+      <p class="reading">{p.changeEvidence}</p>
+      <ol>
+        {p.experiments.map((e) => (
+          <li>
+            <strong>{e.hypothesis}</strong>
+            <p>
+              {e.action} Ölçüm: {e.metric}. Önerilen eşik: {e.threshold}. Emek:{' '}
+              {e.effort}. Başarısızlık: {e.failure}.
+            </p>
+          </li>
+        ))}
+      </ol>
+    </section>
+  ))}
+</Layout>

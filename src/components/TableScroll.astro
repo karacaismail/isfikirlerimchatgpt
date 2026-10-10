@@ -1,0 +1,24 @@
+---
+interface Props {
+  label: string;
+}
+const { label } = Astro.props;
+---
+
+<div
+  class="table-scroll"
+  tabindex="0"
+  role="region"
+  aria-label={label}
+  data-table-scroll
+>
+  <slot />
+</div>
+<script>
+  import { scrollTableWithKeyboard } from '../lib/table-scroll';
+  document
+    .querySelectorAll<HTMLElement>('[data-table-scroll]')
+    .forEach((region) =>
+      region.addEventListener('keydown', scrollTableWithKeyboard),
+    );
+</script>
