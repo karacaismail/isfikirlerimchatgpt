@@ -1,4 +1,4 @@
-import { readdir, readFile, stat } from 'node:fs/promises';
+import { readdir, readFile, stat, lstat } from 'node:fs/promises';
 import { join, extname } from 'node:path';
 import { datasetSchema } from '../src/lib/model.ts';
 const data = datasetSchema.parse(
@@ -40,10 +40,15 @@ const allowedRoot = new Set([
   '.git',
 ]);
 const errors = [];
-for (const entry of await readdir('.'))
+const rootEntries = await readdir('.');
+for (const entry of rootEntries)
   if (!allowedRoot.has(entry))
     errors.push(`İzin listesi dışındaki kök: ${entry}`);
 async function walk(path) {
+  if ((await lstat(path)).isSymbolicLink()) {
+    errors.push(`Sembolik kök yayımlanamaz: ${path}`);
+    return;
+  }
   for (const entry of await readdir(path, { withFileTypes: true })) {
     const p = join(path, entry.name);
     if (entry.isSymbolicLink()) {
@@ -81,7 +86,12 @@ async function walk(path) {
         errors.push(`Gizlilik örüntüsü ${i + 1}: ${p}`);
   }
 }
-for (const directory of ['dist', 'src', 'public', 'docs'])
+for (const directory of [
+  'dist',
+  'src',
+  'docs',
+  ...(rootEntries.includes('public') ? ['public'] : []),
+])
   await walk(directory);
 for (const file of ['README.md', 'AGENTS.md']) {
   const text = await readFile(file, 'utf8');
