@@ -69,9 +69,28 @@ async function readable(page: Page) {
     return {
       overflow: document.documentElement.scrollWidth > innerWidth + 1,
       tiny,
+      overflowing: [...document.querySelectorAll<HTMLElement>('body *')]
+        .filter(
+          (el) =>
+            el.getClientRects().length &&
+            !el.closest('.table-scroll') &&
+            el.scrollWidth > el.clientWidth + 2,
+        )
+        .map((el) => ({
+          tag: el.tagName,
+          className: el.className,
+          text: el.textContent?.slice(0, 100),
+          outer: el.clientWidth,
+          inner: el.scrollWidth,
+          font: getComputedStyle(el).fontSize,
+          wrap: getComputedStyle(el).overflowWrap,
+        })),
     };
   });
-  expect(result).toEqual({ overflow: false, tiny: [] });
+  expect(
+    { overflow: result.overflow, tiny: result.tiny },
+    JSON.stringify(result),
+  ).toEqual({ overflow: false, tiny: [] });
 }
 
 test('320 öncelikli arama, boş durum, filtre, iki-dört proje ve kalıcı karşılaştırma', async ({

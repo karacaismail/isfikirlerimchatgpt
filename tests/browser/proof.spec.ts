@@ -6,7 +6,12 @@ test('320 genişlikte aynı ağaçta giriş, özel seçim ve pencere', async ({
   const errors: string[] = [];
   page.on('pageerror', (e) => errors.push(e.message));
   await page.goto('teknik/');
+  await expect(page.locator('[data-ready]')).toHaveAttribute(
+    'data-ready',
+    'true',
+  );
   await page.getByLabel('Deneme metni').fill('İş fikri');
+  await expect(page.getByLabel('Deneme metni')).toHaveValue('İş fikri');
   await page.getByRole('combobox', { name: 'Deneme seçimi' }).click();
   await page.getByRole('option', { name: 'Gelir', exact: true }).click();
   await expect(

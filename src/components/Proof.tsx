@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   Button,
   MantineProvider,
@@ -49,23 +49,27 @@ export const theme = createTheme({
   },
 });
 export default function Proof() {
+  const [ready, setReady] = useState(false);
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState('');
   const opener = useRef<HTMLButtonElement>(null);
+  useEffect(() => setReady(true), []);
   return (
     <MantineProvider theme={theme} forceColorScheme="light">
-      <div className="stack proof">
+      <div className="stack proof" data-ready={ready}>
         <TextInput
+          disabled={!ready}
           label="Deneme metni"
           value={value}
           onChange={(e) => setValue(e.currentTarget.value)}
         />
         <Select
+          disabled={!ready}
           label="Deneme seçimi"
           data={['Gelir', 'Yayılma']}
           placeholder="Bir ölçüt seçin"
         />
-        <Button ref={opener} onClick={() => setOpen(true)}>
+        <Button disabled={!ready} ref={opener} onClick={() => setOpen(true)}>
           Deneme penceresini aç
         </Button>
         <Modal

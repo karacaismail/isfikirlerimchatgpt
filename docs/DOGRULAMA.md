@@ -5,7 +5,7 @@
 | Kontrol                                                | Durum   | Gerçek kanıt                                                                                    |
 | ------------------------------------------------------ | ------- | ----------------------------------------------------------------------------------------------- |
 | `npm run format:check`                                 | pass    | Prettier kontrolü                                                                               |
-| `npm run check`                                        | pass    | 27 kaynak dosyasında 0 hata, 0 uyarı, 0 ipucu                                                   |
+| `npm run check`                                        | pass    | 28 kaynak dosyasında 0 hata, 0 uyarı, 0 ipucu                                                   |
 | `npm test`                                             | pass    | 7 test: eksik puan, ağırlık, Türkçe arama, finans formülü, yayın şeması ve güvenli dış bağlantı |
 | `npm run build`                                        | pass    | 14 statik HTML sayfa ve kamuya açık JSON                                                        |
 | Gizlilik kapısı                                        | pass    | Sıkı alan şeması, kaynak/çıktı taraması, özel dosya türleri ve JSON eşitliği                    |
@@ -26,6 +26,7 @@ Genişlikler: 320, 360, 375, 390, 667, 767, 768, 769 ve 1280 CSS px. 320×480 ka
 - Etkin placeholder metni 2,07:1 kontrast verdi. Test üç motorda önce başarısız oldu. Semantik `text-muted` rengi ve kâğıt yüzeyiyle en az 4,5:1 kontrolü geçti. Odak göstergesi en az 3:1; üst kapsayıcılarda ek gösterge yok.
 - Eksik finans girdisi `NaN` sonuç üretiyordu. Eksik girdide hesap yapmayan kontrol ve regresyon eklendi.
 - Genel URL doğrulaması yürütülebilir URL şemasını kabul ediyordu. Yayın verisi artık yalnız HTTPS dış kaynak kabul eder; negatif test önce başarısız, sonra başarılı oldu.
+- Linux CI yüzde 200 kök metinde uzun sözcük taşması yakaladı. 320 px ve 32 px kök metin, daha geniş Verdana fontuyla yerelde yeniden üretildi. Metni küçültmeyen son çare sözcük sarımıyla sayfa genişliği tekrar 320 px oldu; tablo hücrelerinde normal sarım korundu. Teknik deneme sayfasındaki erken kontrollü giriş yarışı readiness ve başlangıçta kapalı kontrollerle düzeltildi. Yerel 30 test ve mevcut Darwin referansları normal tekrar geçti; Linux tekrarının sonucu henüz bekleniyor.
 
 ## Üretim ağı ve görsel kanıt
 
@@ -40,7 +41,7 @@ Her rota yeni soğuk BrowserContext ile, service worker engellenerek ölçüldü
 
 Katalog bütçesi toplam 500 KiB, JS 180 KiB, CSS 50 KiB, HTML 50 KiB altında kaldı. Statik tablolardaki küçük JS klavye desteğidir; React/katalog paketi bu sayfalara taşınmadı. Ana sayfada JS isteği sıfırdır. Ayrı cihaz profili paketleri yoktur.
 
-320 dropdown/pencere/tablo, yatay görünüm ve masaüstü görüntüleri yerel kanıt klasörüne kaydedildi. Pencere görüntüsü opaklık 1 olduktan sonra alındı. Aynı ortamda art arda iki masaüstü yakalaması bayt eşitliğiyle karşılaştırıldı. Altı Darwin referansı bağımsız incelemeden sonra ilk kalıcı baseline olarak kabul edildi. `visual.spec.ts` bunlarla motor/platform bazında sıfır piksel farkı şartıyla karşılaştırır; normal tekrar üç motorda geçti. Linux referansları ayrı CI kanıtı ve bağımsız inceleme gerektirir. Farklı işletim sistemlerinde piksel eşitliği beklenmez.
+320 dropdown/pencere/tablo, yatay görünüm ve masaüstü görüntüleri yerel kanıt klasörüne kaydedildi. Pencere görüntüsü opaklık 1 olduktan sonra alındı. Aynı ortamda art arda iki masaüstü yakalaması bayt eşitliğiyle karşılaştırıldı. Altı Darwin ve altı Linux referansı ayrı ayrı bağımsız incelemeden sonra ilk kalıcı baseline olarak kabul edildi. Linux adayları 38041528004 run artefaktından alındı; o run davranış hataları ve eksik referanslar nedeniyle başarısızdı, görsel kabul bu hataları başarılı saymaz. `visual.spec.ts` motor/platform bazında sıfır piksel farkı şartıyla karşılaştırır; Darwin normal tekrarı üç motorda geçti. Linux yeni normal tekrarı henüz bekleniyor. Farklı işletim sistemlerinde piksel eşitliği beklenmez.
 
 ## Yayın iş akışı
 

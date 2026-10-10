@@ -7,6 +7,7 @@ body {
   background: var(--surface-page);
   color: var(--text-primary);
   font: var(--text-base)/var(--line-body) var(--font-ui);
+  overflow-wrap: break-word;
 }
 button,
 input,
@@ -217,6 +218,7 @@ td {
   font-size: var(--text-base);
   word-break: normal;
   overflow-wrap: normal;
+  hyphens: none;
 }
 th:first-child,
 td:first-child {
