@@ -163,7 +163,7 @@ test('320 öncelikli arama, boş durum, filtre, iki-dört proje ve kalıcı kar�
     .getByRole('link', { name: 'Seçilen projeleri karşılaştır' })
     .click();
   await ready(page);
-  await expect(page.locator('.comparison-criterion')).toHaveCount(22);
+  await expect(page.locator('.comparison-criterion')).toHaveCount(23);
   await expect(
     page.locator('.comparison-criterion').first().locator('.comparison-cell'),
   ).toHaveCount(3);

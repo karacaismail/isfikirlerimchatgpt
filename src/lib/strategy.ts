@@ -10,6 +10,7 @@ export const goalLabels: Record<GoalId, string> = {
 };
 export const criterionIds = [
   'goal',
+  'organicSales',
   'baseline',
   'slice',
   'uncertainty',
@@ -113,7 +114,7 @@ export type Candidate = z.infer<typeof candidateSchema>;
 export type Assessment = z.infer<typeof assessmentSchema>;
 export const strategySchema = z
   .object({
-    version: z.literal('2.0'),
+    version: z.literal('2.1'),
     date: text,
     objective: text,
     ownershipBasis: text,
@@ -242,6 +243,14 @@ export const strategicCriteria: {
     question:
       'Bu çalışma seçtiğin yazılım hedefinde hangi davranışı tamamlayacak?',
     evidence: 'Açık hedef, kullanıcı sonucu ve alternatiflerle karşılaştırma.',
+  },
+  {
+    id: 'organicSales',
+    title: 'Reklamsız satış potansiyeli',
+    question:
+      'Alıcı ürüne reklam harcaması olmadan nasıl ulaşabilir, değerini nasıl görebilir ve satın alma ihtiyacı neden doğar?',
+    evidence:
+      'Açık alıcı problemi; arama, tavsiye, topluluk veya entegrasyon gibi sınanabilir erişim yolu; demo ve ilk değer; tekrar ihtiyaç; kurulum, satış ve destek emeği. Potansiyel çıkarımı, gözlenen talep ve gerçekleşmiş ödeme ayrı kaydedilir.',
   },
   {
     id: 'baseline',
@@ -438,15 +447,21 @@ export const strategicRules: RuleDefinition[] = [
     title: 'Amacı koru',
     event: 'Geliştirme karşılaştırması açıldı',
     condition: 'Amaç yazılım altyapısına yatırım',
-    action: 'Satış ve tahsilatı teknik önceliğin belirleyicisi yapma.',
-    rationale: 'Ölçüt, kullanıcının kararına hizmet etmeli.',
+    action:
+      'Reklamsız satış potansiyelini teknik katkıyla birlikte değerlendir; gerçekleşmiş ödemeyi geliştirmeye başlama şartı yapma.',
+    rationale:
+      'Satılabilirlik gelecekteki ürün değerine ilişkin bir ölçüttür; peşinat gerçekleşmiş bir ödeme olayıdır. Teknik olarak uygun seçenekler arasında erişim yolu, görülebilir değer ve satış/destek yükü önceliği değiştirebilir.',
     counterargument:
-      'Ticari bilgi daha sonra ayrı bir hedef olarak ele alınabilir.',
-    reconsiderWhen: 'Kullanıcı geliştirme hedefini değiştirirse.',
+      'Yüksek satış potansiyeli kritik doğruluk, yetki veya veri bütünlüğü sorununu telafi etmez. Reklamsız erişim de sıfır emek ve maliyet demek değildir.',
+    reconsiderWhen:
+      'Alıcı problemi, erişim yolu, deneme sonucu veya sürekli satış/destek emeği hakkında yeni kanıt geldiğinde.',
     priority: 0,
     result: 'record',
     check: () =>
-      fixed('met', 'Bu sürüm yazılım geliştirme yatırımını değerlendirir.'),
+      fixed(
+        'met',
+        'Yazılım katkısı ve reklamsız satış potansiyeli birlikte değerlendirilir; ödeme geliştirme ön koşulu değildir.',
+      ),
   },
   {
     id: 'ECA-02',
@@ -653,7 +668,8 @@ export const strategicRules: RuleDefinition[] = [
     id: 'ECA-13',
     title: 'Yeni kanıtla yeniden karar ver',
     event: 'Karar görünümü yeni veriyle açıldı',
-    condition: 'Hedef, bağımlılık, efor veya çalışma kanıtı değişebilir',
+    condition:
+      'Hedef, reklamsız satış potansiyeli, bağımlılık, efor veya çalışma kanıtı değişebilir',
     action: 'Kural izini sürüm ve hedefle yeniden üret.',
     rationale: 'Karar sabit proje sırası değil, kanıta bağlı öneridir.',
     counterargument: 'Bu statik rehber kaynak projeleri otomatik izlemiyor.',

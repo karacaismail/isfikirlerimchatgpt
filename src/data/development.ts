@@ -1,11 +1,12 @@
 import type { Strategy } from '../lib/strategy';
+import { organicSalesAssessments } from './organic-sales.ts';
 
 // Yazılım yatırımı için sürümlü karar verisi; ticari puanların devamı değildir.
-export const development: Strategy = {
-  version: '2.0',
+const projectDevelopment: Strategy = {
+  version: '2.1',
   date: '2026-10-10',
   objective:
-    'Kullanıcının kendi yazılım projelerinde hangi somut geliştirme dilimine yatırım yapılacağını; ürün akışı, bağımlılık, ortak kullanım, doğruluk ve belirsizlik üzerinden seçmek.',
+    'Kullanıcının kendi yazılım projelerinde hangi somut geliştirme dilimine yatırım yapılacağını; teknik katkı, reklamsız satış potansiyeli, bağımlılık, ortak kullanım, doğruluk ve belirsizlik üzerinden seçmek. Gerçekleşmiş ödeme geliştirme koşulu değildir.',
   ownershipBasis:
     'Kullanıcının 10 Ekim 2026 açıklaması: TÜRSAB projeleri hariç yazılım projeleri kendisine aittir. Eski işveren/arkadaş etiketleri bu değerlendirmede dışlama gerekçesi değildir.',
   exclusions: [
@@ -5648,4 +5649,17 @@ export const development: Strategy = {
       ],
     },
   ],
+};
+
+export const development: Strategy = {
+  ...projectDevelopment,
+  candidates: projectDevelopment.candidates.map((candidate) => {
+    const organicSales = organicSalesAssessments[candidate.id];
+    if (!organicSales)
+      throw new Error(`${candidate.id}: reklamsız satış değerlendirmesi eksik`);
+    return {
+      ...candidate,
+      assessments: [...candidate.assessments, organicSales],
+    };
+  }),
 };

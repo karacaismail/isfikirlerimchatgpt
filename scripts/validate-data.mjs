@@ -11,5 +11,5 @@ console.log(
 
 const strategy = strategySchema.parse(development);
 console.log(
-  `Strateji 2.0: ${strategy.candidates.length} yazılım adayı; koşul, kanıt ve bağımlılık bağları geçerli.`,
+  `Strateji ${strategy.version}: ${strategy.candidates.length} yazılım adayı; koşul, kanıt ve bağımlılık bağları geçerli.`,
 );

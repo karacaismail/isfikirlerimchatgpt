@@ -2,6 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import { development } from '../data/development';
 import { portfolio } from '../lib/data';
+import { strategicCriteria } from '../lib/strategy';
 const c = portfolio.coverage;
 const r = portfolio.reviewUpdate;
 const n = (v: number) => v.toLocaleString('tr-TR');
@@ -38,10 +39,10 @@ const base = import.meta.env.BASE_URL;
       sonuçlar da değildi; analistin yanlış amaç için yazdığı önerilerdi.
     </p>
     <p>
-      Gelir, yayılma ve edinim ağırlıkları bu geliştirme kararında
-      kullanılmıyor. Önceki puanlar yazılım altyapısı puanı diye yeniden
-      adlandırılmadı. Satış, alan ortağı veya keyfî saat sınırı geliştirme
-      önkoşulu yapılmıyor.
+      Eski gelir, yayılma ve edinim puanları yeniden kullanılmıyor. Reklamsız
+      satılabilirlik potansiyeli ise değerli ve ayrı bir öncelik ölçütüdür;
+      teknik katkıyla birlikte değerlendirilir. Gerçekleşmiş satış, peşinat,
+      alan ortağı veya keyfî saat sınırı geliştirme önkoşulu yapılmıyor.
     </p>
   </section>
   <section id="dayanak" class="reading">
@@ -57,9 +58,10 @@ const base = import.meta.env.BASE_URL;
         sınanır.
       </li>
       <li>
-        <strong>Analistin stratejisi:</strong> 14 ölçüt, 14 ECA kuralı ve
-        önerilen dilimler bu amaç için oluşturulmuş karar desteğidir. Evrensel
-        puanlama standardı veya kanıtlanmış başarı sırası değildir.
+        <strong>Analistin stratejisi:</strong> {strategicCriteria.length} ölçüt,
+        14 ECA kuralı ve önerilen dilimler bu amaç için oluşturulmuş karar
+        desteğidir. Evrensel puanlama standardı veya kanıtlanmış başarı sırası
+        değildir.
       </li>
     </ol>
     <h3>ECA nasıl kullanılıyor?</h3>
@@ -77,6 +79,27 @@ const base = import.meta.env.BASE_URL;
       olabilir. Bilinmeyen koşul gerçekmiş gibi tetiklenmez. Çalışma kanıtının
       eksik olması ECA-02 ile doğrulama işine dönüşür. Öncelikler ve eşit
       öncelikteki çatışmalar görünürdür.
+    </p>
+    <h3>Reklamsız satılabilirlik ile ödeme nasıl ayrılıyor?</h3>
+    <p>
+      Potansiyel; alıcının problemi, reklamsız erişim yolu, görülebilir ürün
+      değeri, tekrar ihtiyaç ve sürekli satış/destek emeği üzerinden incelenir.
+      23 adayın her birinde bu değerlendirme ve önceliğe etkisi bulunur.
+      Kaynaklardan çıkan hipotez, gözlenen talep ve gerçekleşmiş ödeme ayrı
+      şeylerdir. Mevcut potansiyel kayıtları talep veya satış ölçümü değildir.
+    </p>
+    <p>
+      <a href="https://developers.google.com/search/docs/essentials">
+        Google Search Essentials
+      </a>
+      arama görünürlüğü için gereksinimleri açıklar; bunları karşılamak taranma,
+      indekslenme veya gösterim garantisi vermez.
+      <a href="https://developer.wordpress.org/plugins/wordpress-org/detailed-plugin-guidelines/">
+        WordPress eklenti dizini kuralları
+      </a>
+      ise eklenti dağıtımının koşullarını tanımlar. Bu kanalların varlığı
+      projelerin kabul edildiğini, alıcıya ulaştığını veya satış yapacağını
+      göstermez. Adaylardaki kanal önerileri sınanacak analist hipotezleridir.
     </p>
     <h3>Neden senaryo, bağımlılık ve kabul koşulu?</h3>
     <p>
@@ -168,7 +191,8 @@ const base = import.meta.env.BASE_URL;
     </p>
     <p>
       Veri iki sürümlü sözleşmede tutulur: eski ayrıntılı kaynak kayıtları 1.1,
-      aktif geliştirme stratejisi 2.0. Her ikisi sıkı şemayla doğrulanır.{' '}
+      aktif geliştirme stratejisi {development.version}. Her ikisi sıkı şemayla
+      doğrulanır.{' '}
       <a href={`${base}strateji.json`}>Aktif strateji verisini indir</a>.
     </p>
     <p>

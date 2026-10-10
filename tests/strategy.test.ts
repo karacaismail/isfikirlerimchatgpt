@@ -5,6 +5,8 @@ import {
   resolveTraces,
   strategySchema,
   factIds,
+  assessmentFor,
+  strategicCriteria,
   type Candidate,
 } from '../src/lib/strategy.ts';
 const sample = (): Candidate => ({
@@ -45,6 +47,40 @@ const sample = (): Candidate => ({
       limitation: 'Runtime değil',
     },
   ],
+});
+test('reklamsız satış potansiyeli bağımsız bir değerlendirme ölçütüdür', () => {
+  assert.ok(strategicCriteria.some((c) => c.id === 'organicSales'));
+  assert.equal(assessmentFor(sample(), 'organicSales').state, 'unknown');
+});
+test('reklamsız satış hipotezi teknik geliştirmeyi ödeme koşuluna bağlamaz veya kritik hatayı telafi etmez', () => {
+  const c = sample();
+  c.facts.runtime = {
+    state: 'yes',
+    reason: 'Başlangıç çalıştı',
+    evidenceIds: ['source'],
+  };
+  c.facts.bounded = {
+    state: 'yes',
+    reason: 'Dar akış tanımlı',
+    evidenceIds: ['source'],
+  };
+  assert.equal(evaluateCandidate(c, 'flow').action, 'build');
+  c.assessments.push({
+    criterion: 'organicSales',
+    state: 'inferred',
+    finding:
+      'Arama ve ürün demosuyla erişim sınanabilir; satış gerçekleşmiş değil.',
+    evidenceIds: ['source'],
+    verification: 'Nitelikli erişim ve deneme sonucunu ölç.',
+    decisionImpact: 'Teknik katkıyla birlikte tercih nedeni olabilir.',
+  });
+  assert.equal(evaluateCandidate(c, 'flow').action, 'build');
+  c.facts.blockingFailure = {
+    state: 'yes',
+    reason: 'Kritik akış başarısız',
+    evidenceIds: ['source'],
+  };
+  assert.equal(evaluateCandidate(c, 'flow').action, 'repair');
 });
 test('unknown çalışma kanıtı sıfır puana veya kesin geliştirme kabulüne dönüşmez', () => {
   const r = evaluateCandidate(sample(), 'flow');
@@ -91,7 +127,7 @@ test('kaynak bağı olmayan kesin koşul ve bağımlılık döngüsü reddedilir
   a.facts.runtime.state = 'yes';
   assert.equal(
     strategySchema.safeParse({
-      version: '2.0',
+      version: '2.1',
       date: '2026-10-10',
       objective: 'Altyapı',
       ownershipBasis: 'Kullanıcı',
@@ -123,7 +159,7 @@ test('kaynak bağı olmayan kesin koşul ve bağımlılık döngüsü reddedilir
   ];
   assert.equal(
     strategySchema.safeParse({
-      version: '2.0',
+      version: '2.1',
       date: '2026-10-10',
       objective: 'Altyapı',
       ownershipBasis: 'Kullanıcı',
@@ -171,7 +207,7 @@ test('kaynak veya analist çıkarımı çalıştırma kabulünün yerine geçmez
     evidenceIds: ['source'],
   };
   const data = {
-    version: '2.0',
+    version: '2.1',
     date: '2026-10-10',
     objective: 'Altyapı',
     ownershipBasis: 'Kullanıcı',

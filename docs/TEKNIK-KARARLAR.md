@@ -47,3 +47,11 @@ Ortak çekirdek ve ürün rakip proje adları gibi sıralanmaz. Tüketici ihtiya
 Katalog seçim/arama/AND filtreleri ve URL geri/ileri davranışını korur; gelir ağırlığı yerine açık geliştirme hedefi, inceleme derinliği ve kabiliyet filtreleri kullanılır. Eski tercihler ve ticari checkbox işaretleri v2 anahtarlarına taşınmaz. Görünür listelerin sırası alfabetik, hedef ilişkisi veya kaynak derinliği düzenidir; kalite veya yatırım puanı değildir.
 
 Bu bölüm önceki rehberdeki ücretli pilot/alan ortağı/iç araç kümeleri ve müşteri/ilk teklif sözleşmesinin yerini alır. Eski kararlar tarihli geçmiş bağlamıdır. Güncel sahiplik, kullanıcının TÜRSAB dışı bütün projelerin kendisine ait olduğu beyanıdır.
+
+## 10 Ekim 2026: reklamsız satış potansiyeli ve strateji 2.1
+
+Kullanıcının düzeltmesi: reklamsız satılabilirlik potansiyeli değerli bir öncelik ölçütüdür; peşinat gerçekleşmiş bir ödeme olayıdır. Önceki düzeltme ticari potansiyeli gereğinden fazla dışlamıştı. Yeni 15. ölçüt teknik katkıyla birlikte alıcı problemi, reklamsız erişim yolu, görülebilir değer, tekrar ihtiyaç ve sürekli satış/kurulum/destek emeğini ele alır. Eski G/V/O/U puanları geri taşınmaz ve satış gerçekleşmesi teknik geliştirme önkoşulu yapılmaz.
+
+`organic-sales.ts` mevcut 23 adayın kendi kaynak kimliklerine bağlı potansiyel hipotezlerini taşır; `development.ts` bunları aktif strateji sözleşmesine birleştirir. Çıkarım, bilinmeyen ve gerçek gözlem ayrımı korunur; çalışma/kabul olguları değişmez. Adayların teknik hedefleri, URL filtreleri ve v2 yerel ilerleme anahtarları korunur. ECA-01 birlikte değerlendirme ayrımını, ECA-13 yeni potansiyel kanıtıyla yeniden değerlendirmeyi kapsar; toplam 14 kural vardır.
+
+Proje ayrıntısı, katalog gerekçesi ve karşılaştırma aynı ölçütü gösterir. Karşılaştırma karara etkiyi de taşır. Başlangıç önerisi, teknik katkıya ek olarak reklamsız erişim ve sürekli satış/destek yükünün PIM/Studio tercihini değiştirebileceğini açıklar. Kanal önerileri kabul edilmiş dağıtım veya satış kanıtı sayılmaz.

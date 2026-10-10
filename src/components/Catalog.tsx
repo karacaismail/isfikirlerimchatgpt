@@ -157,7 +157,7 @@ export default function Catalog({ candidates, base, mode }: Props) {
           criterion.title,
           (c: Candidate) => {
             const a = assessmentFor(c, criterion.id);
-            return `${assessmentLabels[a.state]}: ${a.finding} Kanıt: ${a.evidenceIds.join(', ') || 'yok'}. Doğrulama: ${a.verification}`;
+            return `${assessmentLabels[a.state]}: ${a.finding} Kanıt: ${a.evidenceIds.join(', ') || 'yok'}. Doğrulama: ${a.verification} Karara etkisi: ${a.decisionImpact}`;
           },
         ] as [string, (c: Candidate) => string],
     ),
@@ -208,6 +208,13 @@ export default function Catalog({ candidates, base, mode }: Props) {
         </div>
         <details className="score-disclosure">
           <summary>Kararın gerekçesi ve karşı görüş</summary>
+          <p>
+            <strong>Reklamsız satış potansiyeli:</strong>{' '}
+            {assessmentLabels[assessmentFor(c, 'organicSales').state]}
+          </p>
+          <a href={`${base}projeler/${c.id}/#reklamsiz`}>
+            Reklamsız satış değerlendirmesini aç
+          </a>
           <p>
             <strong>Karşı görüş:</strong> {c.counterargument}
           </p>

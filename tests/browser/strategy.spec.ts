@@ -1,4 +1,57 @@
 import { test, expect } from '@playwright/test';
+test('reklamsız satış potansiyeli proje ve karşılaştırmada ödeme koşulundan ayrı görünür', async ({
+  page,
+  request,
+}) => {
+  await page.setViewportSize({ width: 320, height: 640 });
+  await page.goto('projeler/pim/#reklamsiz');
+  await expect(
+    page.getByRole('heading', {
+      name: 'Reklamsız satış potansiyeli',
+      exact: true,
+    }),
+  ).toBeVisible();
+  await expect(page.locator('#reklamsiz')).toContainText('Stratejik çıkarım');
+  await expect(page.locator('#reklamsiz')).toContainText(
+    'satış kanıtı değildir',
+  );
+  const response = await request.get('strateji.json');
+  const data = await response.json();
+  expect(response.status()).toBe(200);
+  expect(data.version).toBe('2.1');
+  expect(
+    data.candidates.every((c: { assessments: { criterion: string }[] }) =>
+      c.assessments.some((a) => a.criterion === 'organicSales'),
+    ),
+  ).toBe(true);
+  await page.goto('karsilastir/');
+  await expect(page.locator('[data-ready]')).toHaveAttribute(
+    'data-ready',
+    'true',
+  );
+  for (const id of ['pim', 'atonota'])
+    await page.locator(`[data-project="${id}"]`).getByRole('button').click();
+  const row = page.locator('.comparison-criterion').filter({
+    has: page.getByRole('heading', {
+      name: 'Reklamsız satış potansiyeli',
+      exact: true,
+    }),
+  });
+  await expect(row.locator('.comparison-cell')).toHaveCount(2);
+  for (const id of ['pim', 'atonota']) {
+    const candidate = data.candidates.find((c: { id: string }) => c.id === id);
+    const assessment = candidate.assessments.find(
+      (a: { criterion: string }) => a.criterion === 'organicSales',
+    );
+    await expect(row).toContainText(assessment.finding);
+    await expect(row).toContainText(assessment.decisionImpact);
+  }
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= innerWidth + 1,
+    ),
+  ).toBe(true);
+});
 test('geliştirme stratejisi satış sırası yerine ölçüt ve ECA gerekçesi sunar', async ({
   page,
 }) => {
@@ -6,7 +59,7 @@ test('geliştirme stratejisi satış sırası yerine ölçüt ve ECA gerekçesi 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText(
     'Önceliği hangi gerekçeyle vereceğim?',
   );
-  await expect(page.locator('#olcutler > details')).toHaveCount(14);
+  await expect(page.locator('#olcutler > details')).toHaveCount(15);
   await expect(page.locator('#eca > details')).toHaveCount(14);
   await expect(page.locator('main')).not.toContainText(
     'Peşinatı alınmış, kapsamı belli',
@@ -23,7 +76,7 @@ test('katalog bütün kayıtları ve yeni sahiplik sözleşmesini taşır', asyn
   const response = await request.get('strateji.json');
   expect(response.status()).toBe(200);
   const data = await response.json();
-  expect(data.version).toBe('2.0');
+  expect(data.version).toBe('2.1');
   expect(data.candidates).toHaveLength(23);
   expect(
     data.candidates.every((c: { ownership: string }) => c.ownership === 'user'),

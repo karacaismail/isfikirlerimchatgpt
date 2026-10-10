@@ -24,6 +24,7 @@ export function getStaticPaths() {
 const { candidate: c } = Astro.props;
 const old = portfolio.projects.find((p) => p.id === c.id);
 const result = evaluateCandidate(c, 'flow');
+const organic = assessmentFor(c, 'organicSales');
 const base = import.meta.env.BASE_URL;
 ---
 
@@ -36,9 +37,10 @@ const base = import.meta.env.BASE_URL;
   <p>Geliştirme odağı: {c.goals.map((g) => goalLabels[g]).join(' · ')}</p>
   <nav class="section-nav" aria-label="Proje bölümleri">
     <a href="#dilim">Geliştirilecek dilim</a>
+    <a href="#reklamsiz">Reklamsız satış</a>
     <a href="#ilk-adimlar">Adım adım</a>
     <a href="#kabul">Kabul koşulları</a>
-    <a href="#olcutler">14 ölçüt</a>
+    <a href="#olcutler">{strategicCriteria.length} ölçüt</a>
     <a href="#kurallar">ECA kural izi</a>
     <a href="#kanitlar">Kaynaklar</a>
   </nav>
@@ -63,6 +65,23 @@ const base = import.meta.env.BASE_URL;
       {result.ruleIds.join(', ')}. Bu sonuç geliştirmeyi yasaklamaz; yatırımın
       ilk teknik işini tanımlar.
     </p>
+  </section>
+  <section id="reklamsiz" class="reading">
+    <h2>Reklamsız satış potansiyeli</h2>
+    <p>
+      <strong>{assessmentLabels[organic.state]}:</strong> {organic.finding}
+    </p>
+    <p>
+      <strong>Nasıl sınanacak?</strong> {organic.verification}
+    </p>
+    <p>
+      <strong>Önceliğe etkisi:</strong> {organic.decisionImpact}
+    </p>
+    <p>
+      Potansiyel değerlendirmesi, gerçekleşmiş satış kanıtı değildir. Peşinat
+      geliştirmeye başlama koşulu değildir.
+    </p>
+    <p>Kanıt: {organic.evidenceIds.join(', ') || 'Kaydedilmedi'}</p>
   </section>
   <section id="ilk-adimlar">
     <h2>Adım adım geliştirme</h2>
@@ -108,7 +127,9 @@ const base = import.meta.env.BASE_URL;
     )}
   </details>
   <details id="olcutler">
-    <summary>14 ölçüt: bulgu, kanıt ve karar etkisi</summary>
+    <summary>
+      {strategicCriteria.length} ölçüt: bulgu, kanıt ve karar etkisi
+    </summary>
     {strategicCriteria.map((criterion) => {
       const a = assessmentFor(c, criterion.id);
       return (

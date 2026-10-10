@@ -15,7 +15,8 @@ const base = import.meta.env.BASE_URL;
   </p>
   <nav class="section-nav" aria-label="Strateji bölümleri">
     <a href="#strateji">Başlangıç önerisi</a>
-    <a href="#olcutler">14 değerlendirme ölçütü</a>
+    <a href="#reklamsiz">Reklamsız satış potansiyeli</a>
+    <a href="#olcutler">{strategicCriteria.length} değerlendirme ölçütü</a>
     <a href="#eca">14 ECA kuralı</a>
     <a href="#adimlar">Proje adımları</a>
   </nav>
@@ -47,8 +48,36 @@ const base = import.meta.env.BASE_URL;
       projeleri aynı anda başlatma önerisi de verilmez.
     </p>
   </section>
+  <section class="reading" id="reklamsiz">
+    <h2>Reklamsız satış potansiyeli kararı nasıl etkiler?</h2>
+    <p>
+      Alıcının ürüne reklam harcamadan ulaşabilmesi, değerini anlayabilmesi ve
+      tekrar kullanma ihtiyacı geliştirme yatırımını daha değerli kılabilir. Bu
+      potansiyel, teknik katkıyla birlikte değerlendirilir. Peşinat ise
+      gerçekleşmiş bir ödeme olayıdır; geliştirmeye başlama şartı değildir.
+    </p>
+    <ol>
+      <li>Alıcı hangi somut problemi çözmek için ürünü arar?</li>
+      <li>
+        Arama, tavsiye, topluluk veya entegrasyon üzerinden nasıl ulaşabilir?
+      </li>
+      <li>
+        Demo veya kendi verisiyle kullanım ilk değeri ne kadar kolay gösterir?
+      </li>
+      <li>
+        Tekrar ihtiyaç, kurulum, kişisel satış ve destek emeği nasıl değişir?
+      </li>
+    </ol>
+    <p>
+      Teknik olarak uygun adaylar arasında daha açık erişim yolu, daha görünür
+      değer ve daha düşük sürekli satış/destek yükü öncelik gerekçesini
+      güçlendirir. Kaynaklardan çıkan hipotez, gözlenen deneme ve gerçekleşmiş
+      satış ayrı tutulur. Reklamsız erişim sıfır maliyet veya otomatik viral
+      büyüme anlamına gelmez. <a href="#eca-01">ECA-01 bu ayrımı korur.</a>
+    </p>
+  </section>
   <section id="olcutler">
-    <h2>14 değerlendirme ölçütü</h2>
+    <h2>{strategicCriteria.length} değerlendirme ölçütü</h2>
     <p class="reading">
       Bu ölçütler analistin strateji önerisidir; ölçülmüş proje puanı değildir.
       Eksik veri sıfır sayılmaz. Kritik doğruluk ve yetki açığı başka güçlü

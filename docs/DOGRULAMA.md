@@ -1,5 +1,23 @@
 # Doğrulama kaydı
 
+## Reklamsız satış potansiyeli — strateji 2.1, 10 Ekim 2026
+
+Bu sürüm kullanıcının düzeltmesini uygular: reklamsız satılabilirlik potansiyeli öncelik ölçütüdür; peşinat gerçekleşmiş bir ödeme olayıdır. Geliştirmeye başlamak için satış veya ödeme şartı yoktur. 15 ölçüt ve 14 ECA kuralı kullanılır. Kaynaklara bağlı 23 potansiyel değerlendirmesi; alıcı problemi, reklamsız erişim yolu, demo/ilk değer, tekrar ihtiyaç ve sürekli satış/kurulum/destek emeğini ele alır. Kanal ve talep hipotezleri gerçekleşmiş satış gibi sunulmaz. Kernel kaydı bağımsız ürün potansiyeli açısından bilinmiyor olarak kalır; ortak altyapı katkısı gerçek tüketici ürünü üzerinden ele alınır.
+
+Proje ayrıntısı ve karşılaştırma aynı bulgu, kanıt, sınama yolu ve karar etkisini gösterir. Katalog gerekçesi değerlendirme durumunu ve ayrıntı bağlantısını taşır. ECA-01 teknik katkıyla potansiyeli birlikte ele alır; yüksek potansiyel kritik doğruluk, yetki veya veri bütünlüğü sorununu telafi etmez. Hedefler, sürüm 2 kişisel ilerleme anahtarları ve kaynak ürün runtime belirsizlikleri korunur. Önceki 2.0 ve gelir deneyi kayıtları aşağıda tarihsel kanıt olarak yer alır.
+
+### Doğrulama kapsamı
+
+Yeni ölçüt regresyonu eski motor üzerinde, proje/karşılaştırma yolculuğu eski üretim çıktısında önce başarısız oldu. Ardından 23 birim testi, 39 dosyada sıfır hata/uyarı/ipucu Astro kontrolü, tam depo formatter kontrolü ve 31 sayfalık üretim derlemesi geçti. Şema, kaynak bağları, kamuya açık JSON eşitliği ve gizlilik kapısı geçti. Yeni test ödeme olmadan teknik geliştirme kararının korunmasını, reklamsız potansiyelin kritik hatayı telafi etmemesini ve karşılaştırmanın aynı bulgu/karar etkisini göstermesini denetler.
+
+İlk yerel aday turunda 63/69 geçti: üç eski görsel referans ve üç eski karşılaştırma satır sayısı başarısızdı. 15. ölçütle karşılaştırma satırı 23 olarak düzeltildi; davranış turu 66/66 geçti. Altı Mac önce/sonra/fark görüntüsü uygulayıcıdan ayrı inceleyici tarafından exact SHA-256 ile incelendi; yalnız bu adaylar referansa alındı. Ardından normal macOS turunda Chromium, Firefox ve WebKit toplam 69/69 geçti; altı referansta sıfır piksel farkı, sıfır atlanan/dalgalı/beklenmeyen sonuç doğrulandı. Bağımsız kök kod/UI incelemesinde açık bulgu kalmadı. İnceleyicinin ilk yazdığı potansiyel veri kayıtları bağımsız veri onayı kapsamında değildir; ana uygulayıcı tüm 23 kaydı ayrıca okudu. Linux CI ve canlı yayın bu yerel sonuçtan çıkarılmaz.
+
+Komutların çalışma dizini depo köküdür: `npm run format:check`, `npm run check`, `npm test`, `npm run build`, `npm run test:browser`. Node 24.21.0 / npm 11.19.0; Astro 7.3.8, React 19.3.0, Mantine 9.7.1, TypeScript 6.0.3 ve Playwright 1.64.0 kullanılır. Paket, lockfile, CI, görsel eşikler ve ağ bütçeleri değiştirilmedi.
+
+Soğuk, service worker engelli 320×640 macOS bağlamlarında üç motorun en yüksek encoded gövdesi: katalog 250.171 bayt (JS 162.265, CSS 40.000, HTML 47.906). Statik ana sayfa 8.712 bayt ve sıfır dış JS; AtonotA ayrıntısı 13.541 bayt ve sıfır dış JS. Inline gezinme/kontrol listesi kodu ayrıca ölçüldü; statik rotalar 2 KiB JS bütçesinde kaldı. Katalog toplam 500 KiB, JS 180 KiB, CSS 50 KiB, HTML 50 KiB bütçelerini geçti. Bu yerel ölçüm canlı CDN sonucu değildir.
+
+Kaynak ürünlerin çalışma/kabulü, gerçek macOS/iOS Safari, fiziksel Android, sanal klavye, ekran okuyucu ve gerçek %400 zoom `not_run` durumundadır. Katalog motor testleri, emülasyon ve büyütülmüş kök metin bu katmanların yerine geçmez.
+
 ## Yazılım geliştirme stratejisi 2.0 — 10 Ekim 2026
 
 Bu kayıt önceki gelir deneyi sıralamasının yerine geçen yazılım geliştirme sürümünü kapsar. Aşağıdaki eski yayın kayıtları yalnız tarihsel kanıttır. Kullanıcının son açıklaması doğrultusunda TÜRSAB kapsam dışıdır; kayıtlı 23 aday kullanıcıya ait ürün, platform, çatı veya araştırma çalışması olarak değerlendirilir. Bunlar 23 bağımsız, çalıştığı doğrulanmış ürün değildir. Altı aday ayrıntılı, 17 aday ilk okuma düzeyindedir.

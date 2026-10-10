@@ -2,14 +2,16 @@
 import Layout from '../layouts/Layout.astro';
 import Catalog from '../components/Catalog';
 import { development } from '../data/development';
+import { strategicCriteria } from '../lib/strategy';
 ---
 
 <Layout title="Karşılaştırma">
   <p class="eyebrow">İki ile dört aday seç</p>
   <h1>Hangi geliştirme dilimi hedefime daha uygun?</h1>
   <p class="lede">
-    Somut sonucu, bağımlılığı, kabul koşulunu ve 14 ölçütün kanıt durumunu yan
-    yana gör. Bilinmeyenler açık kalır; sahte toplam puan üretilmez.
+    Teknik katkıyı, reklamsız satış potansiyelini ve {strategicCriteria.length}
+    ölçütün kanıt durumunu yan yana gör. Bilinmeyenler açık kalır; sahte toplam
+    puan üretilmez.
   </p>
   <Catalog
     candidates={development.candidates}
