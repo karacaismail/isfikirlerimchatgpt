@@ -2,7 +2,7 @@
 
 ## UX yenilemesi — 10 Ekim 2026
 
-Bu bölüm yeni UX adayını kapsar. Aşağıdaki önceki yayın kayıtları tarihsel kanıttır; yeni arayüzün tarayıcı, görsel, CI veya canlı yayın sonucu yerine geçmez. Yerel davranış kontrolleri tamamlandı; sıfır piksel farkı tekrarı, bağımsız görsel kabul ve yeni yayın kanıtı aşağıda ayrı izlenir.
+Bu bölüm yeni UX adayını kapsar. Aşağıdaki önceki yayın kayıtları tarihsel kanıttır; yeni arayüzün tarayıcı, görsel, CI veya canlı yayın sonucu yerine geçmez. Yerel normal tarayıcı tekrarı ve bağımsız görsel kabul tamamlandı. Linux CI ile yeni yayın kanıtı aşağıda ayrı izlenir.
 
 ### Değişen akış
 
@@ -16,24 +16,24 @@ Bu bölüm yeni UX adayını kapsar. Aşağıdaki önceki yayın kayıtları tar
 
 ### Bu adayın durumu
 
-| Kontrol                                                                          | Durum                       | Kapsam                                                                                                                       |
-| -------------------------------------------------------------------------------- | --------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| Birim testleri                                                                   | pass                        | 10 Ekim 2026 adayında 13 test; model, rehber eşlemesi, filtre birleşimi, URL/saklama doğrulaması ve belirsiz puan sıralaması |
-| Astro kontrolü                                                                   | pass                        | 10 Ekim 2026 adayında 0 hata, 0 uyarı, 0 ipucu                                                                               |
-| Üretim derlemesi ve gizlilik kapısı                                              | pass                        | 10 Ekim 2026 adayında veri doğrulama, statik derleme ve kaynak/çıktı kontrolleri                                             |
-| Nihai tam depo formatter kontrolü                                                | pass                        | Ortak değişiklikler sonrası Prettier kontrolü                                                                                |
-| Yerel davranış tekrarı                                                           | pass                        | Üç motorda 51 davranış testi; 3 görsel test bu turda karşılaştırmasız çalıştı, görsel kabul sayılmaz                         |
-| Bağımsız UI ve görsel referans incelemesi                                        | nihai çalıştırma bekleniyor | Önce/sonra/fark ve hash bağlı referans kararı ayrı kaydedilecek                                                              |
-| Linux CI ve Pages deploy                                                         | nihai çalıştırma bekleniyor | Yeni UX commitine ait run sonucu gerekir                                                                                     |
-| Canlı tarayıcı tekrarı ve dosya eşitliği                                         | nihai çalıştırma bekleniyor | Yayımlanan commit ve CI Pages artefaktına bağlanmalı                                                                         |
-| Kaynak ürünlerin çalışma doğrulaması                                             | not_run                     | Bu değişiklik katalog arayüzünü kapsar                                                                                       |
-| Gerçek Safari, fiziksel telefon, sanal klavye, ekran okuyucu ve gerçek %400 zoom | not_run                     | Playwright motorları ve kök metin büyütme bu katmanların yerine geçmez                                                       |
+| Kontrol                                                                          | Durum                       | Kapsam                                                                                                                                                       |
+| -------------------------------------------------------------------------------- | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Birim testleri                                                                   | pass                        | 10 Ekim 2026 adayında 13 test; model, rehber eşlemesi, filtre birleşimi, URL/saklama doğrulaması ve belirsiz puan sıralaması                                 |
+| Astro kontrolü                                                                   | pass                        | 10 Ekim 2026 adayında 0 hata, 0 uyarı, 0 ipucu                                                                                                               |
+| Üretim derlemesi ve gizlilik kapısı                                              | pass                        | 10 Ekim 2026 adayında veri doğrulama, statik derleme ve kaynak/çıktı kontrolleri                                                                             |
+| Nihai tam depo formatter kontrolü                                                | pass                        | Ortak değişiklikler sonrası Prettier kontrolü                                                                                                                |
+| Nihai yerel tarayıcı tekrarı                                                     | pass                        | Üç motorda 54/54; görsel karşılaştırma açık, altı Darwin referansında sıfır piksel farkı; atlanan/dalgalı/beklenmeyen 0                                      |
+| Bağımsız UI ve görsel referans incelemesi                                        | kısmi                       | Altı Darwin ve altı Linux adayının önce/sonra/fark görüntüleri ve SHA-256 bağları incelendi. Yüzde 200 Grid bulgusu Linux normal tekrarından sonra kapanacak |
+| Linux CI ve Pages deploy                                                         | nihai çalıştırma bekleniyor | Yeni UX commitine ait run sonucu gerekir                                                                                                                     |
+| Canlı tarayıcı tekrarı ve dosya eşitliği                                         | nihai çalıştırma bekleniyor | Yayımlanan commit ve CI Pages artefaktına bağlanmalı                                                                                                         |
+| Kaynak ürünlerin çalışma doğrulaması                                             | not_run                     | Bu değişiklik katalog arayüzünü kapsar                                                                                                                       |
+| Gerçek Safari, fiziksel telefon, sanal klavye, ekran okuyucu ve gerçek %400 zoom | not_run                     | Playwright motorları ve kök metin büyütme bu katmanların yerine geçmez                                                                                       |
 
 ### Ölçülen UX sonuçları
 
 320×640 CSS px Chromium görünümünde ilk proje eski düzende 1.724 px, yeni düzende 649 px konumundadır. Sayfa genişliğinde taşma yok; kök metin 16 px kaldı. Arama ve özel Gelir türü alanının hesaplanmış sınırı `rgb(125, 137, 156)`, zemini beyazdır; sınır kontrastı en az 3:1 testi üç motorda geçti.
 
-Yüzde 200 kök metin, uzun MetaFramework kontrol listesi başlığında taşma yakaladı; başlığın esnek minimum genişliği düzeltildi. Teknik sayfada menü özetinin 1023→1024 geçişinde gizlenmesi Chromium'da odağı kaybettiriyordu; önce başarısız regresyon kaydedildi, görünür gezinme bağlantısına odak aktarımıyla üç motorda geçti. Geri/ileri gezinmede URL filtreleri, birleşik arama, adım kalıcılığı ve kayıt hatası da geçti. İlk başarısız çalıştırmalar başarı sayılmaz.
+Yüzde 200 kök metin, uzun MetaFramework kontrol listesi başlığında taşma yakaladı; başlığın esnek minimum genişliği düzeltildi. Teknik sayfada menü özetinin 1023→1024 geçişinde gizlenmesi Chromium'da odağı kaybettiriyordu; önce başarısız regresyon kaydedildi, görünür gezinme bağlantısına odak aktarımıyla üç motorda geçti. Geri/ileri gezinmede URL filtreleri, birleşik arama, adım kalıcılığı ve kayıt hatası da geçti. İlk başarısız çalıştırmalar başarı sayılmaz. Linux aday run 38048707765, 48 davranış/görsel testini geçti; üç eski görsel referans ve üç yüzde 200 kök metin testi başarısız oldu. Geniş Verdana fontuyla aynı hata yerelde önce başarısız regresyonla üretildi. Katalog araç çubuğunun Grid sütunu `minmax(0, 1fr)` ve doğrudan çocukları `min-width: 0` yapıldı; belge 333 px’den 320 px’e, araç çubuğu 301 px’den 256 px’e döndü. Son yerel normal 54/54 tekrar, geniş font regresyonunu üç motorda geçirdi; normal metin görselleri değişmedi. İncelenen Linux adayları referansa alındı; başarısız aday run başarılı yayın sayılmaz.
 
 Yeni üretim çıktısında soğuk yerel ölçümün üç motor arasındaki en yüksek encoded gövde değerleri:
 

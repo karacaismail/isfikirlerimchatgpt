@@ -504,7 +504,11 @@ p {
 }
 .catalog-toolbar {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-md);
+}
+.catalog-toolbar > * {
+  min-width: 0;
 }
 .catalog-search {
   max-width: var(--reading-width);

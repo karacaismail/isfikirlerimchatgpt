@@ -317,6 +317,10 @@ test('tüm genişliklerde metin, açılır panel, tablo ve büyütülmüş kök 
   });
   await page.addStyleTag({ content: ':root { font-size:200%; }' });
   await readable(page);
+  await page.addStyleTag({
+    content: ':root { --font-ui: Verdana, sans-serif; }',
+  });
+  await readable(page);
 });
 
 test('JavaScript kapalıyken bütün temel sayfa ve proje bağlantıları okunur', async ({
