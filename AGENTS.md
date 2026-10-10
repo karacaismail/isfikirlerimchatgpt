@@ -14,4 +14,6 @@ Komutlar repo kökünde: `npm ci --ignore-scripts`, `npm run format:check`, `npm
 
 Public veri strict Zod izin listesi ile doğrulanır. Kaynak referansları yalnız güvenli kanıt kimlikleri taşır; kaynak yolu taşımaz. Bilinmeyen puan null. Dosya envanteri, içerik incelemesi, eşleme ve runtime doğrulaması ayrı kaydedilir. Kısmi inceleme tamamlandı sayılmaz. Fiyat/özellik/pazar iddiaları resmî güncel kaynağa ve erişim tarihine bağlanır. Müşteri görüşmesi yapılmadan talep doğrulanmış sayılmaz.
 
+Yerel iş analizinde bütün taslaklar, eski sürümler, yedeklerdeki iş içeriği, sunumlar ve finansal tablolar kapsam içindedir. Klasör adı veya korumalı etiketi bütün dosyayı analiz dışında bırakma gerekçesi değildir; iş mantığı, şema ve ticari içerik ayrıca incelenir. Toplu çıkarım ve hash eşlemesi semantik okuma sayılmaz. Yayın sayaçları sürümüne bağlanır; önceki yayın sayıları güncel inceleme sonucu diye sunulmaz.
+
 Lisans kararı kullanıcı tarafından sonraya bırakılmıştır; onaysız lisans ekleme. Public görünürlük açık kaynak lisansı değildir.

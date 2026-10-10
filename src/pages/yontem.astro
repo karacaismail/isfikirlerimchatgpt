@@ -10,6 +10,28 @@ const n = (x: number) => x.toLocaleString('tr-TR');
   <p class="eyebrow">Model 1.0 · {portfolio.date}</p>
   <h1>Bir iddia, dayanağı kadar güçlü.</h1>
   <section class="reading">
+    <h2>Bütün taslaklar değerlendirme kapsamında</h2>
+    <p>
+      Taslaklar, eski sürümler, yedek klasörlerindeki iş belgeleri, sunumlar,
+      finansal tablolar ve kod birlikte incelenir. Dosyanın bulunduğu klasör
+      veya “korumalı” etiketi, iş içeriğini inceleme dışında bırakma gerekçesi
+      değildir. Aynı dosyada iş mantığı ve hesap bilgisi varsa iş mantığı ayrıca
+      değerlendirilir.
+    </p>
+    <p>
+      Derin incelemede önceki 14 kısmi kaydın kalan özgün bölümleri okundu;
+      üçüncü taraf paket gövdesi ayrıca ayrıldı. Dört finansal modelin 28.049
+      formül hücresi ayrı kopyalarda LibreOffice ile yeniden hesaplandı; kayıtlı
+      sonuçlarla karşılaştırmada fark ve formül hatası bulunmadı. Bu kontrol,
+      satış varsayımlarını veya ürünlerin çalışmasını doğrulamaz.
+    </p>
+    <p>
+      Aşağıdaki sayaçlar ilk yayının inceleme kaydını gösterir. Derin okumada
+      bulunan yeni iş tanımları, teklif sürümleri ve hesaplama çelişkileri
+      değerlendirmeye eklenmektedir; bütün kaynak incelemesi henüz tamamlanmadı.
+    </p>
+  </section>
+  <section class="reading">
     <h2>Dört ayrı kapsam ölçümü</h2>
     <dl>
       <dt>1. Envanter kapsaması</dt>
@@ -42,11 +64,12 @@ const n = (x: number) => x.toLocaleString('tr-TR');
         doğrulamaz.
       </dd>
     </dl>
-    <h3>Korumalı ve bekleyen içerik</h3>
+    <h3>İnceleme kaydının kapsamı</h3>
     <p>
-      {n(c.protectedFiles)} korumalı dosya; {n(c.pendingFiles)} içerik
-      incelemesi bekleyen aday. Kimlik bilgileri ve müşteri verileri iş analizi
-      gerekçesiyle açığa çıkarılmaz.
+      İlk geçişte bekleyen olarak kaydedilen içerikler inceleme kuyruğundadır.
+      Metin çıkarımı, kopya eşlemesi, içerik okuması ve iş değerlendirmesi ayrı
+      kaydedilir. İnceleme sırasında bulunan her bağımsız iş fikri ayrıca ele
+      alınır.
     </p>
     <ul>
       {c.limitations.map((x) => (
