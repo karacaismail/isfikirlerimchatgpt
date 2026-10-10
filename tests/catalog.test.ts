@@ -1,8 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
-import { datasetSchema } from '../src/lib/model.ts';
-import { guideClusters, projectGuides } from '../src/data/guides.ts';
+import { development } from '../src/data/development.ts';
+import { strategySchema } from '../src/lib/strategy.ts';
 import {
   createDefaultPreferences,
   filterProjects,
@@ -11,226 +10,146 @@ import {
   resetFilters,
   sanitizePreferences,
   sortProjects,
-  type GuideIndex,
+  filterKeys,
 } from '../src/lib/catalog.ts';
-
-const projects = datasetSchema.parse(
-  JSON.parse(
-    readFileSync(
-      new URL('../src/data/portfolio.json', import.meta.url),
-      'utf8',
-    ),
-  ),
-).projects;
-const guides: GuideIndex = {
-  titanlar: {
-    cluster: 'paid',
-    customerType: 'individual',
-    revenueType: 'service',
-    summary: 'Küçük gruba iki oturumluk eğitim.',
-    buyer: 'Katılımcı',
-    firstOffer: 'Ücretli atölye',
-    nextStep: 'Beş kişiden ödeme iste.',
-  },
-  pim: {
-    cluster: 'paid',
-    customerType: 'business',
-    revenueType: 'subscription',
-    summary: 'Ürün kataloğunu tek satış kanalına hazırla.',
-    buyer: 'E-ticaret ekibi',
-    firstOffer: '100 ürün için katalog düzenleme',
-    nextStep: 'Örnek ürün dosyası iste.',
-  },
-  hrms: {
-    cluster: 'domain',
-    customerType: 'business',
-    revenueType: 'subscription',
-    summary: 'Bir insan kaynakları sürecini düzenle.',
-    buyer: 'İK yöneticisi',
-    firstOffer: 'Tek süreç denemesi',
-    nextStep: 'Alan ortağı bul.',
-  },
-  metaframer: {
-    cluster: 'internal',
-    customerType: 'internal',
-    revenueType: 'internal',
-    summary: 'Seçilen projenin geliştirmesini hızlandır.',
-    buyer: 'Kendi ekibin',
-    firstOffer: 'İç kullanım',
-    nextStep: 'Haftalık süre sınırı koy.',
-  },
-};
-
-test('yayımlanan her proje tam bir rehbere ve tek başlangıç kümesine bağlıdır', () => {
-  assert.deepEqual(
-    Object.keys(projectGuides).sort(),
-    projects.map((p) => p.id).sort(),
-  );
-  const clustered = guideClusters.flatMap((cluster) => cluster.projectIds);
-  assert.equal(new Set(clustered).size, clustered.length);
-  assert.deepEqual([...clustered].sort(), projects.map((p) => p.id).sort());
-  for (const project of projects) {
-    const guide = projectGuides[project.id as keyof typeof projectGuides];
-    assert.ok(
-      guide.summary && guide.buyer && guide.firstOffer && guide.nextStep,
-    );
-    assert.ok(guide.steps.length > 0);
-    assert.ok(
-      guideClusters.some(
-        (cluster) =>
-          cluster.value === guide.cluster &&
-          cluster.projectIds.some((id) => id === project.id),
-      ),
-    );
-  }
+const candidates = strategySchema.parse(development).candidates;
+test('katalog ayrıntılı ve ilk değerlendirme kayıtlarını sahiplik düzeltmesiyle kapsar', () => {
+  assert.equal(candidates.length, 23);
+  assert.equal(candidates.filter((c) => c.coverage === 'detailed').length, 6);
+  assert.ok(candidates.every((c) => c.ownership === 'user'));
+  assert.ok(candidates.some((c) => c.id === 'genui'));
+  assert.ok(candidates.every((c) => c.facts.runtime.state === 'unknown'));
 });
-
-test('arama ve müşteri, küme, gelir, platform filtreleri birlikte daraltır', () => {
-  const prefs = {
+test('Türkçe arama ve teknik filtreler AND ile daraltır', () => {
+  const p = {
     ...createDefaultPreferences(),
-    query: 'ÜRÜN kanal',
-    cluster: 'paid',
-    customer: 'business',
-    revenue: 'subscription',
-    platform: 'Web',
+    query: 'PİM',
+    kind: 'product',
+    coverage: 'detailed',
   };
   assert.deepEqual(
-    filterProjects(projects, prefs, guides).map((p) => p.id),
+    filterProjects(candidates, p).map((c) => c.id),
     ['pim'],
   );
-  assert.deepEqual(
-    filterProjects(projects, { ...prefs, customer: 'individual' }, guides),
-    [],
-  );
-  assert.deepEqual(
-    filterProjects(
-      projects,
-      { ...prefs, query: 'İK ortağı', cluster: 'domain', platform: null },
-      guides,
-    ).map((p) => p.id),
-    ['hrms'],
-  );
+  assert.deepEqual(filterProjects(candidates, { ...p, kind: 'platform' }), []);
 });
-
-test('bozuk veya eski saklama değerleri geçersiz filtre ve seçim üretmez', () => {
-  const prefs = sanitizePreferences(
+test('bozuk, eski veya bilinmeyen tercihler geçersiz filtre ve seçim üretmez', () => {
+  const p = sanitizePreferences(
     {
       query: 'a'.repeat(250),
-      cluster: 'olmayan',
-      customer: 'olmayan',
-      revenue: 'olmayan',
-      stage: 'olmayan',
-      platform: 'olmayan',
-      income: 'olmayan',
-      decision: 'olmayan',
-      ownership: 'bana ait',
-      sort: 'olmayan',
+      focus: 'yok',
+      kind: 'yok',
+      coverage: 'yok',
+      capability: 'yok',
+      rule: 'yok',
+      goal: 'yok',
+      sort: 'profile',
       selected: ['pim', 'pim', 'yok', 'hrms', 'titanlar', 'metaframer', 'ibys'],
-      weights: { G: 100, V: 100, O: 100, U: 100 },
+      weights: { G: 100, V: 0, O: 0, U: 0 },
     },
-    projects,
-    guides,
+    candidates,
   );
-  assert.equal(prefs.query.length, 200);
-  for (const key of [
-    'cluster',
-    'customer',
-    'revenue',
-    'stage',
-    'platform',
-    'income',
-    'decision',
-  ] as const)
-    assert.equal(prefs[key], null);
-  assert.equal(prefs.sort, 'name');
-  assert.deepEqual(prefs.selected, ['pim', 'hrms', 'titanlar', 'metaframer']);
-  assert.deepEqual(prefs.weights, createDefaultPreferences().weights);
-  assert.equal('ownership' in prefs, false);
+  assert.equal(p.query.length, 200);
+  filterKeys.forEach((k) => assert.equal(p[k], null));
+  assert.equal(p.sort, 'name');
+  assert.equal(p.goal, 'flow');
+  assert.deepEqual(p.selected, ['pim', 'hrms', 'titanlar', 'metaframer']);
+  assert.equal('weights' in p, false);
   assert.deepEqual(
-    sanitizePreferences(null, projects, guides),
+    sanitizePreferences(null, candidates),
     createDefaultPreferences(),
   );
 });
-
-test('paylaşılan URL filtreleri saklama filtrelerini değiştirir; seçim ve ağırlıklar korunur', () => {
+test('paylaşılan URL filtreyi değiştirir ve yerel seçimi korur', () => {
   const saved = {
     ...createDefaultPreferences(),
     query: 'eski',
-    stage: projects[0].maturity.product,
+    kind: 'platform',
     selected: ['hrms', 'pim'],
-    weights: { G: 30, V: 35, O: 20, U: 15 },
   };
-  const result = preferencesFromUrl(
-    '?cluster=paid&customer=business&q=ürün&sort=profile',
+  const p = preferencesFromUrl(
+    '?coverage=detailed&q=ürün&goal=core',
     saved,
-    projects,
-    guides,
+    candidates,
   );
-  assert.equal(result.query, 'ürün');
-  assert.equal(result.stage, null);
-  assert.equal(result.cluster, 'paid');
-  assert.equal(result.customer, 'business');
-  assert.equal(result.sort, 'profile');
-  assert.deepEqual(result.selected, saved.selected);
-  assert.deepEqual(result.weights, saved.weights);
+  assert.equal(p.query, 'ürün');
+  assert.equal(p.kind, null);
+  assert.equal(p.coverage, 'detailed');
+  assert.equal(p.goal, 'core');
+  assert.deepEqual(p.selected, saved.selected);
   assert.deepEqual(
-    preferencesFromUrl('?campaign=foo', saved, projects, guides),
+    preferencesFromUrl('?campaign=foo', saved, candidates),
     saved,
   );
   assert.equal(
-    preferencesFromUrl('?q=&cluster=unknown', saved, projects, guides).query,
-    '',
-  );
-  assert.equal(
-    preferencesFromUrl('?q=&cluster=unknown', saved, projects, guides).cluster,
+    preferencesFromUrl('?q=&focus=unknown', saved, candidates).focus,
     null,
   );
 });
-
-test('URL gidiş dönüşü ve filtre temizliği karşılaştırma seçimlerini kaybetmez', () => {
-  const prefs = {
+test('URL gidiş dönüşü ve temizleme hedefi/seçimi korur, eski ticari URL alanlarını kaldırır', () => {
+  const p = {
     ...createDefaultPreferences(),
     query: 'İBYS ziyaret',
-    cluster: 'domain',
+    goal: 'reliability' as const,
+    coverage: 'detailed',
     selected: ['ibys', 'pim'],
-    sort: 'U',
+    sort: 'fit',
   };
   const search = queryStringForPreferences(
-    '?campaign=source&q=old&unknown=keep',
-    prefs,
+    '?campaign=source&cluster=paid&income=service',
+    p,
   );
   assert.equal(new URLSearchParams(search).get('campaign'), 'source');
-  assert.equal(new URLSearchParams(search).get('unknown'), 'keep');
-  assert.equal(new URLSearchParams(search).get('q'), 'İBYS ziyaret');
-  assert.equal(new URLSearchParams(search).has('selected'), false);
-  assert.deepEqual(preferencesFromUrl(search, prefs, projects, guides), prefs);
-  const cleared = resetFilters(prefs);
-  assert.deepEqual(cleared.selected, prefs.selected);
-  assert.deepEqual(cleared.weights, prefs.weights);
-  assert.equal(cleared.query, '');
-  assert.equal(cleared.cluster, null);
-  assert.equal(cleared.sort, 'name');
-  assert.equal(
-    new URLSearchParams(queryStringForPreferences(search, cleared)).has('q'),
-    false,
+  assert.equal(new URLSearchParams(search).has('cluster'), false);
+  assert.deepEqual(preferencesFromUrl(search, p, candidates), p);
+  const clear = resetFilters(p);
+  assert.equal(clear.goal, 'reliability');
+  assert.deepEqual(clear.selected, p.selected);
+  assert.equal(clear.query, '');
+  assert.equal(clear.coverage, null);
+});
+test('liste sırası kalite puanı değildir; hedef ilişkisi ve kaynak derinliği ayrı tercihlerdir', () => {
+  const alphabetic = sortProjects(candidates, createDefaultPreferences());
+  assert.deepEqual(
+    alphabetic.map((c) => c.name),
+    [...candidates]
+      .sort((a, b) => a.name.localeCompare(b.name, 'tr'))
+      .map((c) => c.name),
+  );
+  const covered = sortProjects(candidates, {
+    ...createDefaultPreferences(),
+    sort: 'coverage',
+  });
+  assert.ok(covered.slice(0, 6).every((c) => c.coverage === 'detailed'));
+  const related = sortProjects(candidates, {
+    ...createDefaultPreferences(),
+    goal: 'core',
+    sort: 'fit',
+  });
+  const firstUnrelated = related.findIndex((c) => !c.goals.includes('core'));
+  assert.ok(
+    related.slice(firstUnrelated).every((c) => !c.goals.includes('core')),
   );
 });
 
-test('puan sıralamasında bilinmeyen ölçütler sıfır veya kesin üstünlük sayılmaz', () => {
-  const list = sortProjects(projects, {
+test('paylaşılan filtre URLsi yerel hedefi sessizce devralmaz', () => {
+  const saved = {
     ...createDefaultPreferences(),
-    sort: 'profile',
-  });
-  assert.equal(list.complete.length, 0);
-  assert.equal(list.incomplete.length, projects.length);
-  assert.deepEqual(
-    list.sorted.map((p) => p.name),
-    [...projects]
-      .sort((a, b) => a.name.localeCompare(b.name, 'tr'))
-      .map((p) => p.name),
+    goal: 'core' as const,
+    selected: ['pim'],
+  };
+  assert.equal(
+    preferencesFromUrl('?coverage=detailed', saved, candidates).goal,
+    'flow',
   );
   assert.equal(
-    sortProjects(projects, createDefaultPreferences()).complete.length,
-    projects.length,
+    preferencesFromUrl('?goal=core&coverage=detailed', saved, candidates).goal,
+    'core',
+  );
+  assert.equal(
+    new URLSearchParams(
+      queryStringForPreferences('', createDefaultPreferences()),
+    ).get('goal'),
+    'flow',
   );
 });

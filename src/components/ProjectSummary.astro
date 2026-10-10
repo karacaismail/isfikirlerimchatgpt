@@ -1,29 +1,33 @@
 ---
-import type { Project } from '../lib/model';
-import { guideFor } from '../data/guides';
+import type { Candidate } from '../lib/strategy';
+import { evaluateCandidate, coverageLabels, kindLabels } from '../lib/strategy';
 interface Props {
-  project: Project;
+  candidate: Candidate;
 }
-const { project: p } = Astro.props;
-const guide = guideFor(p.id);
+const { candidate: c } = Astro.props;
 const base = import.meta.env.BASE_URL;
+const result = evaluateCandidate(c, 'flow');
 ---
 
 <article class="project-entry">
+  <div class="project-tags">
+    <span class="project-tag">{kindLabels[c.kind]}</span>
+    <span class="project-tag">{coverageLabels[c.coverage]}</span>
+  </div>
   <h3>
-    <a href={`${base}projeler/${p.id}/`}>{p.name}</a>
+    <a href={`${base}projeler/${c.id}/`}>{c.name}</a>
   </h3>
-  <p>{guide.summary}</p>
+  <p>{c.definition}</p>
   <dl class="project-facts">
-    <dt>Kim ödeyebilir?</dt>
-    <dd>{guide.buyer}</dd>
-    <dt>İlk teklif</dt>
-    <dd>{guide.firstOffer}</dd>
+    <dt>Geliştirilecek dilim</dt>
+    <dd>{c.slice.title}</dd>
+    <dt>Neden şimdi?</dt>
+    <dd>{c.rationale}</dd>
   </dl>
   <p>
-    <strong>İlk adım:</strong> {guide.nextStep}
+    <strong>{result.label}:</strong> {c.slice.steps[0]}
   </p>
-  <a href={`${base}projeler/${p.id}/#ilk-adimlar`}>
-    {p.name} adım listesini aç
+  <a href={`${base}projeler/${c.id}/#ilk-adimlar`}>
+    {c.name} adım listesini aç
   </a>
 </article>

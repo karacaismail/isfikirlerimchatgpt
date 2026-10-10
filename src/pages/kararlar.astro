@@ -1,105 +1,122 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Checklist from '../components/Checklist.astro';
-import { portfolio } from '../lib/data';
-import { guideClusters, guideFor } from '../data/guides';
+import { development } from '../data/development';
+import { strategicCriteria, strategicRules, goalLabels } from '../lib/strategy';
 const base = import.meta.env.BASE_URL;
 ---
 
-<Layout title="Başlangıç planı">
-  <header class="page-heading">
-    <p class="eyebrow">Bir proje seç · Küçük bir işi dene · Sonucu ölç</p>
-    <h1>Bu hafta hangi adımı atmalıyım?</h1>
-    <p class="lede">
-      Hepsine birden başlama. Müşteriye erişimine ve ayırabildiğin zamana göre
-      tek proje seç; aşağıdaki adımlarla ilk sonucu ölç.
-    </p>
-  </header>
-  <nav class="section-nav" aria-label="Başlangıç planı bölümleri">
-    <a href="#secim">Önce hangisi?</a>
-    {guideClusters.map((cluster) => (
-      <a href={`#${cluster.value}`}>{cluster.label}</a>
-    ))}
+<Layout title="Strateji ve yapılacaklar">
+  <p class="eyebrow">Amaç: yazılım altyapısını geliştirme yatırımı</p>
+  <h1>Önceliği hangi gerekçeyle vereceğim?</h1>
+  <p class="lede">
+    Proje adı yerine sıradaki tamamlanabilir yazılım dilimini seç. Kararı hedef
+    katkısı, teknik engel, bağımlılık ve kabul kanıtına bağla.
+  </p>
+  <nav class="section-nav" aria-label="Strateji bölümleri">
+    <a href="#strateji">Başlangıç önerisi</a>
+    <a href="#olcutler">14 değerlendirme ölçütü</a>
+    <a href="#eca">14 ECA kuralı</a>
+    <a href="#adimlar">Proje adımları</a>
   </nav>
-  <section id="secim" class="reading">
-    <h2>Önce hangisi?</h2>
-    <ol>
-      <li>
-        <strong>Peşinatı alınmış, kapsamı belli AtonotA işi varsa:</strong> önce
-        onu teslim et. Teklif dosyası, ödeme yapılmış olduğu anlamına gelmez.
-      </li>
-      <li>
-        <strong>Hızlı bir gelir deneyi istiyorsan:</strong> Titanlar’da iki
-        oturumluk atölyeyi sına. Eğitmen yeterliği, zaman ve ulaşılabilir kitle
-        bu önerinin koşulu.
-      </li>
-      <li>
-        <strong>SaaS kurmak istiyorsan:</strong> PIM’de tek kanal ve 100 SKU
-        için ücretli katalog işiyle başla. Hazır alıcı varsa bu seçenek öne
-        geçebilir.
-      </li>
-    </ol>
+  <section class="reading" id="strateji">
+    <h2>Başlangıç önerisi ve karşı görüş</h2>
     <p>
-      AtonotA içindeki AgencyOps için bir ajansın teslim ve kabul işini elle
-      iyileştirmek diğer seçenek. HRMS ve İBYS önce alan ortağı ister.
-      MetaFramer’ı seçilen işin iç aracı olarak tut.
+      <strong>Ürün odaklı altyapı geliştirme:</strong> PIM ile ürün modeli,
+      doğrulama ve yayın çıktısını; Studio ile gerçek bağlantı, workspace
+      yetkisi ve analiz sonucunu karşılaştır. MetaFramer’da gereken çekirdek
+      parçasını seçilen gerçek tüketiciyle birlikte tamamla.
+    </p>
+    <p>
+      <strong>Önce neye bakılacak?</strong> Aynı sürümde temiz kurulum ve dar
+      akışın başlangıç sonucu. Sonra kalan iş, zorunlu bağımlılıklar ve
+      kapatılacak en önemli belirsizlik. Bunlar ölçülmeden kesin birinci proje
+      ilan edilmiyor.
+    </p>
+    <p>
+      <strong>Karşı görüş:</strong> GenUI veya DestekTeşvik’te daha yakın bir
+      uçtan uca sonuç ve daha yüksek somut ortak kullanım bulunabilir.
+      Titanlar’daki hesaplama motoru küçük bir doğruluk dilimi olarak daha çabuk
+      tamamlanabilir. Katalogdaki geniş kayıt kümesi bu alternatiflerin
+      görünmesini sağlar.
+    </p>
+    <p>
+      <strong>Tercih ne zaman değişir?</strong> Bir adayın kurulabilirliği
+      doğrulanır, gereken bağımlılık küçülür veya aynı emekle açacağı somut ürün
+      akışları artarsa. “Önce framework tamamen bitsin” şartı kurulmaz; bütün
+      projeleri aynı anda başlatma önerisi de verilmez.
     </p>
   </section>
-
-  {guideClusters.map((cluster) => (
-    <section
-      id={cluster.value}
-      class="cluster-section"
-      aria-labelledby={`${cluster.value}-plan`}
-    >
-      <div class="cluster-heading">
-        <h2 id={`${cluster.value}-plan`}>{cluster.label}</h2>
-        <p class="lede">{cluster.description}</p>
-      </div>
-      {cluster.projectIds.map((id) => {
-        const project = portfolio.projects.find((p) => p.id === id)!;
-        const guide = guideFor(id);
-        return (
-          <article class="project-entry">
-            <h3>
-              <a href={`${base}projeler/${id}/`}>{project.name}</a>
-            </h3>
-            <p>{guide.summary}</p>
-            <p>
-              <strong>İlk teklif:</strong> {guide.firstOffer}
-            </p>
-            <Checklist
-              id={`project-${id}`}
-              title={`${project.name} adımları`}
-              items={guide.steps}
-            />
-            <p class="meta">{guide.effort}</p>
-            <details>
-              <summary>Devam kararını ne değiştirecek?</summary>
-              <p>{project.changeEvidence}</p>
-              <h4>Önce çözülmesi gerekenler</h4>
-              <ul>
-                {project.blockers.map((item) => (
-                  <li>{item}</li>
-                ))}
-              </ul>
-            </details>
-          </article>
-        );
-      })}
-    </section>
-  ))}
-  <p class="notice reading">
-    Bunlar yapılmış deneyler değil, önerilen adımlar. Haftalık zaman ve bütçe
-    henüz netleşmedi; ücretli talep ve teslim maliyetine göre önceliği yeniden
-    değerlendir.
-  </p>
-  <div class="page-actions">
-    <a class="button-link" href={`${base}katalog/`}>
-      Seçenekleri filtrele
-    </a>
-    <a class="button-secondary" href={`${base}karsilastir/`}>
-      İki projeyi karşılaştır
-    </a>
-  </div>
+  <section id="olcutler">
+    <h2>14 değerlendirme ölçütü</h2>
+    <p class="reading">
+      Bu ölçütler analistin strateji önerisidir; ölçülmüş proje puanı değildir.
+      Eksik veri sıfır sayılmaz. Kritik doğruluk ve yetki açığı başka güçlü
+      yönlerin ortalamasıyla kapanmaz.
+    </p>
+    {strategicCriteria.map((c) => (
+      <details>
+        <summary>{c.title}</summary>
+        <p>{c.question}</p>
+        <p>
+          <strong>Aranacak kanıt:</strong> {c.evidence}
+        </p>
+      </details>
+    ))}
+  </section>
+  <section id="eca">
+    <h2>14 ECA karar kuralı</h2>
+    <p class="reading">
+      ECA, olay–koşul–eylem demek. Burada kararın nedenini görünür kılmak için
+      kullanılıyor. Bu kurallar bir yazılımı otomatik çalıştırmaz. Koşul
+      bilinmiyorsa tetiklenmez; başlangıç kanıtının eksik olması ayrıca
+      doğrulama işi önerir.
+    </p>
+    <p class="reading">
+      Eylem öncelikleri: doğrulanmış kritik engel → yanlışlanan varsayım →
+      çelişkili kanıt → rol/entegrasyon kabulü → başlangıç doğrulaması → kapsam
+      → geliştirme. Bu sıra açık bir analist tercihidir. Aynı öncelikte farklı
+      eylemler çıkarsa çatışma gösterilir.
+    </p>
+    {strategicRules.map((rule) => (
+      <details id={rule.id.toLowerCase()}>
+        <summary>
+          {rule.id} · {rule.title}
+        </summary>
+        <dl>
+          <dt>Olay</dt>
+          <dd>{rule.event}</dd>
+          <dt>Koşul</dt>
+          <dd>{rule.condition}</dd>
+          <dt>Eylem</dt>
+          <dd>{rule.action}</dd>
+          <dt>Gerekçe</dt>
+          <dd>{rule.rationale}</dd>
+          <dt>Karşı görüş</dt>
+          <dd>{rule.counterargument}</dd>
+          <dt>Yeniden değerlendirme</dt>
+          <dd>{rule.reconsiderWhen}</dd>
+        </dl>
+      </details>
+    ))}
+  </section>
+  <section id="adimlar">
+    <h2>Proje bazında adım adım</h2>
+    <p class="reading">
+      Her liste önerilen geliştirme dilimine aittir. İşaretler yalnız kişisel
+      çalışma notudur; ürün kabulü veya test sonucu sayılmaz.
+    </p>
+    {development.candidates.map((c) => (
+      <section class="guide-section" id={`plan-${c.id}`}>
+        <h3>
+          <a href={`${base}projeler/${c.id}/`}>{c.name}</a>
+        </h3>
+        <p>
+          <strong>Geliştirilecek dilim:</strong> {c.slice.title}
+        </p>
+        <p>Odak: {c.goals.map((g) => goalLabels[g]).join(' · ')}</p>
+        <Checklist id={`software-v2-project-${c.id}`} items={c.slice.steps} />
+      </section>
+    ))}
+  </section>
 </Layout>

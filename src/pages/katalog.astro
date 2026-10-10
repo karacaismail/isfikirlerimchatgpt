@@ -1,17 +1,20 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Catalog from '../components/Catalog';
-import { portfolio } from '../lib/data';
+import { development } from '../data/development';
 ---
 
 <Layout title="Proje kataloğu">
-  <p class="eyebrow">Altı kişisel proje · {portfolio.date}</p>
+  <p class="eyebrow">
+    {development.candidates.length} aday kayıt · Strateji {development.version}
+  </p>
   <h1>Projeler</h1>
   <p class="lede">
-    Müşteri ve gelir hedefine göre filtrele. İlk teklifi ve yapılacakları gör.
+    Geliştirilecek yazılım dilimini, altyapı katkısını ve ECA önerisini
+    karşılaştır. Ürün, çatı, araştırma ve platform kayıtları ayrı belirtilir.
   </p>
   <Catalog
-    projects={portfolio.projects}
+    candidates={development.candidates}
     base={import.meta.env.BASE_URL}
     mode="catalog"
     client:load

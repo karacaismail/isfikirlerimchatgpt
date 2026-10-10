@@ -1,18 +1,18 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Catalog from '../components/Catalog';
-import { portfolio } from '../lib/data';
+import { development } from '../data/development';
 ---
 
 <Layout title="Karşılaştırma">
-  <p class="eyebrow">İki ile dört proje seç</p>
-  <h1>Hangisi hedefime daha uygun?</h1>
+  <p class="eyebrow">İki ile dört aday seç</p>
+  <h1>Hangi geliştirme dilimi hedefime daha uygun?</h1>
   <p class="lede">
-    Müşteriyi, ilk teklifi, gelir ihtimalini ve kalan işi yan yana gör.
-    Bilinmeyen bilgiler ayrıca belirtilir; kesin başarı sırası oluşturulmaz.
+    Somut sonucu, bağımlılığı, kabul koşulunu ve 14 ölçütün kanıt durumunu yan
+    yana gör. Bilinmeyenler açık kalır; sahte toplam puan üretilmez.
   </p>
   <Catalog
-    projects={portfolio.projects}
+    candidates={development.candidates}
     base={import.meta.env.BASE_URL}
     mode="compare"
     client:load

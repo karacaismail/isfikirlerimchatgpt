@@ -1,3 +1,5 @@
+import { development } from '../src/data/development.ts';
+import { strategySchema } from '../src/lib/strategy.ts';
 import { readdir, readFile, stat, lstat } from 'node:fs/promises';
 import { join, extname } from 'node:path';
 import { datasetSchema } from '../src/lib/model.ts';
@@ -105,6 +107,12 @@ for (const p of data.projects)
 const exported = JSON.parse(await readFile('dist/veri.json', 'utf8'));
 if (JSON.stringify(exported) !== JSON.stringify(data))
   errors.push('Dışa aktarılan veri ile izinli veri eşleşmiyor');
+const strategyExport = JSON.parse(await readFile('dist/strateji.json', 'utf8'));
+if (
+  JSON.stringify(strategyExport) !==
+  JSON.stringify(strategySchema.parse(development))
+)
+  errors.push('Strateji dışa aktarımı izinli veriyle eşleşmiyor');
 if (errors.length) throw new Error(errors.join('\n'));
 const size = (await stat('dist/veri.json')).size;
 console.log(

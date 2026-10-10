@@ -1,48 +1,68 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { portfolio } from '../lib/data';
-import { guideFor } from '../data/guides';
+import { development } from '../data/development';
+import { kindLabels } from '../lib/strategy';
 const base = import.meta.env.BASE_URL;
 ---
 
-<Layout title="Projeler nasıl ilişkili?">
-  <header class="page-heading">
-    <p class="eyebrow">Marka, ürün ve ortak araçlar</p>
-    <h1>Hangi işler birlikte düşünülmeli?</h1>
-    <p class="lede">
-      AtonotA çatı marka, MetaFramer ortak teknik araç. Her ticari işin
-      müşterisini, teklifini ve gelirini ayrı değerlendirmek gerekiyor.
-    </p>
-  </header>
-  <nav class="section-nav" aria-label="Proje ilişkileri">
-    {portfolio.projects.map((p) => (
-      <a href={`#${p.id}`}>{p.name}</a>
-    ))}
-  </nav>
-  {portfolio.projects.map((p) => (
-    <section class="reading" id={p.id}>
-      <h2>{p.name}</h2>
-      <p>{guideFor(p.id).summary}</p>
-      <details>
-        <summary>Diğer projelerle ilişkisi ve ticari seçenekleri</summary>
-        <h3>İlişkiler</h3>
-        <ul>
-          {p.relationships.map((item) => (
-            <li>{item}</li>
-          ))}
-        </ul>
-        <h3>Ayrı değerlendirilecek ticari işler</h3>
-        <ul>
-          {p.commercialOptions.map((item) => (
-            <li>{item}</li>
-          ))}
-        </ul>
-      </details>
+<Layout title="Proje ilişkileri">
+  <h1>Ortak çekirdek ile ürünün bağını kur</h1>
+  <p class="lede">
+    Çatı marka, ürün akışı ve altyapı kabiliyeti ayrı yatırım birimleridir.
+    Aşağıdaki öneri bağları zorunlu teknik bağımlılık veya gerçekleşmiş yeniden
+    kullanım sayılmaz.
+  </p>
+  <section class="reading">
+    <h2>Üç ayrım</h2>
+    <ol>
+      <li>
+        AtonotA bir çatı; Studio’nun bağlantı/analiz akışı ayrı bir geliştirme
+        dilimi. AgencyOps’un vizyonu uygulanmış özellik kabul edilmiyor.
+      </li>
+      <li>
+        MetaFramer ve Kernel planı ortak altyapı adayları. Aynı problemi iki kez
+        ürün diye saymak yerine gerçek tüketici sözleşmesi karşılaştırılmalı.
+      </li>
+      <li>
+        PIM, HRMS ve İBYS’nin veri, rol ve durum akışları benzer kabiliyetler
+        isteyebilir. Benzerlik, aynı çekirdeği çalıştırdıkları anlamına gelmez.
+      </li>
+    </ol>
+  </section>
+  {development.candidates.map((c) => (
+    <section class="project-entry">
+      <h2>
+        <a href={`${base}projeler/${c.id}/`}>{c.name}</a>
+      </h2>
       <p>
-        <a href={`${base}projeler/${p.id}/`}>
-          {p.name} özetini ve adımlarını aç
-        </a>
+        {kindLabels[c.kind]} · {c.slice.title}
       </p>
+      {c.dependencies.length ? (
+        <ul>
+          {c.dependencies.map((d) => (
+            <li>
+              <strong>{d.title}</strong> ·{' '}
+              {d.state === 'observed'
+                ? 'Kaynakta gözlenen bağ'
+                : d.state === 'inferred'
+                  ? 'Önerilen bağ'
+                  : 'Bilinmeyen bağ'}
+              : {d.reason}
+              {d.candidateId && (
+                <a href={`${base}projeler/${d.candidateId}/`}>
+                  {' '}
+                  İlgili adayı aç
+                </a>
+              )}
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p>
+          Doğrulanmış bağımlılık grafiği henüz yok. Bu, bağımlılık bulunmadığını
+          göstermez.
+        </p>
+      )}
     </section>
   ))}
 </Layout>

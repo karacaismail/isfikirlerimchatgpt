@@ -16,12 +16,12 @@ test('menü geniş ekrana geçerken gizlenen özet üzerinde odak bırakmaz', as
 });
 
 test('geri ve ileri gezinme URL filtrelerini geri yükler', async ({ page }) => {
-  await page.goto('katalog/?cluster=domain');
-  await expect(page.locator('[data-project]')).toHaveCount(2);
-  await page.goto('katalog/?cluster=paid&q=pim');
+  await page.goto('katalog/?coverage=detailed');
+  await expect(page.locator('[data-project]')).toHaveCount(6);
+  await page.goto('katalog/?coverage=detailed&q=pim');
   await expect(page.locator('[data-project]')).toHaveCount(1);
   await page.goBack();
-  await expect(page.locator('[data-project]')).toHaveCount(2);
+  await expect(page.locator('[data-project]')).toHaveCount(6);
   await expect(page.getByLabel('Proje veya problem ara')).toHaveValue('');
   await page.goForward();
   await expect(page.locator('[data-project]')).toHaveCount(1);
@@ -41,7 +41,9 @@ test('mobil gezinme bulunduğum sayfayı gösterir ve klavyeyle açılır', asyn
   await expect(nav.locator('[aria-current="page"]')).toHaveAccessibleName(
     'Projeler',
   );
-  await nav.getByRole('link', { name: 'Yapılacaklar', exact: true }).click();
+  await nav
+    .getByRole('link', { name: 'Strateji ve adımlar', exact: true })
+    .click();
   await expect(page).toHaveURL(/kararlar\/$/);
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
 });
@@ -52,24 +54,24 @@ test('proje adımları plan ve ayrıntı sayfasında aynıdır; bölüm bağlant
   await page.setViewportSize({ width: 320, height: 568 });
   await page.goto('kararlar/');
   await page
-    .locator('[data-checklist="project-pim"]')
+    .locator('[data-checklist="software-v2-project-pim"]')
     .getByRole('checkbox')
     .first()
     .check();
   await page.goto('projeler/pim/');
   await expect(
     page
-      .locator('[data-checklist="project-pim"]')
+      .locator('[data-checklist="software-v2-project-pim"]')
       .getByRole('checkbox')
       .first(),
   ).toBeChecked();
   await page
     .locator('.section-nav')
-    .getByRole('link', { name: 'Gelir ve maliyet', exact: true })
+    .getByRole('link', { name: 'ECA kural izi', exact: true })
     .click();
-  await expect(page.locator('#finans')).toHaveAttribute('open', '');
+  await expect(page.locator('#kurallar')).toHaveAttribute('open', '');
   await page.reload();
-  await expect(page.locator('#finans')).toHaveAttribute('open', '');
+  await expect(page.locator('#kurallar')).toHaveAttribute('open', '');
 });
 
 test('saklama alanı kapalıyken kontrol listesi kullanılabilir ve kayıt hatası görünür', async ({
@@ -83,7 +85,7 @@ test('saklama alanı kapalıyken kontrol listesi kullanılabilir ve kayıt hatas
     });
   });
   await page.goto('');
-  const list = page.locator('[data-checklist="cluster-paid"]');
+  const list = page.locator('[data-checklist="software-v2-cluster-flow"]');
   await list.getByRole('checkbox').first().check();
   await expect(list.locator('[data-progress]')).toHaveText('1/4');
   await expect(list.locator('[data-checklist-note]')).toContainText(
@@ -96,13 +98,13 @@ test('paylaşılabilir küme ve arama filtreleri aynı anda uygulanır', async (
   page,
 }) => {
   await page.setViewportSize({ width: 320, height: 640 });
-  await page.goto('katalog/?cluster=domain');
+  await page.goto('katalog/?coverage=detailed');
   await expect(page.locator('[data-ready]')).toHaveAttribute(
     'data-ready',
     'true',
   );
-  await expect(page.locator('[data-project]')).toHaveCount(2);
-  await page.goto('katalog/?cluster=paid&q=pim');
+  await expect(page.locator('[data-project]')).toHaveCount(6);
+  await page.goto('katalog/?coverage=detailed&q=pim');
   await expect(page.locator('[data-ready]')).toHaveAttribute(
     'data-ready',
     'true',
@@ -118,8 +120,8 @@ test('paylaşılabilir küme ve arama filtreleri aynı anda uygulanır', async (
   await page
     .getByRole('button', { name: 'Filtreleri temizle', exact: true })
     .click();
-  await expect(page.locator('[data-project]')).toHaveCount(6);
-  await expect(page).not.toHaveURL(/[?&](cluster|q)=/);
+  await expect(page.locator('[data-project]')).toHaveCount(23);
+  await expect(page).not.toHaveURL(/[?&](coverage|q)=/);
 });
 
 test('küme kontrol listesi kişisel ilerlemeyi sayfalar arasında korur', async ({
@@ -127,7 +129,7 @@ test('küme kontrol listesi kişisel ilerlemeyi sayfalar arasında korur', async
 }) => {
   await page.setViewportSize({ width: 320, height: 568 });
   await page.goto('');
-  const checklist = page.locator('[data-checklist="cluster-paid"]');
+  const checklist = page.locator('[data-checklist="software-v2-cluster-flow"]');
   const first = checklist.getByRole('checkbox').first();
   await expect(first).toBeEnabled();
   await first.check();
@@ -139,4 +141,35 @@ test('küme kontrol listesi kişisel ilerlemeyi sayfalar arasında korur', async
   await checklist.getByRole('checkbox').first().uncheck();
   await page.reload();
   await expect(checklist.getByRole('checkbox').first()).not.toBeChecked();
+});
+
+test('hedef URLsi geri ve ileri gezinmede yerel tercihten bağımsız geri yüklenir', async ({
+  page,
+}) => {
+  await page.goto('katalog/?goal=flow');
+  await expect(page.locator('[data-ready]')).toHaveAttribute(
+    'data-ready',
+    'true',
+  );
+  await page.goto('katalog/?goal=core');
+  await expect(page.locator('[data-ready]')).toHaveAttribute(
+    'data-ready',
+    'true',
+  );
+  await page.goBack();
+  await expect(page.locator('[data-ready]')).toHaveAttribute(
+    'data-ready',
+    'true',
+  );
+  await expect(
+    page.getByRole('combobox', { name: 'Karar hedefim' }),
+  ).toHaveValue('Çalışan ürün akışı');
+  await page.goForward();
+  await expect(page.locator('[data-ready]')).toHaveAttribute(
+    'data-ready',
+    'true',
+  );
+  await expect(
+    page.getByRole('combobox', { name: 'Karar hedefim' }),
+  ).toHaveValue('Ortak altyapı');
 });

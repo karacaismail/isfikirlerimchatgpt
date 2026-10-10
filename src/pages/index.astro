@@ -2,103 +2,83 @@
 import Layout from '../layouts/Layout.astro';
 import Checklist from '../components/Checklist.astro';
 import ProjectSummary from '../components/ProjectSummary.astro';
-import { portfolio } from '../lib/data';
-import { guideClusters } from '../data/guides';
+import { development } from '../data/development';
+import { developmentPaths } from '../data/strategy-guidance';
 const base = import.meta.env.BASE_URL;
+const count = development.candidates.length;
 ---
 
-<Layout title="Hangi projeye odaklanmalıyım?">
+<Layout title="Yazılım geliştirme stratejisi">
+  <p class="eyebrow">Kendi yazılım portföyüm · Strateji 2.0</p>
   <header class="page-heading">
-    <p class="eyebrow">İş Fikirlerim · Altı kişisel proje</p>
-    <h1>Hangi projeye odaklanmalıyım?</h1>
+    <h1>Hangi yazılımı geliştirmeye öncelik vermeliyim?</h1>
     <p class="lede">
-      Önce hedefini seç. Sonra kime, ne satacağını ve bu hafta hangi adımı
-      atacağını gör.
+      Bir ürün akışını tamamla; gereken altyapıyı onunla birlikte geliştir.
+      Projeleri aynı büyüklükte işler, bağımlılıklar ve kabul koşulları
+      üzerinden karşılaştır.
     </p>
-    <div class="page-actions">
+    <div class="actions">
       <a class="button-link" href={`${base}kararlar/`}>
-        Başlangıç planını gör
+        Stratejiyi ve ECA kurallarını aç
       </a>
-      <a class="button-secondary" href={`${base}karsilastir/`}>
-        Projeleri karşılaştır
+      <a class="quiet-link" href={`${base}katalog/`}>
+        {count} adayı filtrele
       </a>
     </div>
   </header>
-
-  <section aria-labelledby="hedef-sec">
-    <div class="cluster-heading">
-      <p class="eyebrow">1. Hedefini seç</p>
-      <h2 id="hedef-sec">Şu an neyi öğrenmek istiyorsun?</h2>
-    </div>
-    <div class="cluster-grid">
-      <article class="project-entry">
-        <p class="project-tag">İlk ödeme</p>
-        <h3>Bir işi satıp teslim etmek</h3>
-        <p>Titanlar, AtonotA ve PIM için küçük ücretli işler öneriliyor.</p>
-        <a href={`${base}katalog/?cluster=paid`}>
-          Ücretli pilot adaylarını gör
-        </a>
-      </article>
-      <article class="project-entry">
-        <p class="project-tag">Düzenli kullanım</p>
-        <h3>Tekrar ödeme getiren ürün kurmak</h3>
-        <p>PIM, HRMS ve İBYS’de önce aynı müşterinin tekrar ihtiyacını sına.</p>
-        <a href={`${base}katalog/?revenue=subscription`}>
-          Düzenli kullanım adaylarını gör
-        </a>
-      </article>
-      <article class="project-entry">
-        <p class="project-tag">Teslim hızı</p>
-        <h3>Kendi geliştirme işimi hızlandırmak</h3>
-        <p>MetaFramer’ı seçtiğin üründeki tek görevde süre kazancıyla ölç.</p>
-        <a href={`${base}katalog/?cluster=internal`}>İç araç planını gör</a>
-      </article>
-    </div>
+  <section class="reading">
+    <h2>Önerim: ürün ile altyapıyı birlikte ilerlet</h2>
+    <p>
+      Başlangıç tercihim PIM’in ürün verisi akışını somut bir altyapı tüketicisi
+      olarak ele almak. Veri modeli, doğrulama ve sürümlü çıktı aynı dilimde
+      sınanabilir. Bu tercih, gerçekleşmiş yeniden kullanım veya tamamlanma
+      süresi iddiası değil. İlk teknik karşılaştırmayı PIM’in ürün modeli →
+      doğrulama → yayın çıktısı ile Studio’nun bağlantı → analiz → kayıtlı sonuç
+      akışı arasında yap. MetaFramer’ı bu akışlardan birinin gerçekten ihtiyaç
+      duyduğu çekirdek kabiliyetle birlikte değerlendir.
+    </p>
+    <p>
+      Bu, bütün portföy için kanıtlanmış bir sıralama değil; mevcut kaynaklardan
+      çıkan başlangıç hipotezi. GenUI, DestekTeşvik ve diğer adayları da
+      kataloğa dahil et. Kurulabilirlik, kapatılacak teknik engel ve kalan iş
+      kanıtı bu tercihi değiştirebilir.
+    </p>
+    <p>
+      Satış, peşinat veya ücretli hizmet bu geliştirme kararının önkoşulu değil.
+      Kaynak projeler bu incelemede çalıştırılmadı; bilinmeyen efor ve yeniden
+      kullanım değeri uydurulmadı.
+    </p>
   </section>
-
-  <nav class="section-nav" aria-label="Proje grupları">
-    {guideClusters.map((cluster) => (
-      <a href={`#${cluster.value}`}>{cluster.label}</a>
+  <nav class="section-nav" aria-label="Geliştirme yolları">
+    {developmentPaths.map((path) => (
+      <a href={`#${path.id}`}>{path.title}</a>
     ))}
   </nav>
-
-  {guideClusters.map((cluster, index) => (
-    <section
-      id={cluster.value}
-      class="cluster-section"
-      aria-labelledby={`${cluster.value}-title`}
-    >
-      <div class="cluster-heading">
-        <p class="eyebrow">{index + 2}. Proje grubu</p>
-        <h2 id={`${cluster.value}-title`}>{cluster.label}</h2>
-        <p class="lede">{cluster.description}</p>
-      </div>
-      <div class="cluster-grid">
-        {cluster.projectIds.map((id) => {
-          const project = portfolio.projects.find((p) => p.id === id)!;
-          return <ProjectSummary project={project} />;
-        })}
-      </div>
-      <Checklist
-        id={`cluster-${cluster.value}`}
-        title="Bu grup için adım adım"
-        items={cluster.steps}
-      />
-      <p>
-        <a href={`${base}katalog/?cluster=${cluster.value}`}>
-          {cluster.label} grubunu katalogda filtrele
-        </a>
-      </p>
+  {developmentPaths.map((path) => (
+    <section id={path.id} class="guide-section">
+      <p class="eyebrow">Geliştirme yolu</p>
+      <h2>{path.title}</h2>
+      <p class="reading">{path.description}</p>
+      <Checklist id={`software-v2-cluster-${path.id}`} items={path.steps} />
+      <a
+        class="button-link"
+        href={`${base}katalog/?goal=${path.id}&focus=${path.id}`}
+      >
+        Bu odaktaki adayları gör
+      </a>
     </section>
   ))}
-
-  <section class="reading" aria-labelledby="karar-dayanagi">
-    <h2 id="karar-dayanagi">Bu öneriler neye dayanıyor?</h2>
-    <p>
-      Belgeler ve kod incelendi; kaynak ürünler çalıştırılmadı. Gerçek satış ve
-      müşteri devamlılığı henüz doğrulanmadı. Buradaki planlar, hangi küçük işi
-      önce deneyeceğini seçmene yardımcı olur.
+  <section>
+    <h2>İlk teknik karşılaştırma</h2>
+    <p class="reading">
+      Ürün, çatı ve platform aynı şey değil. Aşağıdaki kayıtların her birinde
+      karşılaştırılan yatırım dilimi açıkça belirtiliyor.
     </p>
-    <a href={`${base}yontem/`}>İnceleme kapsamını ve puanlama yöntemini oku</a>
+    <div class="project-grid">
+      {['pim', 'atonota', 'metaframer'].map((id) => {
+        const c = development.candidates.find((c) => c.id === id);
+        return c && <ProjectSummary candidate={c} />;
+      })}
+    </div>
   </section>
 </Layout>

@@ -856,3 +856,11 @@ pre {
   border-radius: var(--radius-pill);
   color: var(--text-muted);
 }
+.comparison-projects {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-lg);
+}
+.comparison-projects h2 {
+  font-size: var(--text-section);
+}

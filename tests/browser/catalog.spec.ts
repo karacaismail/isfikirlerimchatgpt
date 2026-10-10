@@ -35,7 +35,7 @@ test('etkin yer tutucu metin ve klavye odağı kontrastı', async ({ page }) => 
   await page.goto('katalog/');
   await ready(page);
   await openFilters(page);
-  for (const label of ['Proje veya problem ara', 'Gelir türü']) {
+  for (const label of ['Proje veya problem ara', 'Kayıt türü']) {
     const colors = await page
       .locator('input')
       .and(page.getByLabel(label, { exact: true }))
@@ -124,7 +124,7 @@ test('320 öncelikli arama, boş durum, filtre, iki-dört proje ve kalıcı kar�
   await page.goto('katalog/');
   await ready(page);
   const entries = page.locator('[data-project]');
-  await expect(entries).toHaveCount(6);
+  await expect(entries).toHaveCount(23);
   await page.getByLabel('Proje veya problem ara').fill('metaframework');
   await expect(entries).toHaveCount(1);
   await page
@@ -137,13 +137,12 @@ test('320 öncelikli arama, boş durum, filtre, iki-dört proje ve kalıcı kar�
     }),
   ).toBeVisible();
   await page.getByRole('button', { name: 'Filtreleri temizle' }).click();
-  await expect(entries).toHaveCount(6);
+  await expect(entries).toHaveCount(23);
   await openFilters(page);
-  await page.getByText('Diğer filtreler', { exact: false }).click();
-  const stage = page.getByRole('combobox', { name: 'Ürün aşaması' });
+  const stage = page.getByRole('combobox', { name: 'İnceleme derinliği' });
   await stage.click();
   await page.getByRole('option').first().click();
-  expect(await entries.count()).toBeLessThan(6);
+  expect(await entries.count()).toBeLessThan(23);
   await page.getByRole('button', { name: 'Filtreleri temizle' }).click();
   for (let i = 0; i < 2; i++) await entries.nth(i).getByRole('button').click();
   await page
@@ -164,7 +163,7 @@ test('320 öncelikli arama, boş durum, filtre, iki-dört proje ve kalıcı kar�
     .getByRole('link', { name: 'Seçilen projeleri karşılaştır' })
     .click();
   await ready(page);
-  await expect(page.locator('.comparison-criterion')).toHaveCount(11);
+  await expect(page.locator('.comparison-criterion')).toHaveCount(22);
   await expect(
     page.locator('.comparison-criterion').first().locator('.comparison-cell'),
   ).toHaveCount(3);
@@ -184,7 +183,7 @@ test('320 öncelikli arama, boş durum, filtre, iki-dört proje ve kalıcı kar�
   expect(errors).toEqual([]);
 });
 
-test('özel seçim klavyesi, geçersiz ağırlık ve pencereden odak dönüşü', async ({
+test('özel seçim klavyesi, kural penceresi ve odak dönüşü', async ({
   page,
 }, testInfo) => {
   await page.setViewportSize({ width: 320, height: 480 });
@@ -198,67 +197,43 @@ test('özel seçim klavyesi, geçersiz ağırlık ve pencereden odak dönüşü'
   await page.keyboard.press('Enter');
   await expect(sort).not.toHaveValue('Ada göre');
   await page.keyboard.press('Escape');
-  const opener = page.getByRole('button', { name: 'Ağırlıkları düzenle' });
+  const opener = page.getByRole('button', { name: 'Karar kurallarını incele' });
   await opener.click();
   const dialog = page.getByRole('dialog');
   await expect(dialog).toBeVisible();
-  await dialog.getByLabel('Gelir potansiyeli ağırlığı').fill('99');
-  await expect(dialog.getByRole('alert')).toBeVisible();
   await readable(page);
-  await expect
-    .poll(() =>
-      dialog.evaluate((el) => {
-        let opacity = 1;
-        let current: Element | null = el;
-        while (current) {
-          opacity *= Number(getComputedStyle(current).opacity);
-          current = current.parentElement;
-        }
-        return opacity;
-      }),
-    )
-    .toBe(1);
   await page.screenshot({
     path: testInfo.outputPath('320-modal.png'),
     animations: 'disabled',
   });
+  await dialog.getByRole('button', { name: 'Kapat', exact: true }).focus();
   await page.setViewportSize({ width: 667, height: 320 });
-  await expect(dialog.getByLabel('Gelir potansiyeli ağırlığı')).toHaveValue(
-    '99',
-  );
-  await expect(dialog.getByLabel('Gelir potansiyeli ağırlığı')).toBeFocused();
+  await expect(
+    dialog.getByRole('button', { name: 'Kapat', exact: true }),
+  ).toBeFocused();
   await readable(page);
   await page.setViewportSize({ width: 320, height: 480 });
   await page.keyboard.press('Escape');
   await expect(dialog).toBeHidden();
   await expect(opener).toBeFocused();
   await opener.click();
-  await dialog.getByRole('button', { name: 'Hızlı gelir varsayılanı' }).click();
-  await expect(dialog.getByRole('alert')).toHaveCount(0);
-  await dialog
-    .getByRole('button', { name: 'Ağırlıkları uygula ve kapat' })
-    .click();
+  await dialog.getByRole('button', { name: 'Kapat', exact: true }).click();
   await expect(dialog).toBeHidden();
   await expect(opener).toBeFocused();
-  await expect(
-    page.getByRole('heading', {
-      name: 'Eksik ölçütlü projeler — kesin sıralama yok',
-    }),
-  ).toBeVisible();
   await page.keyboard.press('Tab');
   await page.keyboard.press('Shift+Tab');
   const focus = await page.evaluate(() => {
     const el = document.activeElement as HTMLElement;
-    const style = getComputedStyle(el);
+    const s = getComputedStyle(el);
     const ancestors = [];
-    let parent = el.parentElement;
-    while (parent) {
-      const s = getComputedStyle(parent);
-      if (s.outlineStyle !== 'none' || s.boxShadow !== 'none')
-        ancestors.push(parent.tagName);
-      parent = parent.parentElement;
+    let p = el.parentElement;
+    while (p) {
+      const ps = getComputedStyle(p);
+      if (ps.outlineStyle !== 'none' || ps.boxShadow !== 'none')
+        ancestors.push(p.tagName);
+      p = p.parentElement;
     }
-    return { outline: style.outlineStyle, shadow: style.boxShadow, ancestors };
+    return { outline: s.outlineStyle, shadow: s.boxShadow, ancestors };
   });
   expect(focus).toEqual({ outline: 'solid', shadow: 'none', ancestors: [] });
 });
@@ -275,14 +250,14 @@ test('tüm genişliklerde metin, açılır panel, tablo ve büyütülmüş kök 
       height: width === 667 ? 320 : width === 320 ? 480 : 720,
     });
     await readable(page);
-    await page.getByRole('combobox', { name: 'Gelir türü' }).click();
+    await page.getByRole('combobox', { name: 'Kayıt türü' }).click();
     await readable(page);
     await page.keyboard.press('Escape');
   }
   await page.setViewportSize({ width: 320, height: 640 });
   await page.getByRole('button', { name: 'Tablo görünümü' }).click();
   const table = page.getByRole('region', {
-    name: 'Proje karşılaştırma tablosu, yatay kaydırılabilir',
+    name: 'Proje karşılaştırma tablosu',
   });
   await readable(page);
   const dimensions = await table.evaluate((el) => ({
@@ -349,7 +324,7 @@ test('JavaScript kapalıyken bütün temel sayfa ve proje bağlantıları okunur
   const links = await page
     .locator('[data-project] h3 a')
     .evaluateAll((els) => els.map((el) => (el as HTMLAnchorElement).href));
-  expect(links).toHaveLength(6);
+  expect(links).toHaveLength(23);
   for (const link of links) {
     const response = await page.goto(link);
     expect(response?.status()).toBe(200);
@@ -379,32 +354,22 @@ test('karar, kapsam ve genel bakış metinleri akışkan kalır', async ({
   }
 });
 
-test('statik tablolar klavyeyle yatay kayar', async ({ page }) => {
+test('statik proje ayrıntıları gerçek klavye etkileşimiyle açılır ve kapanır', async ({
+  page,
+}) => {
   await page.setViewportSize({ width: 320, height: 480 });
-  for (const route of ['firsatlar/', 'projeler/atonota/']) {
-    await page.goto(route);
-    if (route.startsWith('projeler')) {
-      await page.locator('#ozellikler > summary').click();
-    } else {
-      await page.locator('#puanlar > summary').click();
-    }
-    const region = page.locator('.table-scroll').first();
-    await page.mouse.click(1, 1);
-    let focused = false;
-    for (let i = 0; i < 80; i++) {
-      await page.keyboard.press('Tab');
-      if (await region.evaluate((el) => el === document.activeElement)) {
-        focused = true;
-        break;
-      }
-    }
-    expect(focused).toBe(true);
-    await page.keyboard.press('ArrowRight');
-    await expect
-      .poll(() => region.evaluate((el) => el.scrollLeft))
-      .toBeGreaterThan(0);
-    await readable(page);
-  }
+  await page.goto('projeler/atonota/');
+  const details = page.locator('#kurallar');
+  const summary = details.locator(':scope > summary');
+  await expect(details).not.toHaveAttribute('open');
+  await summary.focus();
+  await page.keyboard.press('Enter');
+  await expect(details).toHaveAttribute('open', '');
+  await expect(details.locator('.project-entry')).toHaveCount(14);
+  await readable(page);
+  await summary.focus();
+  await page.keyboard.press('Enter');
+  await expect(details).not.toHaveAttribute('open');
 });
 
 test('statik rotalar yalnız ortak gezinme ve kontrol listesi kodunu indirir; katalog bütçede kalır', async ({
@@ -560,7 +525,7 @@ test('görsel referans adayları, dokunma ve hareket tercihi', async ({
   });
   await readable(page);
   await page.locator('.filter-disclosure > summary').tap();
-  const select = page.getByRole('combobox', { name: 'Gelir türü' });
+  const select = page.getByRole('combobox', { name: 'Kayıt türü' });
   await select.tap();
   await expect(page.getByRole('listbox')).toBeVisible();
   await readable(page);

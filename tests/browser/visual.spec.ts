@@ -9,7 +9,7 @@ test('incelenmiş kalıcı görsel referanslar', async ({ page }) => {
     'true',
   );
   await page.locator('.filter-disclosure > summary').click();
-  await page.getByRole('combobox', { name: 'Gelir türü' }).click();
+  await page.getByRole('combobox', { name: 'Kayıt türü' }).click();
   await expect(page.getByRole('listbox')).toBeVisible();
   await expect.soft(page).toHaveScreenshot('320-dropdown.png', {
     animations: 'disabled',

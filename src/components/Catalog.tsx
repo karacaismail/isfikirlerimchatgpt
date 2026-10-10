@@ -9,13 +9,6 @@ import {
 import { theme } from './Proof';
 import { scrollTableWithKeyboard } from '../lib/table-scroll';
 import {
-  customerLabels,
-  guideClusters,
-  guideFor,
-  projectGuides,
-  revenueLabels,
-} from '../data/guides';
-import {
   createDefaultPreferences,
   filterKeys,
   filterOptions,
@@ -29,41 +22,48 @@ import {
   type FilterKey,
 } from '../lib/catalog';
 import {
-  defaultProfiles,
-  groupIds,
-  groupNames,
-  profileScore,
-  scoreLabel,
-  type Project,
-} from '../lib/model';
-
-type Props = { projects: Project[]; base: string; mode: 'catalog' | 'compare' };
-const storageKey = 'isfikirlerim-tercihler-v1';
-const filterLabels: Record<FilterKey, string> = {
-  cluster: 'Başlangıç yolu',
-  customer: 'Müşteri türü',
-  revenue: 'Gelir türü',
-  stage: 'Ürün aşaması',
-  platform: 'Önerilen platform',
-  income: 'Gelir modeli',
-  decision: 'Önerilen karar',
+  goalIds,
+  goalLabels,
+  kindLabels,
+  coverageLabels,
+  evaluateCandidate,
+  strategicCriteria,
+  assessmentFor,
+  assessmentLabels,
+  type Candidate,
+  type GoalId,
+  strategicRules,
+  runtimeLabel,
+} from '../lib/strategy';
+type Props = {
+  candidates: Candidate[];
+  base: string;
+  mode: 'catalog' | 'compare';
 };
-export default function Catalog({ projects, base, mode }: Props) {
+const storageKey = 'isfikirlerim-gelistirme-v2';
+const filterLabels: Record<FilterKey, string> = {
+  focus: 'Geliştirme odağı',
+  kind: 'Kayıt türü',
+  coverage: 'İnceleme derinliği',
+  capability: 'Yazılım kabiliyeti',
+  rule: 'Öncelikli ECA kuralı',
+};
+export default function Catalog({ candidates, base, mode }: Props) {
   const [prefs, setPrefs] = useState<CatalogPreferences>(
     createDefaultPreferences,
   );
   const [ready, setReady] = useState(false);
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [table, setTable] = useState(false);
-  const [weightsOpen, setWeightsOpen] = useState(false);
+  const [rulesOpen, setRulesOpen] = useState(false);
   const [storageFailed, setStorageFailed] = useState(false);
   const [urlFailed, setUrlFailed] = useState(false);
   const initialized = useRef(false);
-  const weightsOpener = useRef<HTMLButtonElement>(null);
+  const opener = useRef<HTMLButtonElement>(null);
   const update = <K extends keyof CatalogPreferences>(
     key: K,
     value: CatalogPreferences[K],
-  ) => setPrefs((p) => ({ ...p, [key]: value }));
+  ) => setPrefs((p) => sanitizePreferences({ ...p, [key]: value }, candidates));
   useEffect(() => {
     if (initialized.current) return;
     initialized.current = true;
@@ -71,37 +71,24 @@ export default function Catalog({ projects, base, mode }: Props) {
     try {
       saved = sanitizePreferences(
         JSON.parse(localStorage.getItem(storageKey) || 'null'),
-        projects,
-        projectGuides,
+        candidates,
       );
     } catch {
       setStorageFailed(true);
     }
-    setPrefs(
-      preferencesFromUrl(
-        window.location.search,
-        saved,
-        projects,
-        projectGuides,
-      ),
-    );
-    setFiltersOpen(window.matchMedia('(min-width: 48rem)').matches);
+    setPrefs(preferencesFromUrl(location.search, saved, candidates));
+    setFiltersOpen(matchMedia('(min-width:48rem)').matches);
     setReady(true);
-  }, [projects]);
+  }, [candidates]);
   useEffect(() => {
     if (!ready) return;
-    const restoreUrl = () =>
-      setPrefs((current) =>
-        preferencesFromUrl(
-          window.location.search,
-          resetFilters(current),
-          projects,
-          projectGuides,
-        ),
+    const restore = () =>
+      setPrefs((p) =>
+        preferencesFromUrl(location.search, resetFilters(p), candidates),
       );
-    window.addEventListener('popstate', restoreUrl);
-    return () => window.removeEventListener('popstate', restoreUrl);
-  }, [projects, ready]);
+    addEventListener('popstate', restore);
+    return () => removeEventListener('popstate', restore);
+  }, [ready, candidates]);
   useEffect(() => {
     if (!ready) return;
     try {
@@ -110,111 +97,130 @@ export default function Catalog({ projects, base, mode }: Props) {
       setStorageFailed(true);
     }
     try {
-      const search = queryStringForPreferences(window.location.search, prefs);
-      if (search !== window.location.search)
-        window.history.replaceState(
-          window.history.state,
+      const search = queryStringForPreferences(location.search, prefs);
+      if (search !== location.search)
+        history.replaceState(
+          history.state,
           '',
-          `${window.location.pathname}${search}${window.location.hash}`,
+          `${location.pathname}${search}${location.hash}`,
         );
     } catch {
       setUrlFailed(true);
     }
   }, [prefs, ready]);
-  const options = filterOptions(projects, projectGuides);
-  const filtered = filterProjects(projects, prefs, projectGuides);
-  const { sorted, complete, incomplete } = sortProjects(filtered, prefs);
-  const advancedCount = ['stage', 'platform', 'income', 'decision'].filter(
-    (key) => prefs[key as FilterKey],
-  ).length;
-  const active = filterKeys.filter((key) => prefs[key]);
-  const hasFilters = Boolean(prefs.query || active.length);
-  const clusterLabel = (id: string) =>
-    guideClusters.find((cluster) => cluster.value === id)?.label || id;
-  const filterValueLabel = (key: FilterKey, value: string) =>
-    key === 'cluster'
-      ? clusterLabel(value)
-      : key === 'customer'
-        ? customerLabels[value as keyof typeof customerLabels] || value
-        : key === 'revenue'
-          ? revenueLabels[value as keyof typeof revenueLabels] || value
-          : value;
+  const options = filterOptions(candidates, prefs.goal);
+  const sorted = sortProjects(filterProjects(candidates, prefs), prefs);
+  const active = filterKeys.filter((k) => prefs[k]);
+  const hasFilters = !!(prefs.query || active.length);
   const chosen = prefs.selected.flatMap((id) =>
-    projects.filter((p) => p.id === id),
+    candidates.filter((c) => c.id === id),
   );
-  const sum = groupIds.reduce((a, g) => a + prefs.weights[g], 0);
-  const selection = (p: Project) =>
-    prefs.selected.includes(p.id)
-      ? prefs.selected.filter((id) => id !== p.id)
-      : [...prefs.selected, p.id];
-  const fields = [
-    ['Ne işe yarar?', (p: Project) => guideFor(p.id).summary],
-    ['Kime satılır?', (p: Project) => guideFor(p.id).buyer],
-    ['İlk teklif', (p: Project) => guideFor(p.id).firstOffer],
-    ['İlk adım', (p: Project) => guideFor(p.id).nextStep],
-    ['Yapılacaklar', (p: Project) => guideFor(p.id).steps.join(' · ')],
-    ['Kaynaklarda görülen durum', (p: Project) => p.observed],
-    ['Önemli koşullar', (p: Project) => p.blockers.join(' · ')],
-  ] as const;
-  function projectEntry(p: Project) {
-    const guide = guideFor(p.id);
+  const label = (key: FilterKey, value: string) =>
+    key === 'focus'
+      ? goalLabels[value as GoalId]
+      : key === 'kind'
+        ? kindLabels[value as Candidate['kind']]
+        : key === 'coverage'
+          ? coverageLabels[value as Candidate['coverage']]
+          : key === 'rule'
+            ? `${value} · ${strategicRules.find((r) => r.id === value)?.title || value}`
+            : value;
+  const selection = (c: Candidate) =>
+    prefs.selected.includes(c.id)
+      ? prefs.selected.filter((id) => id !== c.id)
+      : [...prefs.selected, c.id];
+  const fields: [string, (c: Candidate) => string][] = [
+    ['Geliştirilecek dilim', (c) => c.slice.title],
+    ['Tamamlanacak sonuç', (c) => c.slice.outcome],
+    [
+      'ECA önerisi',
+      (c) =>
+        `${evaluateCandidate(c, prefs.goal).label} (${evaluateCandidate(c, prefs.goal).ruleIds.join(', ')})`,
+    ],
+    ['Neden şimdi?', (c) => c.rationale],
+    ['Karşı görüş', (c) => c.counterargument],
+    ['Kabul koşulları', (c) => c.slice.acceptance.join(' · ')],
+    [
+      'Bağımlılıklar',
+      (c) =>
+        c.dependencies
+          .map(
+            (d) =>
+              `${d.title} (${d.state === 'observed' ? 'kaynakta' : d.state === 'inferred' ? 'öneri' : 'bilinmiyor'}): ${d.reason}`,
+          )
+          .join(' · ') || 'Karşılaştırılabilir bağımlılık kaydı yok.',
+    ],
+    ['Önceliği değiştirecek bilgi', (c) => c.reconsiderWhen],
+    ...strategicCriteria.map(
+      (criterion) =>
+        [
+          criterion.title,
+          (c: Candidate) => {
+            const a = assessmentFor(c, criterion.id);
+            return `${assessmentLabels[a.state]}: ${a.finding} Kanıt: ${a.evidenceIds.join(', ') || 'yok'}. Doğrulama: ${a.verification}`;
+          },
+        ] as [string, (c: Candidate) => string],
+    ),
+  ];
+  const entry = (c: Candidate) => {
+    const result = evaluateCandidate(c, prefs.goal);
     return (
-      <article key={p.id} className="project-entry" data-project={p.id}>
+      <article key={c.id} className="project-entry" data-project={c.id}>
         <div className="project-tags">
-          <span>{clusterLabel(guide.cluster)}</span>
-          <span>{revenueLabels[guide.revenueType]}</span>
+          <span className="project-tag">{kindLabels[c.kind]}</span>
+          <span className="project-tag">{coverageLabels[c.coverage]}</span>
         </div>
         <h3>
-          <a href={`${base}projeler/${p.id}/`}>{p.name}</a>
+          <a href={`${base}projeler/${c.id}/`}>{c.name}</a>
         </h3>
-        <p className="project-summary">{guide.summary}</p>
+        <p className="project-summary">{c.definition}</p>
         <dl className="project-facts">
           <div>
-            <dt>Kime satılır?</dt>
-            <dd>{guide.buyer}</dd>
+            <dt>Geliştirilecek dilim</dt>
+            <dd>{c.slice.title}</dd>
           </div>
           <div>
-            <dt>İlk teklif</dt>
-            <dd>{guide.firstOffer}</dd>
+            <dt>Neden şimdi?</dt>
+            <dd>{c.rationale}</dd>
           </div>
         </dl>
         <p className="project-next-step">
-          <strong>İlk adım:</strong> {guide.nextStep}
+          <strong>{result.label}:</strong> {c.slice.steps[0]}{' '}
+          <span className="meta">{result.ruleIds.join(', ')}</span>
         </p>
         <div className="actions">
-          <a className="button-link" href={`${base}projeler/${p.id}/`}>
+          <a className="button-link" href={`${base}projeler/${c.id}/`}>
             Adım adım incele
           </a>
           <Button
             variant="light"
             disabled={
-              !ready || (!prefs.selected.includes(p.id) && chosen.length === 4)
+              !ready || (!prefs.selected.includes(c.id) && chosen.length === 4)
             }
-            aria-pressed={prefs.selected.includes(p.id)}
-            onClick={() => update('selected', selection(p))}
+            aria-pressed={prefs.selected.includes(c.id)}
+            onClick={() => update('selected', selection(c))}
           >
-            {prefs.selected.includes(p.id)
-              ? `${p.name}: seçimden çıkar`
-              : `${p.name}: karşılaştırmaya ekle`}
+            {c.name}:{' '}
+            {prefs.selected.includes(c.id)
+              ? 'seçimden çıkar'
+              : 'karşılaştırmaya ekle'}
           </Button>
         </div>
         <details className="score-disclosure">
-          <summary>Puanları göster</summary>
-          <p className="meta">
-            Puanlar kaynaklara dayalı geçici değerlendirmedir; gelir veya başarı
-            garantisi değildir.
+          <summary>Kararın gerekçesi ve karşı görüş</summary>
+          <p>
+            <strong>Karşı görüş:</strong> {c.counterargument}
           </p>
-          <div className="score-list">
-            {groupIds.map((g) => (
-              <p key={g}>
-                <strong>{groupNames[g]}:</strong> {scoreLabel(g, p.scores[g])}
-              </p>
-            ))}
-          </div>
+          <p>
+            <strong>Karar ne zaman değişir?</strong> {c.reconsiderWhen}
+          </p>
+          <p>Kaynakta: {c.observed}</p>
+          <p>{runtimeLabel(c)} Efor: tahmin edilmedi.</p>
+          <a href={`${base}projeler/${c.id}/#kurallar`}>ECA kural izini aç</a>
         </details>
       </article>
     );
-  }
+  };
   return (
     <MantineProvider theme={theme} forceColorScheme="light">
       <section
@@ -224,16 +230,15 @@ export default function Catalog({ projects, base, mode }: Props) {
       >
         <noscript>
           <p className="notice">
-            JavaScript kapalı. Aşağıdaki proje açıklamaları ve ayrıntı
-            bağlantıları okunabilir; etkileşimli filtre ve karşılaştırma için
-            modern tarayıcı gerekir.
+            JavaScript kapalı. Proje açıklamaları ve ayrıntı bağlantıları
+            okunabilir; filtre ve karşılaştırma için JavaScript gerekir.
           </p>
         </noscript>
         <div className="catalog-toolbar">
           <TextInput
             className="catalog-search"
             label="Proje veya problem ara"
-            placeholder="Ör. ürün kataloğu, eğitim, İK"
+            placeholder="Ör. ürün modeli, izin, entegrasyon"
             value={prefs.query}
             disabled={!ready}
             onChange={(e) => update('query', e.currentTarget.value)}
@@ -242,145 +247,94 @@ export default function Catalog({ projects, base, mode }: Props) {
           <details
             className="filter-disclosure"
             open={filtersOpen}
-            onToggle={(event) => setFiltersOpen(event.currentTarget.open)}
+            onToggle={(e) => setFiltersOpen(e.currentTarget.open)}
           >
             <summary>
               Filtreler{active.length ? ` (${active.length} etkin)` : ''}
             </summary>
-            <fieldset className="cluster-chips">
-              <legend>Nasıl başlamak istiyorsun?</legend>
-              <Button
-                className="filter-chip"
-                variant="default"
-                aria-pressed={!prefs.cluster}
-                disabled={!ready}
-                onClick={() => update('cluster', null)}
-              >
-                Tüm yollar (
-                {
-                  filterProjects(
-                    projects,
-                    { ...prefs, cluster: null },
-                    projectGuides,
-                  ).length
-                }
-                )
-              </Button>
-              {guideClusters.map((cluster) => (
-                <Button
-                  key={cluster.value}
-                  className="filter-chip"
-                  variant="default"
-                  aria-pressed={prefs.cluster === cluster.value}
-                  disabled={!ready}
-                  onClick={() =>
-                    update(
-                      'cluster',
-                      prefs.cluster === cluster.value ? null : cluster.value,
-                    )
-                  }
-                >
-                  {cluster.label} (
-                  {
-                    filterProjects(
-                      projects,
-                      { ...prefs, cluster: cluster.value },
-                      projectGuides,
-                    ).length
-                  }
-                  )
-                </Button>
-              ))}
-            </fieldset>
             <div className="filters">
               <Select
-                label="Müşteri türü"
-                placeholder="Tüm müşteriler"
-                data={options.customer.map((value) => ({
+                label="Karar hedefim"
+                data={goalIds.map((value) => ({
                   value,
-                  label: filterValueLabel('customer', value),
+                  label: goalLabels[value],
                 }))}
-                value={prefs.customer}
-                onChange={(v) => update('customer', v)}
+                value={prefs.goal}
+                onChange={(v) => update('goal', (v || 'flow') as GoalId)}
                 disabled={!ready}
-                allowDeselect
-              />
-              <Select
-                label="Gelir türü"
-                placeholder="Tüm gelir türleri"
-                data={options.revenue.map((value) => ({
-                  value,
-                  label: filterValueLabel('revenue', value),
-                }))}
-                value={prefs.revenue}
-                onChange={(v) => update('revenue', v)}
-                disabled={!ready}
-                allowDeselect
               />
               <Select
                 label="Sıralama"
                 data={[
                   { value: 'name', label: 'Ada göre' },
-                  ...groupIds.map((g) => ({ value: g, label: groupNames[g] })),
-                  { value: 'profile', label: 'Kişisel ağırlıklar' },
+                  {
+                    value: 'fit',
+                    label: 'Seçilen hedefle ilişkili olanlar önce',
+                  },
+                  { value: 'coverage', label: 'Ayrıntılı incelenenler önce' },
                 ]}
                 value={prefs.sort}
                 onChange={(v) => update('sort', v || 'name')}
                 disabled={!ready}
               />
             </div>
-            <details className="filter-panel">
-              <summary>
-                Diğer filtreler
-                {advancedCount ? ` (${advancedCount} etkin)` : ''}
-              </summary>
-              <div className="filters">
-                <Select
-                  label="Ürün aşaması"
-                  placeholder="Tüm aşamalar"
-                  data={options.stage}
-                  value={prefs.stage}
-                  onChange={(v) => update('stage', v)}
+            <fieldset className="cluster-chips">
+              <legend>Geliştirme odağı</legend>
+              <Button
+                variant="default"
+                className="filter-chip"
+                aria-pressed={!prefs.focus}
+                disabled={!ready}
+                onClick={() => update('focus', null)}
+              >
+                Tüm odaklar
+              </Button>
+              {goalIds.map((id) => (
+                <Button
+                  key={id}
+                  variant="default"
+                  className="filter-chip"
+                  aria-pressed={prefs.focus === id}
                   disabled={!ready}
-                  allowDeselect
-                />
-                <Select
-                  label="Önerilen platform"
-                  placeholder="Tüm platformlar"
-                  data={options.platform}
-                  value={prefs.platform}
-                  onChange={(v) => update('platform', v)}
-                  disabled={!ready}
-                  allowDeselect
-                />
-                <Select
-                  label="Önerilen karar"
-                  placeholder="Tüm kararlar"
-                  data={options.decision}
-                  value={prefs.decision}
-                  onChange={(v) => update('decision', v)}
-                  disabled={!ready}
-                  allowDeselect
-                />
-                <Select
-                  label="Gelir modeli"
-                  placeholder="Tüm modeller"
-                  data={options.income}
-                  value={prefs.income}
-                  onChange={(v) => update('income', v)}
-                  disabled={!ready}
-                  allowDeselect
-                />
-              </div>
-            </details>
+                  onClick={() =>
+                    update('focus', prefs.focus === id ? null : id)
+                  }
+                >
+                  {goalLabels[id]} (
+                  {filterProjects(candidates, { ...prefs, focus: id }).length})
+                </Button>
+              ))}
+            </fieldset>
+            <div className="filters">
+              {(['kind', 'coverage', 'capability', 'rule'] as FilterKey[]).map(
+                (key) => (
+                  <Select
+                    key={key}
+                    label={filterLabels[key]}
+                    placeholder="Tümü"
+                    data={options[key].map((value) => ({
+                      value,
+                      label: label(key, value),
+                    }))}
+                    value={prefs[key]}
+                    onChange={(v) => update(key, v)}
+                    disabled={!ready}
+                    allowDeselect
+                  />
+                ),
+              )}
+            </div>
             <div className="actions catalog-options">
               <Button
                 variant="light"
-                ref={weightsOpener}
-                onClick={() => setWeightsOpen(true)}
+                ref={opener}
+                onClick={(event) => {
+                  event.currentTarget.focus();
+                  setRulesOpen(true);
+                }}
                 disabled={!ready}
               >
-                Ağırlıkları düzenle
+                Karar kurallarını incele
               </Button>
               {mode === 'catalog' && (
                 <Button
@@ -393,16 +347,16 @@ export default function Catalog({ projects, base, mode }: Props) {
               )}
               <a
                 className="quiet-link"
-                href={`${base}veri.json`}
-                download="is-fikirlerim.json"
+                href={`${base}strateji.json`}
+                download="yazilim-stratejisi.json"
               >
-                Kamuya açık veriyi indir
+                Strateji verisini indir
               </a>
             </div>
             <p className="meta">
               {storageFailed
                 ? 'Tarayıcı saklama alanına erişilemedi; tercihler bu oturumda çalışır.'
-                : 'Karşılaştırma seçimin ve puan ağırlıkların bu tarayıcıda saklanır.'}{' '}
+                : 'Karar hedefi ve karşılaştırma seçimi bu tarayıcıda saklanır.'}{' '}
               {urlFailed
                 ? 'Filtreler adres çubuğuna yazılamadı.'
                 : 'Arama ve filtreleri paylaşmak için sayfanın adresini kopyala.'}
@@ -412,10 +366,10 @@ export default function Catalog({ projects, base, mode }: Props) {
             <div className="active-filters" aria-label="Etkin filtreler">
               {prefs.query && (
                 <Button
-                  className="filter-chip"
                   variant="default"
-                  onClick={() => update('query', '')}
+                  className="filter-chip"
                   aria-label="Arama filtresini kaldır"
+                  onClick={() => update('query', '')}
                 >
                   Arama: {prefs.query} · Kaldır
                 </Button>
@@ -423,270 +377,146 @@ export default function Catalog({ projects, base, mode }: Props) {
               {active.map((key) => (
                 <Button
                   key={key}
-                  className="filter-chip"
                   variant="default"
-                  onClick={() => update(key, null)}
+                  className="filter-chip"
                   aria-label={`${filterLabels[key]} filtresini kaldır`}
+                  onClick={() => update(key, null)}
                 >
-                  {filterLabels[key]}: {filterValueLabel(key, prefs[key]!)} ·
-                  Kaldır
+                  {label(key, prefs[key]!)} · Kaldır
                 </Button>
               ))}
+              <Button
+                variant="light"
+                onClick={() => setPrefs(resetFilters(prefs))}
+              >
+                Filtreleri temizle
+              </Button>
             </div>
           )}
         </div>
-        <div className="result-toolbar">
+        <div className="comparison-tray">
           <p role="status" aria-live="polite">
-            {projects.length} projeden {filtered.length} gösteriliyor ·{' '}
-            {chosen.length}/4 karşılaştırma seçimi
+            {chosen.length}/4 proje seçili · {sorted.length} kayıt
           </p>
-          {hasFilters && (
+          <div className="actions">
+            <a className="button-link" href={`${base}karsilastir/`}>
+              Seçilen projeleri karşılaştır
+            </a>
             <Button
               variant="light"
-              onClick={() => setPrefs(resetFilters)}
-              disabled={!ready}
+              disabled={!ready || !chosen.length}
+              onClick={() => update('selected', [])}
             >
-              Filtreleri temizle
+              Karşılaştırma seçimini temizle
             </Button>
-          )}
+          </div>
         </div>
-        {chosen.length > 0 && (
-          <aside className="comparison-tray" aria-label="Karşılaştırma seçimin">
-            <p>
-              <strong>Seçtiklerin:</strong>{' '}
-              {chosen.map((p) => p.name).join(' · ')}
-            </p>
-            <div className="actions comparison-selection">
-              {mode === 'catalog' && (
-                <a className="button-link" href={`${base}karsilastir/`}>
-                  Seçilen projeleri karşılaştır
-                </a>
-              )}
-              {chosen.map((p) => (
-                <Button
-                  key={p.id}
-                  variant="default"
-                  onClick={() =>
-                    update(
-                      'selected',
-                      prefs.selected.filter((id) => id !== p.id),
-                    )
-                  }
-                  aria-label={`${p.name}: karşılaştırma seçiminden çıkar`}
-                >
-                  {p.name} · Çıkar
-                </Button>
-              ))}
-            </div>
-            <p className="meta">
-              Filtreler seçimlerini silmez. En fazla dört projeyi yan yana
-              karşılaştırabilirsin.
-            </p>
-          </aside>
-        )}
+        <p className="notice">
+          Bu görünüm kesin bir başarı sırası üretmez. Seçilen hedef önerileri
+          yorumlamaya yarar; bilinmeyen ölçütler puana çevrilmez. Sıralama
+          tercihi yalnız liste düzenidir.
+        </p>
         {mode === 'compare' && (
-          <section aria-label="Seçilen projelerin karşılaştırması">
-            <h2>Karşılaştırma</h2>
-            <p>
-              Kime satacağını, ilk teklifini ve yapman gereken işleri yan yana
-              gör.
-            </p>
+          <section
+            className="comparison"
+            aria-label="Seçilen projelerin karşılaştırması"
+          >
             {chosen.length < 2 ? (
-              <p className="notice">
-                Karşılaştırmak için aşağıdan en az iki proje seçin.
-              </p>
+              <p>Karşılaştırmak için aşağıdan en az iki proje seçin.</p>
             ) : (
               <>
-                {fields.map(([label, render]) => (
-                  <section className="comparison-criterion" key={label}>
-                    <h3>{label}</h3>
+                <div className="comparison-projects">
+                  {chosen.map((c) => (
+                    <h2 key={c.id}>
+                      <a href={`${base}projeler/${c.id}/`}>{c.name}</a>
+                    </h2>
+                  ))}
+                </div>
+                {fields.map(([title, get]) => (
+                  <section className="comparison-criterion" key={title}>
+                    <h3>{title}</h3>
                     <div className="comparison-cells">
-                      {chosen.map((p) => (
-                        <article className="comparison-cell" key={p.id}>
-                          <h3>{p.name}</h3>
-                          <p>{render(p)}</p>
-                        </article>
-                      ))}
-                    </div>
-                  </section>
-                ))}
-                {groupIds.map((g) => (
-                  <section className="comparison-criterion" key={g}>
-                    <h3>{groupNames[g]}</h3>
-                    <div className="comparison-cells">
-                      {chosen.map((p) => (
-                        <article className="comparison-cell" key={p.id}>
-                          <h3>{p.name}</h3>
-                          <p>{scoreLabel(g, p.scores[g])}</p>
-                          <p>
-                            {p.scores[g]
-                              .filter((c) => c.score !== null)
-                              .map((c) => c.rationale)
-                              .join(' ') ||
-                              'Ölçütleri değerlendirecek kanıt belirlenemedi.'}
-                          </p>
-                        </article>
+                      {chosen.map((c) => (
+                        <div className="comparison-cell" key={c.id}>
+                          <h4>{c.name}</h4>
+                          <p>{get(c)}</p>
+                        </div>
                       ))}
                     </div>
                   </section>
                 ))}
               </>
             )}
-            <Button
-              onClick={() => update('selected', [])}
-              disabled={!ready || chosen.length === 0}
-            >
-              Karşılaştırma seçimini temizle
-            </Button>
           </section>
         )}
-        <section aria-label="Proje sonuçları">
-          <h2>
-            {mode === 'compare'
-              ? 'Karşılaştırmaya proje seçin'
-              : 'Proje sonuçları'}
-          </h2>
-          {sorted.length === 0 ? (
-            <div className="empty-state">
-              <h3>Sonuç bulunamadı</h3>
-              <p>
-                Bu arama ve filtrelerle eşleşen proje bulunamadı. Bir filtreyi
-                kaldırabilir veya tüm projeleri yeniden gösterebilirsin.
-              </p>
-              <Button onClick={() => setPrefs(resetFilters)} disabled={!ready}>
-                Aramayı ve filtreleri sıfırla
-              </Button>
-            </div>
-          ) : (
-            <>
-              {prefs.sort !== 'name' && (
-                <p className="notice">
-                  Bilgisi tamamlanan projeler puanla sıralanır. Eksik bilgisi
-                  olanlar aşağıda alfabetik gösterilir; aralıklar başarı
-                  olasılığı değildir.
-                </p>
-              )}
-              {table && mode === 'catalog' ? (
-                <div
-                  className="table-scroll"
-                  tabIndex={0}
-                  role="region"
-                  aria-label="Proje karşılaştırma tablosu, yatay kaydırılabilir"
-                  onKeyDown={scrollTableWithKeyboard}
-                >
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>Proje</th>
-                        <th>Müşteri</th>
-                        {groupIds.map((g) => (
-                          <th key={g}>{groupNames[g]}</th>
-                        ))}
-                        <th>İlk adım</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {sorted.map((p) => (
-                        <tr key={p.id}>
-                          <th scope="row">
-                            <a href={`${base}projeler/${p.id}/`}>{p.name}</a>
-                          </th>
-                          <td>{guideFor(p.id).buyer}</td>
-                          {groupIds.map((g) => (
-                            <td key={g}>{scoreLabel(g, p.scores[g])}</td>
-                          ))}
-                          <td>{guideFor(p.id).nextStep}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              ) : (
-                <>
-                  <div className="project-grid">
-                    {complete.map(projectEntry)}
-                  </div>
-                  {incomplete.length > 0 && (
-                    <>
-                      <h3>Eksik ölçütlü projeler — kesin sıralama yok</h3>
-                      <div className="project-grid">
-                        {incomplete.map(projectEntry)}
-                      </div>
-                    </>
-                  )}
-                </>
-              )}
-            </>
-          )}
-        </section>
+        {sorted.length === 0 ? (
+          <p className="notice">
+            Bu arama ve filtrelerle eşleşen proje bulunamadı. Filtreleri
+            temizleyerek yeniden dene.
+          </p>
+        ) : table && mode === 'catalog' ? (
+          <div
+            className="table-scroll"
+            tabIndex={0}
+            role="region"
+            aria-label="Proje karşılaştırma tablosu"
+            onKeyDown={scrollTableWithKeyboard}
+          >
+            <table className="catalog-table">
+              <caption>
+                Yazılım dilimleri; satır sırası yatırım önceliği değildir.
+              </caption>
+              <thead>
+                <tr>
+                  <th>Proje</th>
+                  <th>Geliştirilecek dilim</th>
+                  <th>ECA önerisi</th>
+                  <th>Kabul koşulu</th>
+                </tr>
+              </thead>
+              <tbody>
+                {sorted.map((c) => (
+                  <tr key={c.id}>
+                    <th>
+                      <a href={`${base}projeler/${c.id}/`}>{c.name}</a>
+                    </th>
+                    <td>{c.slice.title}</td>
+                    <td>{evaluateCandidate(c, prefs.goal).label}</td>
+                    <td>{c.slice.acceptance.join(' · ')}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <div className="project-grid">{sorted.map(entry)}</div>
+        )}
         <Modal
-          opened={weightsOpen}
-          onClose={() => setWeightsOpen(false)}
-          title="Karar ağırlıkları"
-          withCloseButton={false}
-          returnFocus={false}
-          onExitTransitionEnd={() => weightsOpener.current?.focus()}
+          opened={rulesOpen}
+          onClose={() => setRulesOpen(false)}
+          title="Karar kuralları nasıl çalışır?"
+          centered
+          returnFocus
+          transitionProps={{ duration: 0 }}
         >
           <p>
-            Bunlar karar tercihleridir. Başarı olasılığı değildir. Toplam 100
-            olmalıdır.
+            Olay, koşul ve eylem ayrı kaydedilir. Bilinmeyen koşul tetiklenmez;
+            çalışma kanıtının eksik olması önce başlangıç doğrulaması önerir.
           </p>
-          <div className="stack">
-            {groupIds.map((g) => (
-              <TextInput
-                key={g}
-                label={`${groupNames[g]} ağırlığı`}
-                type="number"
-                min={0}
-                max={100}
-                value={
-                  Number.isFinite(prefs.weights[g]) ? prefs.weights[g] : ''
-                }
-                onChange={(e) =>
-                  update('weights', {
-                    ...prefs.weights,
-                    [g]:
-                      e.currentTarget.value === ''
-                        ? NaN
-                        : Number(e.currentTarget.value),
-                  })
-                }
-              />
-            ))}
-          </div>
-          <p role="status">
-            Ağırlık toplamı: {Number.isFinite(sum) ? sum : 'belirlenemedi'} /
-            100
-          </p>
-          {sum !== 100 && (
-            <p role="alert">
-              Geçerli toplam 100 olana kadar profil puanı hesaplanmaz.
-            </p>
-          )}
-          <div className="actions">
-            <Button
-              onClick={() => update('weights', { ...defaultProfiles.fast })}
-            >
-              Hızlı gelir varsayılanı
-            </Button>
-            <Button
-              onClick={() => update('weights', { ...defaultProfiles.spread })}
-            >
-              Yayılma varsayılanı
-            </Button>
-          </div>
           <p>
-            {projects.some((p) => profileScore(p, prefs.weights) !== null)
-              ? 'Eksik ölçütlü projeler profil sıralamasına alınmaz.'
-              : 'Tam puanlı kayıt bulunmadığından sıralama hassasiyeti hesaplanamadı.'}
+            Kritik hata, çelişki, rol/veri sınırı ve entegrasyon kabulü; yeni
+            özellik önerisinin önünde değerlendirilir. Eşit öncelikli farklı
+            eylemler çatışma olarak gösterilir.
           </p>
-          <Button
-            onClick={() => {
-              update('sort', 'profile');
-              setWeightsOpen(false);
-            }}
-          >
-            Ağırlıkları uygula ve kapat
+          <p>
+            Bu rehber kaynak yazılımı çalıştırmaz. Kontrol listesi işaretleri
+            kabul kanıtını değiştirmez.
+          </p>
+          <a href={`${base}kararlar/#eca`}>
+            14 ECA kuralını ve gerekçelerini aç
+          </a>
+          <Button variant="light" onClick={() => setRulesOpen(false)}>
+            Kapat
           </Button>
         </Modal>
       </section>

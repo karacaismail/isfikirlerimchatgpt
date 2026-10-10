@@ -30,7 +30,8 @@ const { id, title = 'Adım adım yapılacaklar', items } = Astro.props;
     ))}
   </ol>
   <p class="checklist-note" data-checklist-note>
-    İşaretler kişisel çalışma notundur; bu tarayıcıda saklanır.
+    İşaretler kişisel çalışma notundur; bu tarayıcıda saklanır. Ürün kabulü veya
+    test sonucu değildir.
   </p>
   <noscript>
     İşaretlemek için JavaScript gerekir; adımları yukarıdan takip edebilirsin.
@@ -40,7 +41,7 @@ const { id, title = 'Adım adım yapılacaklar', items } = Astro.props;
   for (const list of document.querySelectorAll<HTMLElement>(
     '[data-checklist]',
   )) {
-    const key = `isf-checklist-v1:${list.dataset.checklist}`;
+    const key = `isf-checklist-v2:${list.dataset.checklist}`;
     const inputs = [
       ...list.querySelectorAll<HTMLInputElement>('input[data-step]'),
     ];

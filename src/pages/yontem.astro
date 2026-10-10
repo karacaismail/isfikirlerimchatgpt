@@ -1,282 +1,185 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { development } from '../data/development';
 import { portfolio } from '../lib/data';
-import { criteria, groupIds, groupNames } from '../lib/model';
 const c = portfolio.coverage;
 const r = portfolio.reviewUpdate;
-const n = (x: number) => x.toLocaleString('tr-TR');
+const n = (v: number) => v.toLocaleString('tr-TR');
+const detailed = development.candidates.filter(
+  (c) => c.coverage === 'detailed',
+).length;
+const initial = development.candidates.filter(
+  (c) => c.coverage === 'initial',
+).length;
+const base = import.meta.env.BASE_URL;
 ---
 
-<Layout title="Yöntem ve kapsam">
+<Layout title="Yöntem ve dayanaklar">
   <p class="eyebrow">
-    Veri sürümü {portfolio.version} · {portfolio.date}
+    Strateji {development.version} · {development.date}
   </p>
-  <header class="page-heading">
-    <h1>Bu değerlendirmeler nasıl hazırlandı?</h1>
-    <p class="lede">
-      Belgeler ve kod okunarak her proje için müşteri, ilk teklif, kalan iş ve
-      küçük deneme önerisi çıkarıldı.
-    </p>
-  </header>
-  <section class="reading">
-    <h2>Karar verirken üç şeyi ayır</h2>
-    <ol>
-      <li>
-        <strong>Kaynakta yazan:</strong> fikir, plan veya kodda görülen parça.
-      </li>
-      <li>
-        <strong>Önerilen:</strong> henüz yapılmamış ücretli iş ve ölçüm
-        adımları.
-      </li>
-      <li>
-        <strong>Doğrulanan:</strong> yalnız gerçekten yapılan inceleme veya
-        kontrolün sonucu.
-      </li>
-    </ol>
+  <h1>Bu kriterler neye dayanıyor?</h1>
+  <p class="lede">
+    Hedef, kendi yazılım projelerine geliştirme önceliği vermek. Değerlendirme;
+    kaynak gözlemi, stratejik çıkarım ve çalıştırılmış kanıtı ayrı tutuyor.
+  </p>
+  <nav class="section-nav" aria-label="Yöntem ayrıntıları">
+    <a href="#duzeltme">Önceki hatanın düzeltilmesi</a>
+    <a href="#dayanak">Kriterlerin dayanağı</a>
+    <a href="#kapsam">Portföy ve sahiplik</a>
+    <a href="#inceleme">İnceleme kaydı</a>
+    <a href="#sinirlar">Doğrulama sınırları</a>
+  </nav>
+  <section class="reading" id="duzeltme">
+    <h2>Önceki gelir sırası geri çekildi</h2>
     <p>
-      Kaynak ürünler çalıştırılmadı. Gerçek müşteri, ödeme ve tekrar kullanım
-      henüz doğrulanmadı. Bütün kaynakların incelemesi tamamlanmadı.
+      “Peşinatı alınmış iş”, atölye satışı ve elle katalog hizmeti önerileri
+      yazılım geliştirme hedefinden çıkarılamazdı. Bunlar puanlardan hesaplanmış
+      sonuçlar da değildi; analistin yanlış amaç için yazdığı önerilerdi.
+    </p>
+    <p>
+      Gelir, yayılma ve edinim ağırlıkları bu geliştirme kararında
+      kullanılmıyor. Önceki puanlar yazılım altyapısı puanı diye yeniden
+      adlandırılmadı. Satış, alan ortağı veya keyfî saat sınırı geliştirme
+      önkoşulu yapılmıyor.
     </p>
   </section>
-  <nav class="section-nav" aria-label="Yöntem ayrıntıları">
-    <a href="#guncel-kapsam">İnceleme kapsamı</a>
-    <a href="#kanit-turleri">Bilgilerin dayanağı</a>
-    <a href="#puanlama">Puanlama</a>
-    <a href="#olcutler">Ölçüt sözlüğü</a>
-    <a href="#teknik-sinirlar">Teknik kontroller</a>
-  </nav>
-  <details id="guncel-kapsam">
-    <summary>Güncel inceleme kaydı ve kapsamı</summary>
+  <section id="dayanak" class="reading">
+    <h2>Üç ayrı dayanak</h2>
+    <ol>
+      <li>
+        <strong>Kullanıcının amacı:</strong> TÜRSAB hariç projeler kendi yazılım
+        portföyü; karar konusu altyapı geliştirme yatırımı.
+      </li>
+      <li>
+        <strong>Yerel kaynaklar:</strong> Kod, gereksinim, sözleşme ve analiz
+        kayıtları hangi parçaların bulunduğunu gösterir. Çalışma sonucu ayrıca
+        sınanır.
+      </li>
+      <li>
+        <strong>Analistin stratejisi:</strong> 14 ölçüt, 14 ECA kuralı ve
+        önerilen dilimler bu amaç için oluşturulmuş karar desteğidir. Evrensel
+        puanlama standardı veya kanıtlanmış başarı sırası değildir.
+      </li>
+    </ol>
+    <h3>ECA nasıl kullanılıyor?</h3>
     <p>
-      Taslaklar, eski sürümler, yedek klasörlerindeki iş belgeleri, sunumlar,
-      finansal tablolar ve kod birlikte incelenir. Dosyanın bulunduğu klasör
-      veya “korumalı” etiketi, iş içeriğini inceleme dışında bırakma gerekçesi
-      değildir. Aynı dosyada iş mantığı ve hesap bilgisi varsa iş mantığı ayrıca
-      değerlendirilir.
+      Olay–koşul–eylem biçimi yerel kural motorundaki yaklaşımla uyumlu bir
+      karar açıklamasına uyarlandı. W3C’nin{' '}
+      <a href="https://www.w3.org/TR/rif-ucr/">
+        RIF kullanım durumları ve gereksinimleri
+      </a>{' '}
+      kural türlerini ele alır; hangi yazılım projesinin önce geliştirilmesi
+      gerektiğine dair bir sıralama standardı vermez.
     </p>
     <p>
-      Derin incelemede önceki 14 kısmi kaydın kalan özgün bölümleri okundu;
-      üçüncü taraf paket gövdesi ayrıca ayrıldı. Dört finansal modelin 28.049
-      formül hücresi ayrı kopyalarda LibreOffice ile yeniden hesaplandı; kayıtlı
-      sonuçlarla karşılaştırmada fark ve formül hatası bulunmadı. Bu kontrol,
-      satış varsayımlarını veya ürünlerin çalışmasını doğrulamaz.
+      Koşullar destekleniyor, desteklenmiyor, bilinmiyor veya çelişkili
+      olabilir. Bilinmeyen koşul gerçekmiş gibi tetiklenmez. Çalışma kanıtının
+      eksik olması ECA-02 ile doğrulama işine dönüşür. Öncelikler ve eşit
+      öncelikteki çatışmalar görünürdür.
+    </p>
+    <h3>Neden senaryo, bağımlılık ve kabul koşulu?</h3>
+    <p>
+      <a href="https://www.sei.cmu.edu/library/quality-attribute-workshop-collection/">
+        SEI’nin Quality Attribute Workshop yaklaşımı
+      </a>{' '}
+      kalite gereksinimlerini senaryolarla açığa çıkarır ve çatışan varsayımları
+      görünür kılar. Burada bundan yararlanılarak “hangi olayda, hangi ortamda,
+      hangi sonuç kabul edilir?” sorusu soruluyor. Bu portföyde resmî bir QAW
+      veya ATAM çalışması yürütülmüş değildir.
     </p>
     <p>
-      Güncel birleşik kayıt ({r.capturedAt}): {n(r.fullTextFiles)} tam metin
-      dosyası, {n(r.partialTextFiles)} kısmi metin dosyası ve {n(r.textLines)}{' '}
-      okunan metin satırı. Ayrıca {n(r.documentTextFiles)} belgenin metni veya
-      hücreleri incelendi; bu sayı tam görsel inceleme değildir. Aynı yol ve
-      güncel içerik özeti bir kez sayıldı. Toplu metin çıkarımı bu okuma
-      sayısına eklenmedi. Finans kontrolünde değiştirilen girdilere sahip{' '}
-      {r.changedInputCases} senaryo da karşılaştırmadan geçti. Bütün kaynak
-      incelemesi henüz tamamlanmadı.
+      <a href="https://martinfowler.com/bliki/MonolithFirst.html">
+        Martin Fowler’ın Monolith First yazısı
+      </a>{' '}
+      erken servis sınırlarının belirsizliğini ve ek işletim yükünü tartışır;
+      görüşünün sınırlarını da belirtir. Buradaki çıkarım, bütün projeleri belli
+      bir mimariye taşımak değil, gerekli ortak sınırları gerçek tüketiciyle
+      sınamaktır.
     </p>
-  </details>
-  <details id="ilk-yayin">
-    <summary>İlk yayının arşivlenmiş kapsam kaydı</summary>
     <p>
-      Aşağıdaki sayılar ilk yayının arşiv kaydıdır; güncel okuma toplamı
-      yukarıda yer alır. Değişen dosya sistemi için bunlardan yeni bir kalan
-      dosya sayısı veya tamamlanma yüzdesi türetilmez.
+      Kaynaklara erişim: 10 Ekim 2026. Bu kaynaklar belirli bir projeyi kazanan
+      ilan etmez. <a href={`${base}kararlar/#olcutler`}>Ölçütleri</a> ve{' '}
+      <a href={`${base}kararlar/#eca`}>kural gerekçelerini</a> birlikte incele.
     </p>
-    <dl>
-      <dt>1. Envanter kapsaması</dt>
-      <dd>
-        {n(c.inventoryFiles)} dosyanın metaverisi kayıtlı. Dosya sistemi
-        taraması {c.inventoryComplete ? 'tamamlandı' : 'tamamlanmadı'}. Arşivler
-        ve sembolik bağlantılar ayrıca sınırlıdır; bağlantılar izlenmedi.
-      </dd>
-      <dt>2. İçerik incelemesi</dt>
-      <dd>
-        {n(c.originalFiles)} bağımlılık/derleme dışı inceleme adayı;{' '}
-        {n(c.uniqueOriginalHashes)} farklı kayıtlı içerik özeti.{' '}
-        {n(c.reviewedFull)} dosya yolu tam, {n(c.reviewedPartial)} dosya yolu
-        kısmen incelendi. {n(c.reviewedLines)} satır inceleme kaydı var; bütün
-        özgün satırların sayısı{' '}
-        {c.originalLines === null ? 'belirlenemedi' : n(c.originalLines)}. Dosya
-        yolu sayısı benzersiz incelenmiş içerik sayısıyla aynı değildir. İçerik
-        incelemesi tamamlanmadı.
-      </dd>
-      <dt>3. Projeye bağlama</dt>
-      <dd>
-        {n(c.linkedReviewed)} inceleme kaydı bir proje, ortak araştırma veya
-        açık belirsizlikle ilişkilendirildi. Bu yalnız incelenmiş alt kümenin
-        eşlemesidir; bütün kaynağın tamamlandığını göstermez.
-      </dd>
-      <dt>4. Çalıştırma doğrulaması</dt>
-      <dd>
-        {c.runtimeProjects} kaynak proje çalıştırıldı. Kaynak ürünler için
-        çalışma sonucu: not_run. Dokümantasyonun derlenmesi ürün iş akışını
-        doğrulamaz.
-      </dd>
-    </dl>
-    <h3>İnceleme kaydının kapsamı</h3>
+  </section>
+  <section id="kapsam" class="reading">
+    <h2>Hangi adaylar kapsamda?</h2>
     <p>
-      İlk geçişte bekleyen olarak kaydedilen içerikler inceleme kuyruğundadır.
-      Metin çıkarımı, kopya eşlemesi, içerik okuması ve iş değerlendirmesi ayrı
-      kaydedilir. İnceleme sırasında bulunan her bağımsız iş fikri ayrıca ele
-      alınır.
+      {development.candidates.length} aday kayıt: {detailed} ayrıntılı kaynak
+      değerlendirmesi, {initial} ilk kaynak değerlendirmesi. Kayıt sayısı
+      bağımsız ve çalışan ürün sayısı değildir; çatı, platform ve araştırma
+      kayıtları ayrıca işaretlidir.
+    </p>
+    <p>
+      {development.ownershipBasis} Önceki envanterin işveren/arkadaş/belirsiz
+      etiketleri güncel projeleri dışlama gerekçesi olarak kullanılmıyor.
+    </p>
+    <p>
+      Bu sürüm mevcut 17 ek analiz kaydını da geliştirme karşılaştırmasına alır.
+      Bu, bütün kaynak dosyaların yeniden veya eksiksiz okunduğu anlamına
+      gelmez. Crybro için incelenmiş alt kümede yeterli kaynak eşleşmesi
+      bulunmadı; bütün bilgisayarda bulunmadığı söylenmiyor.
     </p>
     <ul>
-      {c.limitations.map((x) => (
+      {development.exclusions.map((x) => (
         <li>{x}</li>
       ))}
     </ul>
-  </details>
-  <details id="yayin">
-    <summary>Hangi projeler yayımlandı?</summary>
+  </section>
+  <details id="inceleme">
+    <summary>Dosya incelemesinin tarihli kapsam kaydı</summary>
     <p>
-      Kişisel kaynakla ilişkilendirilen kayıt: {c.ownership.personal}. Diğer
-      yerel kayıtlar: işveren {c.ownership.employer}, arkadaş{' '}
-      {c.ownership.friend}, belirsiz {c.ownership.uncertain}. Bunlar ilk geçiş
-      kayıtlarıdır; eksiksiz portföy sayımı değildir.
+      Taslak, eski sürüm veya yedek klasörü etiketi iş içeriğini inceleme
+      dışında bırakma gerekçesi değildir. Kimlik bilgileri ve kişisel veriler
+      kamuya açık kaynak kodundan ayrılır.
     </p>
     <p>
-      Kullanıcı beyanında kişisel olarak adı geçen Crybro için incelenen alt
-      kümede iş tanımını kurmaya yetecek kaynak bulunamadı. Bu, bütün
-      bilgisayarda veya kalan kaynaklarda bulunmadığı anlamına gelmez.
+      Güncel birleşik inceleme kaydı ({r.capturedAt}): {n(r.fullTextFiles)} tam
+      metin dosyası, {n(r.partialTextFiles)} kısmi metin dosyası ve{' '}
+      {n(r.textLines)} metin satırı. Belge metni/hücreleri ve{' '}
+      {n(r.formulaCells)} formül hücresi ayrı kaydedildi. Bütün içerik
+      incelemesi tamamlanmadı.
     </p>
     <p>
-      Ham belgeler, özel kod, yerel dizin yapısı ve özel inceleme günlükleri bu
-      depoya alınmaz. Kamuya açık veri alanları sıkı şemayla izinli hale
-      getirilir; yayımlanamaz kayıtlar veri dosyası, arama ve dışa aktarımdan da
-      çıkarılır.
+      İlk envanter snapshot’ı ({c.date}): {n(c.inventoryFiles)} dosya
+      metaverisi, {n(c.originalFiles)} bağımlılık/derleme dışı inceleme adayı.
+      Bu sayıların her biri okunmuş benzersiz içerik sayısı değildir. Kopya hash
+      eşlemesi semantik okuma sayılmaz.
     </p>
     <p>
-      Yeni deponun lisansını kullanıcı sonraya bıraktı. Public görünürlük, açık
-      kaynak lisansı verilmiş olduğu anlamına gelmez.
+      Dört finansal modelin 28.049 formül hücresi ayrı kopyalarda yeniden
+      hesaplandı; kayıtlı sonuçlarla fark bulunmadı. Bu kontrol satış
+      varsayımını veya ürün çalışmasını doğrulamaz; yazılım yatırım sırası için
+      puan üretmez.
     </p>
-  </details>
-  <details id="kanit-turleri">
-    <summary>Bilgilerin dayanağı nasıl ayrılıyor?</summary>
-    <ul>
-      <li>
-        Doğrudan dosya kanıtı: ilgili satır veya bölüm gözlemi; çalıştırma
-        kanıtı değildir.
-      </li>
-      <li>
-        Güvenli çalıştırma: yalnız gerçekten yapılan testin ölçtüğü davranış.
-      </li>
-      <li>
-        Güncel dış kaynak: erişim tarihi ve iddia sınırı belirtilmiş resmî
-        belge.
-      </li>
-      <li>Analistin çıkarımı: kaynakla gerekçelendirilmiş öneri.</li>
-      <li>Doğrulanmamış varsayım: henüz müşteri veya ölçüm kanıtı yok.</li>
-      <li>Çelişkili/yetersiz bilgi: kesinleştirilmeden görünür tutulur.</li>
-    </ul>
     <p>
-      İçerik özeti (hash) eşitliği kopya bağını kanıtlar; benzer dosya adı
-      kanıtlamaz. Dosya zamanı proje başlangıç tarihi sayılmaz. Araçla metin
-      çıkarılması, metnin incelendiği anlamına gelmez.
+      Kaynak projelerin çalışma sonucu: not_run. Katalog ve site testleri kaynak
+      ürünlerin testleri değildir.
     </p>
   </details>
-  <details id="hazirlik">
-    <summary>Bir projenin hazır olup olmadığı nasıl değerlendiriliyor?</summary>
+  <details id="sinirlar">
+    <summary>Site, yayın ve doğrulama sınırları</summary>
     <p>
-      Ürün geliştirme; fikir, araştırma, prototip veya uygulanmış parçalar
-      olarak belirtilir. Asgari uygulanabilir ürün (MVP, Minimum Viable Product)
-      için dar kullanıcı değerinin uçtan uca sunulması ayrıca doğrulanmalıdır.
+      Astro statik sayfaları ve temel gezinme JavaScript kapalıyken okunabilir.
+      Etkileşimli katalog/karşılaştırma aynı React ağacında MantineProvider
+      kullanır. Ham kaynak belgeleri, yerel yollar, secret değerleri ve özel
+      inceleme defteri public depoya alınmaz.
     </p>
     <p>
-      Ticari doğrulama; müşteri varsayımı, talep, pilot, ödeme ve tekrar gelir
-      kanıtlarını ayırır. Kurumsal hazırlık; izin, veri ayrımı, yedekleme,
-      işletim ve desteğe bakar. Büyümeye hazırlık; gerçek yük, maliyet ve destek
-      ölçümlerini gerektirir.
+      Veri iki sürümlü sözleşmede tutulur: eski ayrıntılı kaynak kayıtları 1.1,
+      aktif geliştirme stratejisi 2.0. Her ikisi sıkı şemayla doğrulanır.{' '}
+      <a href={`${base}strateji.json`}>Aktif strateji verisini indir</a>.
     </p>
     <p>
-      Uzun teknoloji listesi, derleme başarısı veya belgede “üretime hazır”
-      yazması bu eksenlerde kabul kanıtı değildir.
-    </p>
-  </details>
-  <details id="puanlama">
-    <summary>Puanlar ve bilinmeyen bilgiler nasıl hesaplanıyor?</summary>
-    <p>
-      Her ölçüt 0–5 arasında değerlendirilir; bilinmeyen değer null olarak
-      saklanır. Puan = ağırlık × ölçüt / 5 katkılarının toplamı. Her grubun
-      ağırlığı 100’dür.
+      320 CSS px, modern tarayıcıda yerleşim kabulüdür. Chromium, Firefox ve
+      WebKit otomasyonu gerçek macOS/iOS Safari veya fiziksel Android testi
+      değildir. Çalıştırılmayan kontrol başarılı sayılmaz.
     </p>
     <p>
-      Eksik ölçüt varsa alt sınır bilinen katkılar, üst sınır alt sınır +
-      bilinmeyen ağırlıktır. Bu aralık istatistiksel güven aralığı değildir.
-      Eksik ölçütlü kayıtlar kesin puan sıralamasına girmez.
+      Yeni deponun lisansı kullanıcının kararıyla sonraya bırakılmıştır. Public
+      görünürlük tek başına açık kaynak lisansı değildir.
     </p>
-    <p>
-      Hızlı gelir tercihi: %45 gelir + %30 reklamsız edinim + %25 uygunluk.
-      Yayılma tercihi: %30 gelir + %35 yayılma + %20 reklamsız edinim + %15
-      uygunluk. Bunlar önerilen karar tercihleridir. Katalogda değiştirilebilir;
-      toplam 100 olmalıdır.
-    </p>
-    <p>
-      Hak sahipliği ve kritik güvenlik engelleri ortalama puan içinde gizlenmez.
-      Kurucu kitle erişimi, fiyat, müşteriler veya marj doğrulanmadığında
-      varsayılmaz.
-    </p>
-  </details>
-  <details id="olcutler">
-    <summary>Puan ölçütleri ve 0–5 ölçeği</summary>
-    {groupIds.map((g) => (
-      <section>
-        <h2>{groupNames[g]} ölçüt sözlüğü</h2>
-        <p>Ölçekler karar desteğidir; ölçülmüş başarı olasılığı değildir.</p>
-        {criteria[g].map((d) => (
-          <details>
-            <summary>
-              {d.title} · ağırlık {d.weight}
-            </summary>
-            <ol start="0">
-              {d.anchors.map((a) => (
-                <li>{a}</li>
-              ))}
-            </ol>
-          </details>
-        ))}
-      </section>
-    ))}
-  </details>
-  <details id="teknik-sinirlar">
-    <summary>Site ve tarayıcı kontrollerinin sınırları</summary>
-    <p>
-      Astro ile sayfalar derleme sırasında statik üretilir (SSG, Static Site
-      Generation). Mantine’in sağlayıcısı ve etkileşimli katalog aynı React
-      ağacında bulunur. Bağımsız bölümlerin bağlam paylaşacağı varsayılmaz. Ana
-      içerik ve temel gezinme JavaScript kapalıyken okunabilir.
-    </p>
-    <p>
-      Mantine’in{' '}
-      <a href="https://help.mantine.dev/q/can-i-use-mantine-with-astro">
-        3 Ocak 2024 tarihli Astro notu
-      </a>{' '}
-      ile{' '}
-      <a href="https://docs.astro.build/en/guides/framework-components/">
-        güncel Astro bileşen belgeleri
-      </a>{' '}
-      birlikte ele alındı; uyumluluk bu projedeki küçük örnekle ayrıca sınandı.
-    </p>
-    <p>
-      320 CSS piksel desteği eski iPhone 4 tarayıcısında test yapıldığı anlamına
-      gelmez.{' '}
-      <a href="https://mantine.dev/browser-support/">
-        Mantine’in modern tarayıcı sınırı
-      </a>{' '}
-      geçerlidir. WebKit otomasyonu gerçek Safari testi değildir.
-    </p>
-    <p>
-      Web İçeriği Erişilebilirlik Yönergeleri (WCAG, Web Content Accessibility
-      Guidelines) 2.2 AA tasarım hedefidir; tam uyumluluk sertifikası verilmez.{' '}
-      <a href="https://www.w3.org/WAI/WCAG22/Understanding/reflow.html">
-        Yeniden akış
-      </a>{' '}
-      ve{' '}
-      <a href="https://www.w3.org/WAI/WCAG22/Understanding/resize-text.html">
-        metin büyütme
-      </a>{' '}
-      ayrı kontrol edilir.
-    </p>
-    <p>
-      <a href={`${import.meta.env.BASE_URL}teknik/`}>
-        Teknik etkileşim örneğini aç
-      </a>
-    </p>
+    <a href={`${base}teknik/`}>Teknik etkileşim örneğini aç</a>
   </details>
 </Layout>

@@ -6,7 +6,7 @@ interface Props {
 }
 const {
   title,
-  description = 'Projeleri karşılaştır, ilk ücretli işi seç ve adım adım ilerle.',
+  description = 'Yazılım projelerini, geliştirme dilimlerini ve altyapı katkılarını karşılaştır.',
 } = Astro.props;
 const base = import.meta.env.BASE_URL;
 const current = Astro.url.pathname.slice(base.length).replace(/\/$/, '');
@@ -14,7 +14,7 @@ const nav = [
   ['', 'Genel bakış', '01'],
   ['katalog', 'Projeler', '02'],
   ['karsilastir', 'Karşılaştır', '03'],
-  ['kararlar', 'Yapılacaklar', '04'],
+  ['kararlar', 'Strateji ve adımlar', '04'],
   ['firsatlar', 'Fırsatlar', '05'],
 ];
 const isCurrent = (path: string) =>
@@ -75,9 +75,9 @@ const isCurrent = (path: string) =>
           </nav>
         </details>
         <p class="sidebar-note">
-          Altı proje, üç çalışma yönü.
+          Ürün akışı ve ortak altyapı.
           <br />
-          Önce birini seç. Küçük bir işle dene.
+          Somut dilimi seç; kanıtla ilerle.
         </p>
       </header>
       <div class="workspace-content">
@@ -86,7 +86,7 @@ const isCurrent = (path: string) =>
             Çalışma alanı <span aria-hidden="true">/</span>{' '}
             <strong>{title}</strong>
           </span>
-          <a href={`${base}kararlar/`}>İlk adımını seç</a>
+          <a href={`${base}kararlar/`}>Stratejiyi aç</a>
         </div>
         <main class="page" id="icerik">
           <slot />

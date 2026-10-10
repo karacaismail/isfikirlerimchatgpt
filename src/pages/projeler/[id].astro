@@ -1,383 +1,236 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import TableScroll from '../../components/TableScroll.astro';
 import Checklist from '../../components/Checklist.astro';
-import { guideFor, guideClusters } from '../../data/guides';
+import { development } from '../../data/development';
 import { portfolio } from '../../lib/data';
-import { criteria, groupIds, groupNames, scoreLabel } from '../../lib/model';
+import {
+  kindLabels,
+  coverageLabels,
+  goalLabels,
+  evaluateCandidate,
+  strategicCriteria,
+  strategicRules,
+  assessmentFor,
+  assessmentLabels,
+  runtimeLabel,
+  acceptanceLabel,
+} from '../../lib/strategy';
 export function getStaticPaths() {
-  return portfolio.projects.map((project) => ({
-    params: { id: project.id },
-    props: { project },
+  return development.candidates.map((candidate) => ({
+    params: { id: candidate.id },
+    props: { candidate },
   }));
 }
-const { project: p } = Astro.props;
+const { candidate: c } = Astro.props;
+const old = portfolio.projects.find((p) => p.id === c.id);
+const result = evaluateCandidate(c, 'flow');
 const base = import.meta.env.BASE_URL;
-const guide = guideFor(p.id);
-const cluster = guideClusters.find((item) => item.value === guide.cluster)!;
-const sections = [
-  ['Kaynaklardaki iş tanımı', p.definition],
-  ['Projenin türü', p.kind],
-  ['Kullanıcı', p.user],
-  ['Müşteri', p.customer],
-  ['Ödeme yapan', p.payer],
-  ['Sorun', p.problem],
-  ['Değer hipotezi', p.value],
-  ['Başlangıçta hedeflenen fikir', p.originalVision],
-  ['Bugün kaynaklarda görülen', p.observed],
-  ['Önerilen ticari yön', p.proposedDirection],
-];
 ---
 
-<Layout title={p.name} description={guide.summary}>
-  <p>
-    <a href={`${base}katalog/?cluster=${guide.cluster}`}>
-      {cluster.label} grubuna dön
-    </a>
+<Layout title={c.name}>
+  <p class="eyebrow">
+    {kindLabels[c.kind]} · {coverageLabels[c.coverage]}
   </p>
-  <header class="page-heading">
-    <p class="eyebrow">{cluster.label}</p>
-    <h1>{p.name}</h1>
-    <p class="lede">{guide.summary}</p>
-    <dl class="project-facts">
-      <dt>Kim ödeyebilir?</dt>
-      <dd>{guide.buyer}</dd>
-      <dt>İlk teklif</dt>
-      <dd>{guide.firstOffer}</dd>
-      <dt>Şimdi ne yapmalıyım?</dt>
-      <dd>{guide.nextStep}</dd>
-    </dl>
-  </header>
-  <nav class="section-nav" aria-label={`${p.name} bölümleri`}>
-    <a href="#ilk-adimlar">Adım listesi</a>
-    <a href="#is-tanimi">İşin kapsamı</a>
-    <a href="#deneyler">Deneyler</a>
-    <a href="#rakipler">Alternatifler</a>
-    <a href="#finans">Gelir ve maliyet</a>
+  <h1>{c.name}</h1>
+  <p class="lede">{c.definition}</p>
+  <p>Geliştirme odağı: {c.goals.map((g) => goalLabels[g]).join(' · ')}</p>
+  <nav class="section-nav" aria-label="Proje bölümleri">
+    <a href="#dilim">Geliştirilecek dilim</a>
+    <a href="#ilk-adimlar">Adım adım</a>
+    <a href="#kabul">Kabul koşulları</a>
+    <a href="#olcutler">14 ölçüt</a>
+    <a href="#kurallar">ECA kural izi</a>
     <a href="#kanitlar">Kaynaklar</a>
   </nav>
-  <section id="ilk-adimlar" class="reading">
-    <h2>Başlamak için adım adım</h2>
-    <Checklist
-      id={`project-${p.id}`}
-      title={`${p.name} adımları`}
-      items={guide.steps}
-    />
-    <p class="meta">{guide.effort}</p>
+  <section id="dilim" class="reading">
+    <h2>Geliştirilecek dilim</h2>
+    <h3>{c.slice.title}</h3>
+    <p>{c.slice.outcome}</p>
+    <dl>
+      <dt>Neden şimdi?</dt>
+      <dd>{c.rationale}</dd>
+      <dt>Karşı görüş</dt>
+      <dd>{c.counterargument}</dd>
+      <dt>Önceliği değiştirecek kanıt</dt>
+      <dd>{c.reconsiderWhen}</dd>
+      <dt>Mevcut kaynaktan gözlenen</dt>
+      <dd>{c.observed}</dd>
+      <dt>Efor</dt>
+      <dd>Tahmin edilmedi. {c.effort.reason}</dd>
+    </dl>
     <p>
-      Bunlar önerilen adımlar. Gerçek ödeme ve ürünün çalışması henüz
-      doğrulanmadı.
+      <strong>İlk ECA önerisi:</strong> {result.label} ·{' '}
+      {result.ruleIds.join(', ')}. Bu sonuç geliştirmeyi yasaklamaz; yatırımın
+      ilk teknik işini tanımlar.
     </p>
   </section>
-  <details id="is-tanimi">
-    <summary>İşin kapsamı ve mevcut durum</summary>
-    <p>
-      <strong>Öneri:</strong> {p.decision}
-    </p>
-    <p>{p.decisionRationale}</p>
-    <p>
-      <strong>Kararı değiştirecek bilgi:</strong> {p.changeEvidence}
-    </p>
+  <section id="ilk-adimlar">
+    <h2>Adım adım geliştirme</h2>
+    <Checklist id={`software-v2-project-${c.id}`} items={c.slice.steps} />
+  </section>
+  <section id="kabul">
+    <h2>Bitmiş sayılması için</h2>
+    <ul>
+      {c.slice.acceptance.map((item) => (
+        <li>{item}</li>
+      ))}
+    </ul>
     <p class="meta">
-      Diğer adlar: {p.aliases.join(', ') || 'Yok'} · Son inceleme:{' '}
-      {p.reviewDate}
+      {runtimeLabel(c)} {acceptanceLabel(c)} Listeyi işaretlemek bu koşulların
+      geçtiğini göstermez.
     </p>
-    <dl>
-      {sections.map(([label, text]) => (
-        <>
-          <dt>{label}</dt>
-          <dd>{text}</dd>
-        </>
-      ))}
-    </dl>
-    <h3>Önce çözülmesi gerekenler</h3>
-    <ul>
-      {p.blockers.map((x) => (
-        <li>{x}</li>
-      ))}
-    </ul>
-  </details>
-  <details id="puan-ozeti">
-    <summary>Gelir, yayılma ve iş yükü değerlendirmesi</summary>
-    <p class="reading">
-      Puanlar analistin karar modelidir. Eksik ağırlıklar tek bir kesin toplamla
-      kapatılmaz; görülen aralık istatistiksel güven aralığı değildir.
-    </p>
-    <div class="metrics">
-      {groupIds.map((g) => (
-        <div>
-          <h3>{groupNames[g]}</h3>
-          <p>
-            <strong>{scoreLabel(g, p.scores[g])}</strong>
-          </p>
-          <p>
-            {p.scores[g].find((c) => c.score !== null)?.rationale ||
-              'Bu eksende puan verecek yeterli kanıt belirlenemedi.'}
-          </p>
-        </div>
-      ))}
-    </div>
-  </details>
-  <details id="is-akisi">
-    <summary>İlk teslimin kapsamı ve satış yolu</summary>
-    <p>
-      Bu akış kaynak vizyonu ve önerilen ilk kapsamı anlatır; yerelde
-      doğrulanmış uçtan uca davranış değildir.
-    </p>
-    <ol>
-      {p.workflow.map((x) => (
-        <li>{x}</li>
-      ))}
-    </ol>
-    <h3>İlk ücretli işin kapsamı</h3>
-    <ul>
-      {p.mmp.map((x) => (
-        <li>{x}</li>
-      ))}
-    </ul>
-    <h3>İlk satıştan önce gerekmeyenler</h3>
-    <ul>
-      {p.notNeeded.map((x) => (
-        <li>{x}</li>
-      ))}
-    </ul>
-    <h3>Gelir modeli ve ticari seçenekler</h3>
-    <ul>
-      {p.monetization.map((x) => (
-        <li>{x}</li>
-      ))}
-    </ul>
-    <ul>
-      {p.commercialOptions.map((x) => (
-        <li>{x}</li>
-      ))}
-    </ul>
-    <h3>Reklamsız ilk müşterilere erişim</h3>
-    <p>{p.distribution}</p>
-    <h3>Mevcut kullanıcılardan yeni kullanıcı gelir mi?</h3>
-    <p>{p.viralLoop}</p>
-  </details>
-  <details id="rakipler">
-    <summary>Alternatifler: müşteri bugün ne kullanabilir?</summary>
-    <ul>
-      {p.alternatives.map((x) => (
-        <li>{x}</li>
-      ))}
-    </ul>
-    <div class="project-grid">
-      {p.competitors.map((c) => (
-        <article class="project-entry">
-          <h3>
-            <a href={c.url} rel="noreferrer">
-              {c.name}
-            </a>
-          </h3>
-          <p>
-            <strong>Müşteri:</strong> {c.customer}
-          </p>
-          <p>{c.solution}</p>
-          <p>
-            <strong>Fiyat ve birim:</strong> {c.price}
-          </p>
-          <p>
-            <strong>Ücretsiz kullanım:</strong> {c.free}
-          </p>
-          <p>
-            <strong>Güçlü taraf:</strong> {c.strength}
-          </p>
-          <p>
-            <strong>Açık ihtiyaç hipotezi:</strong> {c.gap}
-          </p>
-          <p>
-            <strong>Geçiş gerekçesi:</strong> {c.switching}
-          </p>
-          <p class="meta">
-            Erişim: {c.accessed} · {c.limitation}
-          </p>
-        </article>
-      ))}
-    </div>
-  </details>
-  <details id="finans">
-    <summary>Gelir ve maliyet: bilinenler ve eksikler</summary>
-    <p>{p.finance.status}</p>
-    <ul>
-      {p.finance.assumptions.map((x) => (
-        <li>{x}</li>
-      ))}
-    </ul>
-    <p>
-      <strong>1., 3. ve 6. ay — düşük, temel ve yüksek:</strong> Gerekçeli
-      müşteri, dönüşüm ve maliyet girdileri belirlenemediği için hesaplanamadı.
-      Eksik değerler sıfır değildir.
-    </p>
-    <p>{p.finance.conditions}</p>
-    <p>
-      Abonelik = aktif ödeme yapan müşteri × gerçekleşen dönem ücreti. Kurulum
-      ve tek seferlik satış ayrı gelirlerdir. Faaliyet sonucu vergi ve tüm
-      giderler tamamlanmadan net kâr diye adlandırılmaz.
-    </p>
-  </details>
-  <details id="deneyler">
-    <summary>Üç küçük deney: neyi, nasıl ölçmeliyim?</summary>
-    <p>Eşikler ve emek aralıkları öneridir; bu deneyler yapılmadı.</p>
-    <div class="project-grid">
-      {p.experiments.map((e, i) => (
-        <article class="project-entry">
-          <h3>
-            {i + 1}. {e.hypothesis}
-          </h3>
-          <dl>
-            <dt>En küçük işlem</dt>
-            <dd>{e.action}</dd>
-            <dt>Ölçüm ve önerilen eşik</dt>
-            <dd>
-              {e.metric} — {e.threshold}
-            </dd>
-            <dt>Başarısızlık halinde</dt>
-            <dd>{e.failure}</dd>
-            <dt>Emek ve kaynak</dt>
-            <dd>{e.effort}</dd>
-          </dl>
-        </article>
-      ))}
-    </div>
-  </details>
-  <details id="riskler">
-    <summary>Riskler ve dikkat edilecek işler</summary>
-    <ul>
-      {p.risks.map((x) => (
-        <li>{x}</li>
-      ))}
-    </ul>
-  </details>
-  <details id="ozellikler">
-    <summary>Özellikler: hangileri kaynaklarda var?</summary>
-    <TableScroll label="Özellik durumu tablosu, yatay kaydırılabilir">
-      <table>
-        <thead>
-          <tr>
-            <th>Özellik</th>
-            <th>Durum</th>
-            <th>Kanıt</th>
-          </tr>
-        </thead>
-        <tbody>
-          {p.features.map((f) => (
-            <tr>
-              <th scope="row">{f.name}</th>
-              <td>{f.status}</td>
-              <td>{f.evidence.join(', ') || 'Belirlenemedi'}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </TableScroll>
-    <dl>
-      <dt>Ürün geliştirme</dt>
-      <dd>{p.maturity.product}</dd>
-      <dt>Ticari doğrulama</dt>
-      <dd>{p.maturity.commercial}</dd>
-      <dt>Kurumsal hazırlık</dt>
-      <dd>{p.maturity.enterprise}</dd>
-      <dt>Büyümeye hazırlık</dt>
-      <dd>{p.maturity.scale}</dd>
-    </dl>
-    <h3>Platform eksenleri</h3>
-    <dl>
-      <dt>Mevcut</dt>
-      <dd>{p.platforms.current.join(' · ')}</dd>
-      <dt>Kaynakların hedefi</dt>
-      <dd>{p.platforms.target.join(' · ')}</dd>
-      <dt>Önerilen ilk sürüm</dt>
-      <dd>{p.platforms.proposed.join(' · ')}</dd>
-      <dt>Ertelenen</dt>
-      <dd>{p.platforms.deferred.join(' · ')}</dd>
-      <dt>İşletim</dt>
-      <dd>{p.platforms.operation}</dd>
-      <dt>Müşteri ilişkisi</dt>
-      <dd>{p.platforms.relationship}</dd>
-      <dt>Ticari yapı</dt>
-      <dd>{p.platforms.structure}</dd>
-    </dl>
-  </details>
-  <details id="puanlar">
-    <summary>Puanların ayrıntılı gerekçeleri</summary>
-    {groupIds.map((g) => (
-      <section>
-        <h3>{groupNames[g]}</h3>
-        {p.scores[g].map((c) => (
-          <article class="project-entry">
-            <h3>
-              {criteria[g].find((x) => x.id === c.id)?.title} ·{' '}
-              {criteria[g].find((x) => x.id === c.id)?.weight} ağırlık
-            </h3>
-            <p>
-              <strong>
-                {c.score === null ? 'Bilinmiyor' : `${c.score}/5`}
-              </strong>{' '}
-              · {c.basis}
-            </p>
-            <p>{c.rationale}</p>
-            <p>
-              <strong>Değiştirecek bilgi:</strong> {c.change}
-            </p>
-            <p>Kanıt: {c.evidence.join(', ') || 'Belirlenemedi'}</p>
-          </article>
+  </section>
+  <details id="bagimliliklar">
+    <summary>Bağımlılıklar ve ortak kullanım</summary>
+    {c.dependencies.length ? (
+      <ul>
+        {c.dependencies.map((d) => (
+          <li>
+            <strong>{d.title}</strong> ·{' '}
+            {d.state === 'observed'
+              ? 'Kaynakta gözlenen'
+              : d.state === 'inferred'
+                ? 'Önerilen ilişki'
+                : 'Bilinmiyor'}
+            : {d.reason}
+            <p>Kanıt: {d.evidenceIds.join(', ') || 'Kaydedilmedi'}</p>
+            {d.candidateId && (
+              <a href={`${base}projeler/${d.candidateId}/`}>İlgili adayı aç</a>
+            )}
+          </li>
         ))}
-      </section>
-    ))}
+      </ul>
+    ) : (
+      <p>
+        Karşılaştırılabilir bağımlılık grafiği kaydedilmedi. Bağımlılık
+        bulunmadığı anlamına gelmez.
+      </p>
+    )}
+  </details>
+  <details id="olcutler">
+    <summary>14 ölçüt: bulgu, kanıt ve karar etkisi</summary>
+    {strategicCriteria.map((criterion) => {
+      const a = assessmentFor(c, criterion.id);
+      return (
+        <section class="project-entry">
+          <h3>{criterion.title}</h3>
+          <p>{criterion.question}</p>
+          <p>
+            <strong>{assessmentLabels[a.state]}:</strong> {a.finding}
+          </p>
+          <p>
+            <strong>Doğrulama:</strong> {a.verification}
+          </p>
+          <p>
+            <strong>Karara etkisi:</strong> {a.decisionImpact}
+          </p>
+          <p>Kanıt: {a.evidenceIds.join(', ') || 'Kaydedilmedi'}</p>
+        </section>
+      );
+    })}
+  </details>
+  <details id="kurallar">
+    <summary>ECA kural izi ve tetiklenmeyen koşullar</summary>
+    <p>
+      Hedef: çalışan ürün akışı. Katalogdaki hedef seçimiyle alternatif görünüm
+      incelenebilir. Koşulların bilinmeyen olması açık tutulur. Kesin toplam
+      puan kullanılmaz.
+    </p>
+    {result.conflicts.length > 0 && (
+      <p class="notice">
+        Çatışan kurallar: {result.conflicts.join(', ')}. Sessiz seçim yapılmadı.
+      </p>
+    )}
+    {result.traces.map((trace) => {
+      const rule = strategicRules.find((r) => r.id === trace.id)!;
+      return (
+        <section class="project-entry">
+          <h3>
+            {trace.id} · {trace.title}
+          </h3>
+          <p>
+            <strong>Koşul:</strong>{' '}
+            {trace.state === 'met'
+              ? 'Sağlanıyor'
+              : trace.state === 'not_met'
+                ? 'Sağlanmıyor'
+                : trace.state === 'conflict'
+                  ? 'Çelişkili'
+                  : 'Bilinmiyor'}{' '}
+            · {trace.triggered ? 'Kural tetiklendi' : 'Kural tetiklenmedi'}
+          </p>
+          <p>{trace.reason}</p>
+          <p>
+            <strong>Eylem:</strong> {rule.action}
+          </p>
+          <p>
+            Kanıt:{' '}
+            {trace.evidenceIds.join(', ') ||
+              'Kural politikası veya eksik kanıt; ürün davranışı iddiası değil'}
+          </p>
+          <a href={`${base}kararlar/#${trace.id.toLowerCase()}`}>
+            Gerekçe ve karşı görüşü aç
+          </a>
+        </section>
+      );
+    })}
   </details>
   <details id="kanitlar">
-    <summary>Kaynaklar, çelişkiler ve diğer projelerle ilişkiler</summary>
+    <summary>Kaynaklar ve inceleme sınırı</summary>
     <p>
-      Özel kaynak dosyaları bu yayında yer almaz. Aşağıdaki güvenli kimlikler
-      yerel ayrıntılı inceleme defterine bağlanır; kamuya açık metinler ham
-      kaynakların yerine geçmez.
+      Sahiplik: kullanıcının güncel beyanına göre kendi projesi. TÜRSAB
+      projeleri bu geliştirme karşılaştırmasının dışında.
     </p>
-    <dl>
-      <dt>Kaynak kapsamı</dt>
-      <dd>{p.confidence.source}</dd>
-      <dt>Teknik davranış</dt>
-      <dd>{p.confidence.runtime}</dd>
-      <dt>Pazar</dt>
-      <dd>{p.confidence.market}</dd>
-      <dt>Gelir</dt>
-      <dd>{p.confidence.revenue}</dd>
-    </dl>
-    <h3>Kaynak kayıtları</h3>
-    {p.sources.map((e) => (
-      <article class="project-entry" id={e.id}>
-        <h3>
-          {e.id} · {e.title}
-        </h3>
+    <p>
+      Güvenli kayıt kimlikleri yerel incelemedeki gözlemlere bağlanır. Kaynakta
+      kod veya test bulunması çalışma başarısı değildir. Stratejik çıkarımlar
+      ayrıca etiketlenir.
+    </p>
+    {c.evidence.map((e) => (
+      <article class="project-entry" id={`evidence-${e.id}`}>
+        <h3>{e.label}</h3>
         <p>
-          {e.kind} · {e.locator} · {e.accessed}
+          {e.id} ·{' '}
+          {e.kind === 'source'
+            ? 'Kaynak gözlemi'
+            : e.kind === 'runtime'
+              ? 'Çalıştırma kanıtı'
+              : e.kind === 'user'
+                ? 'Kullanıcı beyanı'
+                : 'Analist çıkarımı'}
         </p>
         <p>{e.claim}</p>
         <p class="meta">{e.limitation}</p>
-        {e.url && (
-          <a href={e.url} rel="noreferrer">
-            Dış kaynağı aç
-          </a>
-        )}
       </article>
     ))}
-    <h3>Çelişkiler</h3>
-    <ul>
-      {p.contradictions.map((x) => (
-        <li>{x}</li>
-      ))}
-    </ul>
-    <h3>İlişkiler</h3>
-    <ul>
-      {p.relationships.map((x) => (
-        <li>{x}</li>
-      ))}
-    </ul>
+    {old && (
+      <>
+        <h3>Önceki ayrıntılı kaynak kaydı</h3>
+        <p>
+          Önceki gelir odaklı öneriler aktif geliştirme sırası olarak
+          kullanılmıyor. Aşağıdaki kayıtlar kaynak tanımı ve sınırları içindir.
+        </p>
+        {old.sources.map((e) => (
+          <article class="project-entry">
+            <h4>
+              {e.id} · {e.title}
+            </h4>
+            <p>{e.claim}</p>
+            <p class="meta">
+              {e.kind} · {e.accessed} · {e.limitation}
+            </p>
+            {e.url && (
+              <a href={e.url} rel="noreferrer">
+                Dış kaynağı aç
+              </a>
+            )}
+          </article>
+        ))}
+      </>
+    )}
     <p>
-      Veri sürümü {portfolio.version} · {p.reviewDate} · Kaynak incelemesi henüz
-      tamamlanmadı.
+      Strateji sürümü {development.version} · {development.date}. Bütün
+      portföyün içerik incelemesi tamamlanmış değildir.
     </p>
   </details>
 </Layout>

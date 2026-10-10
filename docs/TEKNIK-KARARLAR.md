@@ -35,3 +35,15 @@ Sade Türkçe rehberler, üç proje kümesi, ortak yerel kontrol listeleri ve he
 Önceki ana sayfanın sıfır JavaScript koşulu bu teslimde yerel kontrol listesi ve ortak gezinme davranışı nedeniyle küçük ortak betik koşuluyla değişti. Statik rotalarda React/katalog JS hâlâ yüklenmez; ortak üretim JavaScript gzip bütçesi 2 KiB, diğer aktarım bütçeleri aynı kaldı. Kalıcı görsel referanslar bağımsız önce/sonra/fark incelemesiyle kabul edilir.
 
 Katalog araç çubuğunda tek Grid sütunu `minmax(0, 1fr)` ve doğrudan çocuklar `min-width: 0` kullanır. Bu, geniş sistem fontlarında yüzde 200 kök metinle oluşan otomatik min-content taşmasını önler; metin küçültülmez veya taşma gizlenmez. Regresyon Verdana ile de sınanır.
+
+## 10 Ekim 2026: geliştirme yatırımı ve strateji 2.0
+
+Önceki gelir deneyi hedefi geri çekildi. Aktif hedef kullanıcının yazılım altyapısını geliştirmek; satış/tahsilat koşulu teknik öncelik değildir. 6 eski ayrıntılı kaynak kaydı korunur, ticari skorlar null ve kullanım dışıdır. 17 mevcut analiz kaydı daha aday görünümüne alınır. Yeni aday kayıtları önceki altı projenin derinliğiyle incelenmiş gibi sunulmaz.
+
+`src/lib/strategy.ts` sıkı strateji şeması, 14 ölçüt ve 14 deterministik ECA kuralı sağlar. `src/data/development.ts` kaynak gözlemleri ve önerilen dilimleri taşır. `strategy-guidance.ts` ortak çalışma yollarını tanımlar. Bilinmeyen kanıt sıfır puana çevrilmez. Kaynağa bağlanmamış kesin koşul ve gözlenen bağımlılık döngüsü reddedilir. Çalışma/kabul/hata için runtime kanıt türü gerekir; belge iddiası yeterli değildir.
+
+Ortak çekirdek ve ürün rakip proje adları gibi sıralanmaz. Tüketici ihtiyacı ve uyumluluk kanıtı ortaklaştırma kararını belirler. Geliştirme adımı ürün sonucunu, karşı görüşü, kabul koşulunu ve yeniden değerlendirmeyi içerir. ECA önerisi kaynak projede kod çalıştırma veya değişiklik yapma yetkisi vermez.
+
+Katalog seçim/arama/AND filtreleri ve URL geri/ileri davranışını korur; gelir ağırlığı yerine açık geliştirme hedefi, inceleme derinliği ve kabiliyet filtreleri kullanılır. Eski tercihler ve ticari checkbox işaretleri v2 anahtarlarına taşınmaz. Görünür listelerin sırası alfabetik, hedef ilişkisi veya kaynak derinliği düzenidir; kalite veya yatırım puanı değildir.
+
+Bu bölüm önceki rehberdeki ücretli pilot/alan ortağı/iç araç kümeleri ve müşteri/ilk teklif sözleşmesinin yerini alır. Eski kararlar tarihli geçmiş bağlamıdır. Güncel sahiplik, kullanıcının TÜRSAB dışı bütün projelerin kendisine ait olduğu beyanıdır.
