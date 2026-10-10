@@ -3,74 +3,115 @@ import Layout from '../layouts/Layout.astro';
 import TableScroll from '../components/TableScroll.astro';
 import { portfolio } from '../lib/data';
 import { scoreLabel } from '../lib/model';
+import { guideClusters, guideFor } from '../data/guides';
 const base = import.meta.env.BASE_URL;
 ---
 
-<Layout title="Fırsat haritası">
-  <p class="eyebrow">Gelir, yük ve kanıt</p>
-  <h1>Potansiyel, hazırlıkla aynı şey değil.</h1>
-  <p class="lede">
-    Eksik puanlar tek bir nokta veya kesin başarı sırası gibi çizilmez. Bu
-    harita olası yönleri ve kanıt boşluklarını yan yana tutar.
-  </p>
-  <h2>Gelir ile uygulama ve işletme yükü</h2>
-  <p>
-    Uygunluk puanında yüksek değer, daha yönetilebilir yük anlamına gelir. Bu
-    eksen ters risk puanı değildir.
-  </p>
-  <div class="project-grid">
-    {portfolio.projects.map((p) => (
-      <article class="project-entry">
-        <h3>
-          <a href={`${base}projeler/${p.id}/`}>{p.name}</a>
-        </h3>
-        <p>
-          <strong>Gelir:</strong> {scoreLabel('G', p.scores.G)}
-        </p>
-        <p>
-          <strong>Uygunluk:</strong> {scoreLabel('U', p.scores.U)}
-        </p>
-        <p>{p.decisionRationale}</p>
-      </article>
+<Layout title="Fırsatlar ve kalan işler">
+  <header class="page-heading">
+    <p class="eyebrow">Fırsatlar ve kalan işler</p>
+    <h1>Nerede küçük bir işle başlayabilirim?</h1>
+    <p class="lede">
+      Her projenin para kazanma yolu ve önce çözülmesi gereken işi farklı.
+      Başlangıç seçeneklerini üç grupta incele.
+    </p>
+  </header>
+  <nav class="section-nav" aria-label="Fırsat grupları">
+    {guideClusters.map((cluster) => (
+      <a href={`#${cluster.value}`}>{cluster.label}</a>
     ))}
-  </div>
-  <h2>Gelir ile ürün içi yayılma</h2>
-  <div class="project-grid">
-    {portfolio.projects.map((p) => (
-      <article class="project-entry">
-        <h3>{p.name}</h3>
-        <p>
-          Gelir: {scoreLabel('G', p.scores.G)} · Yayılma:{' '}
-          {scoreLabel('V', p.scores.V)}
-        </p>
-        <p>{p.viralLoop}</p>
-      </article>
-    ))}
-  </div>
-  <h2>Potansiyel ile kanıt gücü</h2>
-  <TableScroll label="Potansiyel ve kanıt karşılaştırması">
-    <table>
-      <thead>
-        <tr>
-          <th>Proje</th>
-          <th>Kaynak</th>
-          <th>Pazar</th>
-          <th>Gelir kanıtı</th>
-        </tr>
-      </thead>
-      <tbody>
-        {portfolio.projects.map((p) => (
+    <a href="#puanlar">Puanlar ve kanıt</a>
+  </nav>
+  {guideClusters.map((cluster) => (
+    <section class="cluster-section" id={cluster.value}>
+      <div class="cluster-heading">
+        <h2>{cluster.label}</h2>
+        <p class="lede">{cluster.description}</p>
+      </div>
+      <div class="cluster-grid">
+        {cluster.projectIds.map((id) => {
+          const p = portfolio.projects.find((item) => item.id === id)!;
+          const guide = guideFor(id);
+          return (
+            <article class="project-entry">
+              <h3>
+                <a href={`${base}projeler/${id}/`}>{p.name}</a>
+              </h3>
+              <p>
+                <strong>İlk ücretli iş veya iç kullanım:</strong>{' '}
+                {guide.firstOffer}
+              </p>
+              <p>
+                <strong>İlerlemek için:</strong> {guide.nextStep}
+              </p>
+              <details>
+                <summary>Devam kararının koşulu</summary>
+                <p>{p.changeEvidence}</p>
+                <ul>
+                  {p.blockers.map((item) => (
+                    <li>{item}</li>
+                  ))}
+                </ul>
+              </details>
+              <a href={`${base}projeler/${id}/#ilk-adimlar`}>
+                {p.name} adım listesine git
+              </a>
+            </article>
+          );
+        })}
+      </div>
+    </section>
+  ))}
+  <details id="puanlar">
+    <summary>Gelir, iş yükü ve yayılma puanlarını karşılaştır</summary>
+    <p>
+      Bunlar karar vermeye yardımcı değerlendirmeler. Yüksek uygunluk puanı,
+      işin daha yönetilebilir göründüğünü anlatır. Aralıklar eksik bilgiden
+      kaynaklanır; başarı olasılığı değildir.
+    </p>
+    <TableScroll label="Gelir, uygulanabilirlik ve yayılma puanları">
+      <table>
+        <thead>
           <tr>
-            <th scope="row">{p.name}</th>
-            <td>{p.confidence.source}</td>
-            <td>{p.confidence.market}</td>
-            <td>{p.confidence.revenue}</td>
+            <th>Proje</th>
+            <th>Gelir</th>
+            <th>Uygulama ve işletme</th>
+            <th>Yayılma</th>
           </tr>
-        ))}
-      </tbody>
-    </table>
-  </TableScroll>
+        </thead>
+        <tbody>
+          {portfolio.projects.map((p) => (
+            <tr>
+              <th scope="row">
+                <a href={`${base}projeler/${p.id}/`}>{p.name}</a>
+              </th>
+              <td>{scoreLabel('G', p.scores.G)}</td>
+              <td>{scoreLabel('U', p.scores.U)}</td>
+              <td>{scoreLabel('V', p.scores.V)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </TableScroll>
+    {portfolio.projects.map((p) => (
+      <section class="reading">
+        <h3>{p.name}</h3>
+        <p>{p.decisionRationale}</p>
+        <p>
+          <strong>Yeni kullanıcıya yayılma:</strong> {p.viralLoop}
+        </p>
+        <dl>
+          <dt>İncelenen kaynaklar</dt>
+          <dd>{p.confidence.source}</dd>
+          <dt>Pazar bilgisi</dt>
+          <dd>{p.confidence.market}</dd>
+          <dt>Gelir kanıtı</dt>
+          <dd>{p.confidence.revenue}</dd>
+        </dl>
+      </section>
+    ))}
+  </details>
   <p>
-    <a href={`${base}iliskiler/`}>Ortak altyapı ve aday ilişkiler</a>
+    <a href={`${base}kararlar/`}>Seçtiğim proje için başlangıç planını aç</a>
   </p>
 </Layout>

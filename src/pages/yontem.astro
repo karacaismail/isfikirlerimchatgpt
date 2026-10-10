@@ -11,9 +11,42 @@ const n = (x: number) => x.toLocaleString('tr-TR');
   <p class="eyebrow">
     Veri sürümü {portfolio.version} · {portfolio.date}
   </p>
-  <h1>Bir iddia, dayanağı kadar güçlü.</h1>
+  <header class="page-heading">
+    <h1>Bu değerlendirmeler nasıl hazırlandı?</h1>
+    <p class="lede">
+      Belgeler ve kod okunarak her proje için müşteri, ilk teklif, kalan iş ve
+      küçük deneme önerisi çıkarıldı.
+    </p>
+  </header>
   <section class="reading">
-    <h2>Bütün taslaklar değerlendirme kapsamında</h2>
+    <h2>Karar verirken üç şeyi ayır</h2>
+    <ol>
+      <li>
+        <strong>Kaynakta yazan:</strong> fikir, plan veya kodda görülen parça.
+      </li>
+      <li>
+        <strong>Önerilen:</strong> henüz yapılmamış ücretli iş ve ölçüm
+        adımları.
+      </li>
+      <li>
+        <strong>Doğrulanan:</strong> yalnız gerçekten yapılan inceleme veya
+        kontrolün sonucu.
+      </li>
+    </ol>
+    <p>
+      Kaynak ürünler çalıştırılmadı. Gerçek müşteri, ödeme ve tekrar kullanım
+      henüz doğrulanmadı. Bütün kaynakların incelemesi tamamlanmadı.
+    </p>
+  </section>
+  <nav class="section-nav" aria-label="Yöntem ayrıntıları">
+    <a href="#guncel-kapsam">İnceleme kapsamı</a>
+    <a href="#kanit-turleri">Bilgilerin dayanağı</a>
+    <a href="#puanlama">Puanlama</a>
+    <a href="#olcutler">Ölçüt sözlüğü</a>
+    <a href="#teknik-sinirlar">Teknik kontroller</a>
+  </nav>
+  <details id="guncel-kapsam">
+    <summary>Güncel inceleme kaydı ve kapsamı</summary>
     <p>
       Taslaklar, eski sürümler, yedek klasörlerindeki iş belgeleri, sunumlar,
       finansal tablolar ve kod birlikte incelenir. Dosyanın bulunduğu klasör
@@ -38,13 +71,13 @@ const n = (x: number) => x.toLocaleString('tr-TR');
       {r.changedInputCases} senaryo da karşılaştırmadan geçti. Bütün kaynak
       incelemesi henüz tamamlanmadı.
     </p>
-  </section>
-  <section class="reading">
-    <h2>İlk yayının kapsam kaydı</h2>
+  </details>
+  <details id="ilk-yayin">
+    <summary>İlk yayının arşivlenmiş kapsam kaydı</summary>
     <p>
-      Aşağıdaki sayılar ilk yayın snapshot’ıdır; güncel okuma toplamı yukarıda
-      yer alır. Değişen dosya sistemi için bunlardan yeni bir kalan dosya sayısı
-      veya tamamlanma yüzdesi türetilmez.
+      Aşağıdaki sayılar ilk yayının arşiv kaydıdır; güncel okuma toplamı
+      yukarıda yer alır. Değişen dosya sistemi için bunlardan yeni bir kalan
+      dosya sayısı veya tamamlanma yüzdesi türetilmez.
     </p>
     <dl>
       <dt>1. Envanter kapsaması</dt>
@@ -89,9 +122,9 @@ const n = (x: number) => x.toLocaleString('tr-TR');
         <li>{x}</li>
       ))}
     </ul>
-  </section>
-  <section class="reading">
-    <h2>Sahiplik ve yayın sınırı</h2>
+  </details>
+  <details id="yayin">
+    <summary>Hangi projeler yayımlandı?</summary>
     <p>
       Kişisel kaynakla ilişkilendirilen kayıt: {c.ownership.personal}. Diğer
       yerel kayıtlar: işveren {c.ownership.employer}, arkadaş{' '}
@@ -113,9 +146,9 @@ const n = (x: number) => x.toLocaleString('tr-TR');
       Yeni deponun lisansını kullanıcı sonraya bıraktı. Public görünürlük, açık
       kaynak lisansı verilmiş olduğu anlamına gelmez.
     </p>
-  </section>
-  <section class="reading">
-    <h2>Kanıt türleri</h2>
+  </details>
+  <details id="kanit-turleri">
+    <summary>Bilgilerin dayanağı nasıl ayrılıyor?</summary>
     <ul>
       <li>
         Doğrudan dosya kanıtı: ilgili satır veya bölüm gözlemi; çalıştırma
@@ -137,9 +170,9 @@ const n = (x: number) => x.toLocaleString('tr-TR');
       kanıtlamaz. Dosya zamanı proje başlangıç tarihi sayılmaz. Araçla metin
       çıkarılması, metnin incelendiği anlamına gelmez.
     </p>
-  </section>
-  <section class="reading">
-    <h2>Olgunluk dört eksende</h2>
+  </details>
+  <details id="hazirlik">
+    <summary>Bir projenin hazır olup olmadığı nasıl değerlendiriliyor?</summary>
     <p>
       Ürün geliştirme; fikir, araştırma, prototip veya uygulanmış parçalar
       olarak belirtilir. Asgari uygulanabilir ürün (MVP, Minimum Viable Product)
@@ -155,9 +188,9 @@ const n = (x: number) => x.toLocaleString('tr-TR');
       Uzun teknoloji listesi, derleme başarısı veya belgede “üretime hazır”
       yazması bu eksenlerde kabul kanıtı değildir.
     </p>
-  </section>
-  <section class="reading">
-    <h2>Puanlama ve eksik veri</h2>
+  </details>
+  <details id="puanlama">
+    <summary>Puanlar ve bilinmeyen bilgiler nasıl hesaplanıyor?</summary>
     <p>
       Her ölçüt 0–5 arasında değerlendirilir; bilinmeyen değer null olarak
       saklanır. Puan = ağırlık × ölçüt / 5 katkılarının toplamı. Her grubun
@@ -179,27 +212,30 @@ const n = (x: number) => x.toLocaleString('tr-TR');
       Kurucu kitle erişimi, fiyat, müşteriler veya marj doğrulanmadığında
       varsayılmaz.
     </p>
-  </section>
-  {groupIds.map((g) => (
-    <section>
-      <h2>{groupNames[g]} ölçüt sözlüğü</h2>
-      <p>Ölçekler karar desteğidir; ölçülmüş başarı olasılığı değildir.</p>
-      {criteria[g].map((d) => (
-        <details>
-          <summary>
-            {d.title} · ağırlık {d.weight}
-          </summary>
-          <ol start="0">
-            {d.anchors.map((a) => (
-              <li>{a}</li>
-            ))}
-          </ol>
-        </details>
-      ))}
-    </section>
-  ))}
-  <section class="reading">
-    <h2>Arayüzün teknik sınırları</h2>
+  </details>
+  <details id="olcutler">
+    <summary>Puan ölçütleri ve 0–5 ölçeği</summary>
+    {groupIds.map((g) => (
+      <section>
+        <h2>{groupNames[g]} ölçüt sözlüğü</h2>
+        <p>Ölçekler karar desteğidir; ölçülmüş başarı olasılığı değildir.</p>
+        {criteria[g].map((d) => (
+          <details>
+            <summary>
+              {d.title} · ağırlık {d.weight}
+            </summary>
+            <ol start="0">
+              {d.anchors.map((a) => (
+                <li>{a}</li>
+              ))}
+            </ol>
+          </details>
+        ))}
+      </section>
+    ))}
+  </details>
+  <details id="teknik-sinirlar">
+    <summary>Site ve tarayıcı kontrollerinin sınırları</summary>
     <p>
       Astro ile sayfalar derleme sırasında statik üretilir (SSG, Static Site
       Generation). Mantine’in sağlayıcısı ve etkileşimli katalog aynı React
@@ -242,5 +278,5 @@ const n = (x: number) => x.toLocaleString('tr-TR');
         Teknik etkileşim örneğini aç
       </a>
     </p>
-  </section>
+  </details>
 </Layout>

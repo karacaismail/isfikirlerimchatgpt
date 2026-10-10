@@ -9,105 +9,99 @@ import {
 import { theme } from './Proof';
 import { scrollTableWithKeyboard } from '../lib/table-scroll';
 import {
+  customerLabels,
+  guideClusters,
+  guideFor,
+  projectGuides,
+  revenueLabels,
+} from '../data/guides';
+import {
+  createDefaultPreferences,
+  filterKeys,
+  filterOptions,
+  filterProjects,
+  preferencesFromUrl,
+  queryStringForPreferences,
+  resetFilters,
+  sanitizePreferences,
+  sortProjects,
+  type CatalogPreferences,
+  type FilterKey,
+} from '../lib/catalog';
+import {
   defaultProfiles,
   groupIds,
   groupNames,
   profileScore,
-  scoreGroup,
   scoreLabel,
-  searchText,
-  type GroupId,
   type Project,
 } from '../lib/model';
 
 type Props = { projects: Project[]; base: string; mode: 'catalog' | 'compare' };
 const storageKey = 'isfikirlerim-tercihler-v1';
-type Preferences = {
-  query: string;
-  stage: string | null;
-  platform: string | null;
-  income: string | null;
-  decision: string | null;
-  ownership: string | null;
-  sort: string;
-  selected: string[];
-  weights: Record<GroupId, number>;
+const filterLabels: Record<FilterKey, string> = {
+  cluster: 'Başlangıç yolu',
+  customer: 'Müşteri türü',
+  revenue: 'Gelir türü',
+  stage: 'Ürün aşaması',
+  platform: 'Önerilen platform',
+  income: 'Gelir modeli',
+  decision: 'Önerilen karar',
 };
-const defaults: Preferences = {
-  query: '',
-  stage: null,
-  platform: null,
-  income: null,
-  decision: null,
-  ownership: null,
-  sort: 'name',
-  selected: [],
-  weights: { ...defaultProfiles.fast },
-};
-const unique = (values: string[]) =>
-  [...new Set(values)].sort((a, b) => a.localeCompare(b, 'tr'));
-function validWeights(value: unknown): value is Record<GroupId, number> {
-  return (
-    typeof value === 'object' &&
-    value !== null &&
-    groupIds.every(
-      (k) =>
-        typeof (value as Record<string, unknown>)[k] === 'number' &&
-        Number.isFinite((value as Record<string, number>)[k]) &&
-        (value as Record<string, number>)[k] >= 0 &&
-        (value as Record<string, number>)[k] <= 100,
-    )
-  );
-}
-function readPreferences(projects: Project[]): Preferences {
-  try {
-    const raw = JSON.parse(
-      localStorage.getItem(storageKey) || 'null',
-    ) as unknown;
-    if (!raw || typeof raw !== 'object') return defaults;
-    const p = raw as Partial<Preferences>;
-    const result = { ...defaults };
-    if (typeof p.query === 'string') result.query = p.query.slice(0, 200);
-    for (const key of [
-      'stage',
-      'platform',
-      'income',
-      'decision',
-      'ownership',
-    ] as const)
-      if (typeof p[key] === 'string' && p[key].length < 150)
-        result[key] = p[key];
-    if (['name', ...groupIds, 'profile'].includes(p.sort || ''))
-      result.sort = p.sort!;
-    if (Array.isArray(p.selected))
-      result.selected = unique(
-        p.selected.filter(
-          (id) => typeof id === 'string' && projects.some((x) => x.id === id),
-        ),
-      ).slice(0, 4);
-    if (
-      validWeights(p.weights) &&
-      Object.values(p.weights).reduce((a, b) => a + b, 0) === 100
-    )
-      result.weights = p.weights;
-    return result;
-  } catch {
-    return defaults;
-  }
-}
 export default function Catalog({ projects, base, mode }: Props) {
-  const [prefs, setPrefs] = useState<Preferences>(defaults);
+  const [prefs, setPrefs] = useState<CatalogPreferences>(
+    createDefaultPreferences,
+  );
   const [ready, setReady] = useState(false);
+  const [filtersOpen, setFiltersOpen] = useState(false);
   const [table, setTable] = useState(false);
   const [weightsOpen, setWeightsOpen] = useState(false);
   const [storageFailed, setStorageFailed] = useState(false);
+  const [urlFailed, setUrlFailed] = useState(false);
+  const initialized = useRef(false);
   const weightsOpener = useRef<HTMLButtonElement>(null);
-  const update = <K extends keyof Preferences>(key: K, value: Preferences[K]) =>
-    setPrefs((p) => ({ ...p, [key]: value }));
+  const update = <K extends keyof CatalogPreferences>(
+    key: K,
+    value: CatalogPreferences[K],
+  ) => setPrefs((p) => ({ ...p, [key]: value }));
   useEffect(() => {
-    setPrefs(readPreferences(projects));
+    if (initialized.current) return;
+    initialized.current = true;
+    let saved = createDefaultPreferences();
+    try {
+      saved = sanitizePreferences(
+        JSON.parse(localStorage.getItem(storageKey) || 'null'),
+        projects,
+        projectGuides,
+      );
+    } catch {
+      setStorageFailed(true);
+    }
+    setPrefs(
+      preferencesFromUrl(
+        window.location.search,
+        saved,
+        projects,
+        projectGuides,
+      ),
+    );
+    setFiltersOpen(window.matchMedia('(min-width: 48rem)').matches);
     setReady(true);
   }, [projects]);
+  useEffect(() => {
+    if (!ready) return;
+    const restoreUrl = () =>
+      setPrefs((current) =>
+        preferencesFromUrl(
+          window.location.search,
+          resetFilters(current),
+          projects,
+          projectGuides,
+        ),
+      );
+    window.addEventListener('popstate', restoreUrl);
+    return () => window.removeEventListener('popstate', restoreUrl);
+  }, [projects, ready]);
   useEffect(() => {
     if (!ready) return;
     try {
@@ -115,40 +109,36 @@ export default function Catalog({ projects, base, mode }: Props) {
     } catch {
       setStorageFailed(true);
     }
+    try {
+      const search = queryStringForPreferences(window.location.search, prefs);
+      if (search !== window.location.search)
+        window.history.replaceState(
+          window.history.state,
+          '',
+          `${window.location.pathname}${search}${window.location.hash}`,
+        );
+    } catch {
+      setUrlFailed(true);
+    }
   }, [prefs, ready]);
-  const filtered = projects.filter((p) => {
-    const haystack = searchText(
-      [p.name, ...p.aliases, p.definition, p.customer, p.problem].join(' '),
-    );
-    return (
-      haystack.includes(searchText(prefs.query)) &&
-      (!prefs.stage || p.maturity.product === prefs.stage) &&
-      (!prefs.platform || p.platforms.proposed.includes(prefs.platform)) &&
-      (!prefs.income || p.monetization.includes(prefs.income)) &&
-      (!prefs.decision || p.decision === prefs.decision) &&
-      (!prefs.ownership || p.ownership === prefs.ownership)
-    );
-  });
-  const value = (p: Project) =>
-    prefs.sort === 'profile'
-      ? profileScore(p, prefs.weights)
-      : groupIds.includes(prefs.sort as GroupId)
-        ? scoreGroup(prefs.sort as GroupId, p.scores[prefs.sort as GroupId])
-            .complete
-          ? scoreGroup(prefs.sort as GroupId, p.scores[prefs.sort as GroupId])
-              .lower
-          : null
-        : 0;
-  const sorted = [...filtered].sort((a, b) => {
-    const x = value(a),
-      y = value(b);
-    if (x === null && y !== null) return 1;
-    if (y === null && x !== null) return -1;
-    if (x !== null && y !== null && x !== y) return y - x;
-    return a.name.localeCompare(b.name, 'tr');
-  });
-  const complete = sorted.filter((p) => value(p) !== null),
-    incomplete = sorted.filter((p) => value(p) === null);
+  const options = filterOptions(projects, projectGuides);
+  const filtered = filterProjects(projects, prefs, projectGuides);
+  const { sorted, complete, incomplete } = sortProjects(filtered, prefs);
+  const advancedCount = ['stage', 'platform', 'income', 'decision'].filter(
+    (key) => prefs[key as FilterKey],
+  ).length;
+  const active = filterKeys.filter((key) => prefs[key]);
+  const hasFilters = Boolean(prefs.query || active.length);
+  const clusterLabel = (id: string) =>
+    guideClusters.find((cluster) => cluster.value === id)?.label || id;
+  const filterValueLabel = (key: FilterKey, value: string) =>
+    key === 'cluster'
+      ? clusterLabel(value)
+      : key === 'customer'
+        ? customerLabels[value as keyof typeof customerLabels] || value
+        : key === 'revenue'
+          ? revenueLabels[value as keyof typeof revenueLabels] || value
+          : value;
   const chosen = prefs.selected.flatMap((id) =>
     projects.filter((p) => p.id === id),
   );
@@ -158,63 +148,80 @@ export default function Catalog({ projects, base, mode }: Props) {
       ? prefs.selected.filter((id) => id !== p.id)
       : [...prefs.selected, p.id];
   const fields = [
-    ['İş tanımı', (p: Project) => p.definition],
-    [
-      'Müşteri ve ödeme yapan',
-      (p: Project) => `${p.customer} Ödeme: ${p.payer}`,
-    ],
-    ['Ticari seçenek', (p: Project) => p.commercialOptions.join(' · ')],
-    ['Mevcut durum', (p: Project) => p.observed],
-    ['Önerilen ilk kapsam', (p: Project) => p.mmp.join(' · ')],
-    [
-      'Karar ve engeller',
-      (p: Project) =>
-        `${p.decision}: ${p.decisionRationale} ${p.blockers.join(' · ')}`,
-    ],
-    [
-      'Doğrulama',
-      (p: Project) =>
-        `${p.confidence.source} Çalıştırma: ${p.confidence.runtime} Gelir: ${p.confidence.revenue}`,
-    ],
+    ['Ne işe yarar?', (p: Project) => guideFor(p.id).summary],
+    ['Kime satılır?', (p: Project) => guideFor(p.id).buyer],
+    ['İlk teklif', (p: Project) => guideFor(p.id).firstOffer],
+    ['İlk adım', (p: Project) => guideFor(p.id).nextStep],
+    ['Yapılacaklar', (p: Project) => guideFor(p.id).steps.join(' · ')],
+    ['Kaynaklarda görülen durum', (p: Project) => p.observed],
+    ['Önemli koşullar', (p: Project) => p.blockers.join(' · ')],
   ] as const;
   function projectEntry(p: Project) {
+    const guide = guideFor(p.id);
     return (
       <article key={p.id} className="project-entry" data-project={p.id}>
-        <p className="eyebrow">{p.maturity.product} · Geçici değerlendirme</p>
+        <div className="project-tags">
+          <span>{clusterLabel(guide.cluster)}</span>
+          <span>{revenueLabels[guide.revenueType]}</span>
+        </div>
         <h3>
           <a href={`${base}projeler/${p.id}/`}>{p.name}</a>
         </h3>
-        <p>{p.definition}</p>
-        <p>
-          <strong>Ödeme yapan:</strong> {p.payer}
+        <p className="project-summary">{guide.summary}</p>
+        <dl className="project-facts">
+          <div>
+            <dt>Kime satılır?</dt>
+            <dd>{guide.buyer}</dd>
+          </div>
+          <div>
+            <dt>İlk teklif</dt>
+            <dd>{guide.firstOffer}</dd>
+          </div>
+        </dl>
+        <p className="project-next-step">
+          <strong>İlk adım:</strong> {guide.nextStep}
         </p>
-        <p>
-          <strong>Karar:</strong> {p.decision}
-        </p>
-        <div className="score-list">
-          {groupIds.map((g) => (
-            <p key={g}>
-              <strong>{groupNames[g]}:</strong> {scoreLabel(g, p.scores[g])}
-            </p>
-          ))}
+        <div className="actions">
+          <a className="button-link" href={`${base}projeler/${p.id}/`}>
+            Adım adım incele
+          </a>
+          <Button
+            variant="light"
+            disabled={
+              !ready || (!prefs.selected.includes(p.id) && chosen.length === 4)
+            }
+            aria-pressed={prefs.selected.includes(p.id)}
+            onClick={() => update('selected', selection(p))}
+          >
+            {prefs.selected.includes(p.id)
+              ? `${p.name}: seçimden çıkar`
+              : `${p.name}: karşılaştırmaya ekle`}
+          </Button>
         </div>
-        <Button
-          disabled={
-            !ready || (!prefs.selected.includes(p.id) && chosen.length === 4)
-          }
-          aria-pressed={prefs.selected.includes(p.id)}
-          onClick={() => update('selected', selection(p))}
-        >
-          {prefs.selected.includes(p.id)
-            ? `${p.name}: seçimden çıkar`
-            : `${p.name}: karşılaştırmaya ekle`}
-        </Button>
+        <details className="score-disclosure">
+          <summary>Puanları göster</summary>
+          <p className="meta">
+            Puanlar kaynaklara dayalı geçici değerlendirmedir; gelir veya başarı
+            garantisi değildir.
+          </p>
+          <div className="score-list">
+            {groupIds.map((g) => (
+              <p key={g}>
+                <strong>{groupNames[g]}:</strong> {scoreLabel(g, p.scores[g])}
+              </p>
+            ))}
+          </div>
+        </details>
       </article>
     );
   }
   return (
     <MantineProvider theme={theme} forceColorScheme="light">
-      <section aria-label="Etkileşimli proje kataloğu" data-ready={ready}>
+      <section
+        className="catalog-layout"
+        aria-label="Etkileşimli proje kataloğu"
+        data-ready={ready}
+      >
         <noscript>
           <p className="notice">
             JavaScript kapalı. Aşağıdaki proje açıklamaları ve ayrıntı
@@ -222,124 +229,267 @@ export default function Catalog({ projects, base, mode }: Props) {
             modern tarayıcı gerekir.
           </p>
         </noscript>
-        <div className="filters">
+        <div className="catalog-toolbar">
           <TextInput
+            className="catalog-search"
             label="Proje veya problem ara"
-            placeholder="Ad, diğer ad veya müşteri"
+            placeholder="Ör. ürün kataloğu, eğitim, İK"
             value={prefs.query}
             disabled={!ready}
             onChange={(e) => update('query', e.currentTarget.value)}
             maxLength={200}
           />
-          <Select
-            label="Sahiplik"
-            placeholder="Tüm yayımlanabilir kayıtlar"
-            data={[{ value: 'bana ait', label: 'Bana ait' }]}
-            value={prefs.ownership}
-            onChange={(v) => update('ownership', v)}
-            disabled={!ready}
-            allowDeselect
-          />
-          <Select
-            label="Ürün aşaması"
-            placeholder="Tüm aşamalar"
-            data={unique(projects.map((p) => p.maturity.product))}
-            value={prefs.stage}
-            onChange={(v) => update('stage', v)}
-            disabled={!ready}
-            allowDeselect
-          />
-          <Select
-            label="Önerilen platform"
-            placeholder="Tüm platformlar"
-            data={unique(projects.flatMap((p) => p.platforms.proposed))}
-            value={prefs.platform}
-            onChange={(v) => update('platform', v)}
-            disabled={!ready}
-            allowDeselect
-          />
-          <Select
-            label="Gelir modeli"
-            placeholder="Tüm modeller"
-            data={unique(projects.flatMap((p) => p.monetization))}
-            value={prefs.income}
-            onChange={(v) => update('income', v)}
-            disabled={!ready}
-            allowDeselect
-          />
-          <Select
-            label="Önerilen karar"
-            placeholder="Tüm kararlar"
-            data={unique(projects.map((p) => p.decision))}
-            value={prefs.decision}
-            onChange={(v) => update('decision', v)}
-            disabled={!ready}
-            allowDeselect
-          />
-          <Select
-            label="Sıralama"
-            data={[
-              { value: 'name', label: 'Ada göre' },
-              ...groupIds.map((g) => ({ value: g, label: groupNames[g] })),
-              { value: 'profile', label: 'Kişisel ağırlıklar' },
-            ]}
-            value={prefs.sort}
-            onChange={(v) => update('sort', v || 'name')}
-            disabled={!ready}
-          />
+          <details
+            className="filter-disclosure"
+            open={filtersOpen}
+            onToggle={(event) => setFiltersOpen(event.currentTarget.open)}
+          >
+            <summary>
+              Filtreler{active.length ? ` (${active.length} etkin)` : ''}
+            </summary>
+            <fieldset className="cluster-chips">
+              <legend>Nasıl başlamak istiyorsun?</legend>
+              <Button
+                className="filter-chip"
+                variant="default"
+                aria-pressed={!prefs.cluster}
+                disabled={!ready}
+                onClick={() => update('cluster', null)}
+              >
+                Tüm yollar (
+                {
+                  filterProjects(
+                    projects,
+                    { ...prefs, cluster: null },
+                    projectGuides,
+                  ).length
+                }
+                )
+              </Button>
+              {guideClusters.map((cluster) => (
+                <Button
+                  key={cluster.value}
+                  className="filter-chip"
+                  variant="default"
+                  aria-pressed={prefs.cluster === cluster.value}
+                  disabled={!ready}
+                  onClick={() =>
+                    update(
+                      'cluster',
+                      prefs.cluster === cluster.value ? null : cluster.value,
+                    )
+                  }
+                >
+                  {cluster.label} (
+                  {
+                    filterProjects(
+                      projects,
+                      { ...prefs, cluster: cluster.value },
+                      projectGuides,
+                    ).length
+                  }
+                  )
+                </Button>
+              ))}
+            </fieldset>
+            <div className="filters">
+              <Select
+                label="Müşteri türü"
+                placeholder="Tüm müşteriler"
+                data={options.customer.map((value) => ({
+                  value,
+                  label: filterValueLabel('customer', value),
+                }))}
+                value={prefs.customer}
+                onChange={(v) => update('customer', v)}
+                disabled={!ready}
+                allowDeselect
+              />
+              <Select
+                label="Gelir türü"
+                placeholder="Tüm gelir türleri"
+                data={options.revenue.map((value) => ({
+                  value,
+                  label: filterValueLabel('revenue', value),
+                }))}
+                value={prefs.revenue}
+                onChange={(v) => update('revenue', v)}
+                disabled={!ready}
+                allowDeselect
+              />
+              <Select
+                label="Sıralama"
+                data={[
+                  { value: 'name', label: 'Ada göre' },
+                  ...groupIds.map((g) => ({ value: g, label: groupNames[g] })),
+                  { value: 'profile', label: 'Kişisel ağırlıklar' },
+                ]}
+                value={prefs.sort}
+                onChange={(v) => update('sort', v || 'name')}
+                disabled={!ready}
+              />
+            </div>
+            <details className="filter-panel">
+              <summary>
+                Diğer filtreler
+                {advancedCount ? ` (${advancedCount} etkin)` : ''}
+              </summary>
+              <div className="filters">
+                <Select
+                  label="Ürün aşaması"
+                  placeholder="Tüm aşamalar"
+                  data={options.stage}
+                  value={prefs.stage}
+                  onChange={(v) => update('stage', v)}
+                  disabled={!ready}
+                  allowDeselect
+                />
+                <Select
+                  label="Önerilen platform"
+                  placeholder="Tüm platformlar"
+                  data={options.platform}
+                  value={prefs.platform}
+                  onChange={(v) => update('platform', v)}
+                  disabled={!ready}
+                  allowDeselect
+                />
+                <Select
+                  label="Önerilen karar"
+                  placeholder="Tüm kararlar"
+                  data={options.decision}
+                  value={prefs.decision}
+                  onChange={(v) => update('decision', v)}
+                  disabled={!ready}
+                  allowDeselect
+                />
+                <Select
+                  label="Gelir modeli"
+                  placeholder="Tüm modeller"
+                  data={options.income}
+                  value={prefs.income}
+                  onChange={(v) => update('income', v)}
+                  disabled={!ready}
+                  allowDeselect
+                />
+              </div>
+            </details>
+            <div className="actions catalog-options">
+              <Button
+                variant="light"
+                ref={weightsOpener}
+                onClick={() => setWeightsOpen(true)}
+                disabled={!ready}
+              >
+                Ağırlıkları düzenle
+              </Button>
+              {mode === 'catalog' && (
+                <Button
+                  variant="light"
+                  onClick={() => setTable((t) => !t)}
+                  disabled={!ready}
+                >
+                  {table ? 'Kart görünümü' : 'Tablo görünümü'}
+                </Button>
+              )}
+              <a
+                className="quiet-link"
+                href={`${base}veri.json`}
+                download="is-fikirlerim.json"
+              >
+                Kamuya açık veriyi indir
+              </a>
+            </div>
+            <p className="meta">
+              {storageFailed
+                ? 'Tarayıcı saklama alanına erişilemedi; tercihler bu oturumda çalışır.'
+                : 'Karşılaştırma seçimin ve puan ağırlıkların bu tarayıcıda saklanır.'}{' '}
+              {urlFailed
+                ? 'Filtreler adres çubuğuna yazılamadı.'
+                : 'Arama ve filtreleri paylaşmak için sayfanın adresini kopyala.'}
+            </p>
+          </details>
+          {hasFilters && (
+            <div className="active-filters" aria-label="Etkin filtreler">
+              {prefs.query && (
+                <Button
+                  className="filter-chip"
+                  variant="default"
+                  onClick={() => update('query', '')}
+                  aria-label="Arama filtresini kaldır"
+                >
+                  Arama: {prefs.query} · Kaldır
+                </Button>
+              )}
+              {active.map((key) => (
+                <Button
+                  key={key}
+                  className="filter-chip"
+                  variant="default"
+                  onClick={() => update(key, null)}
+                  aria-label={`${filterLabels[key]} filtresini kaldır`}
+                >
+                  {filterLabels[key]}: {filterValueLabel(key, prefs[key]!)} ·
+                  Kaldır
+                </Button>
+              ))}
+            </div>
+          )}
         </div>
-        <div className="actions">
-          <Button
-            onClick={() =>
-              setPrefs((p) => ({
-                ...defaults,
-                selected: p.selected,
-                weights: p.weights,
-              }))
-            }
-            disabled={!ready}
-          >
-            Filtreleri temizle
-          </Button>
-          <Button
-            ref={weightsOpener}
-            onClick={() => setWeightsOpen(true)}
-            disabled={!ready}
-          >
-            Ağırlıkları düzenle
-          </Button>
-          {mode === 'catalog' && (
-            <Button onClick={() => setTable((t) => !t)} disabled={!ready}>
-              {table ? 'Kart görünümü' : 'Tablo görünümü'}
+        <div className="result-toolbar">
+          <p role="status" aria-live="polite">
+            {projects.length} projeden {filtered.length} gösteriliyor ·{' '}
+            {chosen.length}/4 karşılaştırma seçimi
+          </p>
+          {hasFilters && (
+            <Button
+              variant="light"
+              onClick={() => setPrefs(resetFilters)}
+              disabled={!ready}
+            >
+              Filtreleri temizle
             </Button>
           )}
-          <a
-            className="button-link"
-            href={`${base}veri.json`}
-            download="is-fikirlerim.json"
-          >
-            Kamuya açık veriyi indir
-          </a>
         </div>
-        <p className="meta">
-          {storageFailed
-            ? 'Tarayıcı saklama alanına erişilemedi; tercihler bu oturumda çalışır.'
-            : 'Arama, filtreler, seçim ve ağırlıklar yalnız bu tarayıcıda saklanır.'}
-        </p>
-        <p role="status" aria-live="polite">
-          {filtered.length} proje · {chosen.length}/4 karşılaştırma seçimi
-        </p>
-        {mode === 'catalog' && chosen.length > 0 && (
-          <a className="button-link" href={`${base}karsilastir/`}>
-            Seçilen projeleri karşılaştır
-          </a>
+        {chosen.length > 0 && (
+          <aside className="comparison-tray" aria-label="Karşılaştırma seçimin">
+            <p>
+              <strong>Seçtiklerin:</strong>{' '}
+              {chosen.map((p) => p.name).join(' · ')}
+            </p>
+            <div className="actions comparison-selection">
+              {mode === 'catalog' && (
+                <a className="button-link" href={`${base}karsilastir/`}>
+                  Seçilen projeleri karşılaştır
+                </a>
+              )}
+              {chosen.map((p) => (
+                <Button
+                  key={p.id}
+                  variant="default"
+                  onClick={() =>
+                    update(
+                      'selected',
+                      prefs.selected.filter((id) => id !== p.id),
+                    )
+                  }
+                  aria-label={`${p.name}: karşılaştırma seçiminden çıkar`}
+                >
+                  {p.name} · Çıkar
+                </Button>
+              ))}
+            </div>
+            <p className="meta">
+              Filtreler seçimlerini silmez. En fazla dört projeyi yan yana
+              karşılaştırabilirsin.
+            </p>
+          </aside>
         )}
         {mode === 'compare' && (
           <section aria-label="Seçilen projelerin karşılaştırması">
             <h2>Karşılaştırma</h2>
             <p>
-              Her proje için önerilen ilk müşteri ve ticari seçenek
-              karşılaştırılır. Farklı müşteri ekonomileri eşdeğer kabul edilmez.
+              Kime satacağını, ilk teklifini ve yapman gereken işleri yan yana
+              gör.
             </p>
             {chosen.length < 2 ? (
               <p className="notice">
@@ -397,17 +547,23 @@ export default function Catalog({ projects, base, mode }: Props) {
               : 'Proje sonuçları'}
           </h2>
           {sorted.length === 0 ? (
-            <p className="notice">
-              Bu arama ve filtrelerle eşleşen proje bulunamadı. Filtreleri
-              temizleyerek yeniden başlayın.
-            </p>
+            <div className="empty-state">
+              <h3>Sonuç bulunamadı</h3>
+              <p>
+                Bu arama ve filtrelerle eşleşen proje bulunamadı. Bir filtreyi
+                kaldırabilir veya tüm projeleri yeniden gösterebilirsin.
+              </p>
+              <Button onClick={() => setPrefs(resetFilters)} disabled={!ready}>
+                Aramayı ve filtreleri sıfırla
+              </Button>
+            </div>
           ) : (
             <>
               {prefs.sort !== 'name' && (
                 <p className="notice">
-                  Yalnız tam ölçütlü kayıtlar puanla sıralanır. Eksik ölçütlü
-                  projeler ayrı, alfabetik gösterilir. Puan aralıkları
-                  istatistiksel güven aralığı değildir.
+                  Bilgisi tamamlanan projeler puanla sıralanır. Eksik bilgisi
+                  olanlar aşağıda alfabetik gösterilir; aralıklar başarı
+                  olasılığı değildir.
                 </p>
               )}
               {table && mode === 'catalog' ? (
@@ -426,7 +582,7 @@ export default function Catalog({ projects, base, mode }: Props) {
                         {groupIds.map((g) => (
                           <th key={g}>{groupNames[g]}</th>
                         ))}
-                        <th>Karar</th>
+                        <th>İlk adım</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -435,11 +591,11 @@ export default function Catalog({ projects, base, mode }: Props) {
                           <th scope="row">
                             <a href={`${base}projeler/${p.id}/`}>{p.name}</a>
                           </th>
-                          <td>{p.customer}</td>
+                          <td>{guideFor(p.id).buyer}</td>
                           {groupIds.map((g) => (
                             <td key={g}>{scoreLabel(g, p.scores[g])}</td>
                           ))}
-                          <td>{p.decision}</td>
+                          <td>{guideFor(p.id).nextStep}</td>
                         </tr>
                       ))}
                     </tbody>

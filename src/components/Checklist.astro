@@ -1,0 +1,84 @@
+---
+interface Props {
+  id: string;
+  title?: string;
+  items: string[];
+}
+const { id, title = 'Adım adım yapılacaklar', items } = Astro.props;
+---
+
+<section class="checklist" data-checklist={id} aria-label={title}>
+  <div class="checklist-heading">
+    <h3>{title}</h3>
+    <span class="checklist-progress" data-progress aria-live="polite">
+      0/{items.length}
+    </span>
+  </div>
+  <ol>
+    {items.map((item, index) => (
+      <li>
+        <label>
+          <input type="checkbox" data-step={index} disabled />
+          <span class="step-copy">
+            <span class="step-number" aria-hidden="true">
+              {String(index + 1).padStart(2, '0')}
+            </span>{' '}
+            {item}
+          </span>
+        </label>
+      </li>
+    ))}
+  </ol>
+  <p class="checklist-note" data-checklist-note>
+    İşaretler kişisel çalışma notundur; bu tarayıcıda saklanır.
+  </p>
+  <noscript>
+    İşaretlemek için JavaScript gerekir; adımları yukarıdan takip edebilirsin.
+  </noscript>
+</section>
+<script>
+  for (const list of document.querySelectorAll<HTMLElement>(
+    '[data-checklist]',
+  )) {
+    const key = `isf-checklist-v1:${list.dataset.checklist}`;
+    const inputs = [
+      ...list.querySelectorAll<HTMLInputElement>('input[data-step]'),
+    ];
+    const progress = list.querySelector('[data-progress]');
+    const note = list.querySelector('[data-checklist-note]');
+    const update = () => {
+      if (progress)
+        progress.textContent = `${inputs.filter((input) => input.checked).length}/${inputs.length}`;
+    };
+    try {
+      const saved: unknown = JSON.parse(localStorage.getItem(key) || '[]');
+      if (Array.isArray(saved))
+        inputs.forEach((input, index) => {
+          input.checked = saved.includes(index);
+        });
+    } catch {
+      if (note)
+        note.textContent =
+          'Tarayıcı saklama alanı kullanılamıyor; işaretler bu sayfada kalır.';
+    }
+    for (const input of inputs) {
+      input.disabled = false;
+      input.addEventListener('change', () => {
+        update();
+        try {
+          localStorage.setItem(
+            key,
+            JSON.stringify(
+              inputs.flatMap((entry, index) => (entry.checked ? [index] : [])),
+            ),
+          );
+        } catch {
+          if (note)
+            note.textContent =
+              'İşaretler kaydedilemedi; bu sayfada çalışmaya devam edebilirsin.';
+        }
+      });
+    }
+    update();
+  }
+</script>

@@ -5,15 +5,10 @@ import { portfolio } from '../lib/data';
 ---
 
 <Layout title="Proje kataloğu">
-  <p class="eyebrow">Kanıta dayalı portföy · {portfolio.date}</p>
-  <h1>Fikri değil, karşılığını incele.</h1>
+  <p class="eyebrow">Altı kişisel proje · {portfolio.date}</p>
+  <h1>Projeler</h1>
   <p class="lede">
-    Kimin hangi işini iyileştiriyor, kim ödeme yapabilir, bugün hangi parçası
-    gerçekten var?
-  </p>
-  <p class="notice">
-    Bu yayında yalnız kişisel projelerin arındırılmış özetleri yer alır.
-    İnceleme tamamlanmadı; tüm değerlendirmeler kaynak kapsamıyla sınırlıdır.
+    Müşteri ve gelir hedefine göre filtrele. İlk teklifi ve yapılacakları gör.
   </p>
   <Catalog
     projects={portfolio.projects}

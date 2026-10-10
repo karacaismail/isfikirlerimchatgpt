@@ -27,3 +27,9 @@ Yeni proje bütçesi: soğuk bağlam, üretim HTTP gzip, ilk katalog etkileşimi
 ## Kalan doğrulama katmanları
 
 Gerçek macOS Safari, fiziksel iOS/Android, sanal klavye ve gerçek tarayıcı yüzde 400 zoom ayrı katmanlardır. Emülasyon bu sonuçları pass yapmaz. Ekran görüntüleri ilk referans adaylarıdır; sessizce onaylanmış regresyon baseline'ı değildir. CI ve gerçek yayın sonucu yalnız GitHub'daki ilgili run ve canlı adres kontrol edilince doğrulanmış sayılır.
+
+## UX düzenlemesi
+
+Sade Türkçe rehberler, üç proje kümesi, ortak yerel kontrol listeleri ve hedefe göre katalog bağlantıları eklendi. Gezinme alanı 64rem üzerinde kalıcı, dar alanda klavyeyle açılan menüdür; geçerli sayfa aria-current ile belirtilir. Katalog filtreleri dar alanda açılır panelde, sonuç sayısı ve kaldırılabilir etkin filtreler dışarıdadır. Arama ve filtreler paylaşılabilir URL içinde; seçimler ve puan ağırlıkları bu tarayıcıda kalır. İlk yüklemede URL filtreleri kayıtlı filtrelerin önüne geçer. Kontrol listesi işaretleri kullanıcının çalışma notlarıdır. Kaynak veri ve ticari doğrulama durumları değişmedi.
+
+Önceki ana sayfanın sıfır JavaScript koşulu bu teslimde yerel kontrol listesi ve ortak gezinme davranışı nedeniyle küçük ortak betik koşuluyla değişti. Statik rotalarda React/katalog JS hâlâ yüklenmez; ortak üretim JavaScript gzip bütçesi 2 KiB, diğer aktarım bütçeleri aynı kaldı. Kalıcı görsel referanslar bağımsız önce/sonra/fark incelemesiyle kabul edilir.

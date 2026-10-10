@@ -1,84 +1,105 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import Checklist from '../components/Checklist.astro';
 import { portfolio } from '../lib/data';
+import { guideClusters, guideFor } from '../data/guides';
 const base = import.meta.env.BASE_URL;
 ---
 
-<Layout title="Karar ve eylem listesi">
-  <p class="eyebrow">Kaynaklara dayanan deney önceliği</p>
-  <h1>Önce hangi projeyle başlamalı?</h1>
-  <p class="lede">
-    İlk öneri Titanlar’ın küçük ücretli uygulama atölyesi. Bu, uzun vadeli
-    yatırım getirisi sıralaması değil; ilk gerçek ödemeyi ve teslim maliyetini
-    az yeni altyapıyla öğrenme sırasıdır.
-  </p>
-  <section class="reading">
-    <h2>İlk 14 gün için seçim</h2>
-    <p>
-      <a href={`${base}projeler/titanlar/`}>Titanlar</a>: tek bir somut öğrenci
-      çıktısı için iki oturum, tek paket ve beş ücretli kayıt hedefle. Satış,
-      hazırlık, ders, destek ve iade sonrası toplam kurucu saatini ölç. Beş
-      ödeme önerilen deney eşiğidir; gerçekleşmiş kayıt veya ürün-pazar uyumu
-      değildir. Eğitmen yeterliği, zaman ve izinli müşteri erişimi yoksa bu
-      öncelik düşer. Kaynakta örnek/sahte olduğu belirtilen yorumları gerçek
-      öğrenci kanıtı olarak kullanma.
+<Layout title="Başlangıç planı">
+  <header class="page-heading">
+    <p class="eyebrow">Bir proje seç · Küçük bir işi dene · Sonucu ölç</p>
+    <h1>Bu hafta hangi adımı atmalıyım?</h1>
+    <p class="lede">
+      Hepsine birden başlama. Müşteriye erişimine ve ayırabildiğin zamana göre
+      tek proje seç; aşağıdaki adımlarla ilk sonucu ölç.
     </p>
+  </header>
+  <nav class="section-nav" aria-label="Başlangıç planı bölümleri">
+    <a href="#secim">Önce hangisi?</a>
+    {guideClusters.map((cluster) => (
+      <a href={`#${cluster.value}`}>{cluster.label}</a>
+    ))}
+  </nav>
+  <section id="secim" class="reading">
+    <h2>Önce hangisi?</h2>
+    <ol>
+      <li>
+        <strong>Peşinatı alınmış, kapsamı belli AtonotA işi varsa:</strong> önce
+        onu teslim et. Teklif dosyası, ödeme yapılmış olduğu anlamına gelmez.
+      </li>
+      <li>
+        <strong>Hızlı bir gelir deneyi istiyorsan:</strong> Titanlar’da iki
+        oturumluk atölyeyi sına. Eğitmen yeterliği, zaman ve ulaşılabilir kitle
+        bu önerinin koşulu.
+      </li>
+      <li>
+        <strong>SaaS kurmak istiyorsan:</strong> PIM’de tek kanal ve 100 SKU
+        için ücretli katalog işiyle başla. Hazır alıcı varsa bu seçenek öne
+        geçebilir.
+      </li>
+    </ol>
     <p>
-      <strong>Öne geçebilecek iş:</strong>{' '}
-      <a href={`${base}projeler/atonota/`}>AtonotA</a> için somut peşinatlı,
-      erişimleri doğrulanmış ve kabul ölçütü yazılmış tek iş akışı varsa önce
-      onu teslim et. Teklif belgesinin bulunması ödeme değildir. Çatı markasını,
-      hizmet işini, AgencyOps’u ve Studio’yu ayrı değerlendir.
-    </p>
-    <p>
-      <strong>Tekrarlanan ürün yönü:</strong> AgencyOps’ta bir ajansın gerçek
-      teslim/kabul işini elle iyileştir ve ikinci ödemeyi ölç.{' '}
-      <a href={`${base}projeler/pim/`}>PIM</a> için 100 SKU/tek kanal ücretli
-      katalog eşleme işi daha uygun alıcıya erişiyorsa öne geçebilir. Her iki
-      seçenekte de ilk satıştan önce geniş platform kurma.
-    </p>
-    <p>
-      <a href={`${base}projeler/metaframer/`}>MetaFramer</a> seçilen ürünün iç
-      kabiliyeti olarak, önerilen haftada en fazla iki saatle ölçülmeli.{' '}
-      <a href={`${base}projeler/hrms/`}>HRMS</a> ve{' '}
-      <a href={`${base}projeler/ibys/`}>İBYS</a> için önce alan ortağı ve tek
-      ücretli süreç gerekir. Kaynaklarda doğrulanmış müşteri, tahsilat veya
-      uçtan uca ürün çalışması bulunmadı.
+      AtonotA içindeki AgencyOps için bir ajansın teslim ve kabul işini elle
+      iyileştirmek diğer seçenek. HRMS ve İBYS önce alan ortağı ister.
+      MetaFramer’ı seçilen işin iç aracı olarak tut.
     </p>
   </section>
-  <div class="notice">
-    <p>
-      Kurucunun haftalık zamanı ve bütçesi belirlenemedi. Kapasite önerisi: aynı
-      anda bir müşteri doğrulaması ve bir dar teknik deney; diğer işleri
-      sonuçlara göre sıraya al. Bu bir kaynak tahsisi yapılmış olduğu anlamına
-      gelmez.
-    </p>
-  </div>
-  {portfolio.projects.map((p) => (
-    <section>
-      <h2>
-        <a href={`${base}projeler/${p.id}/`}>{p.name}</a> · {p.decision}
-      </h2>
-      <p class="reading">{p.decisionRationale}</p>
-      <h3>Kritik engeller</h3>
-      <ul>
-        {p.blockers.map((x) => (
-          <li>{x}</li>
-        ))}
-      </ul>
-      <h3>Kararı değiştirecek bilgi</h3>
-      <p class="reading">{p.changeEvidence}</p>
-      <ol>
-        {p.experiments.map((e) => (
-          <li>
-            <strong>{e.hypothesis}</strong>
+
+  {guideClusters.map((cluster) => (
+    <section
+      id={cluster.value}
+      class="cluster-section"
+      aria-labelledby={`${cluster.value}-plan`}
+    >
+      <div class="cluster-heading">
+        <h2 id={`${cluster.value}-plan`}>{cluster.label}</h2>
+        <p class="lede">{cluster.description}</p>
+      </div>
+      {cluster.projectIds.map((id) => {
+        const project = portfolio.projects.find((p) => p.id === id)!;
+        const guide = guideFor(id);
+        return (
+          <article class="project-entry">
+            <h3>
+              <a href={`${base}projeler/${id}/`}>{project.name}</a>
+            </h3>
+            <p>{guide.summary}</p>
             <p>
-              {e.action} Ölçüm: {e.metric}. Önerilen eşik: {e.threshold}. Emek:{' '}
-              {e.effort}. Başarısızlık: {e.failure}.
+              <strong>İlk teklif:</strong> {guide.firstOffer}
             </p>
-          </li>
-        ))}
-      </ol>
+            <Checklist
+              id={`project-${id}`}
+              title={`${project.name} adımları`}
+              items={guide.steps}
+            />
+            <p class="meta">{guide.effort}</p>
+            <details>
+              <summary>Devam kararını ne değiştirecek?</summary>
+              <p>{project.changeEvidence}</p>
+              <h4>Önce çözülmesi gerekenler</h4>
+              <ul>
+                {project.blockers.map((item) => (
+                  <li>{item}</li>
+                ))}
+              </ul>
+            </details>
+          </article>
+        );
+      })}
     </section>
   ))}
+  <p class="notice reading">
+    Bunlar yapılmış deneyler değil, önerilen adımlar. Haftalık zaman ve bütçe
+    henüz netleşmedi; ücretli talep ve teslim maliyetine göre önceliği yeniden
+    değerlendir.
+  </p>
+  <div class="page-actions">
+    <a class="button-link" href={`${base}katalog/`}>
+      Seçenekleri filtrele
+    </a>
+    <a class="button-secondary" href={`${base}karsilastir/`}>
+      İki projeyi karşılaştır
+    </a>
+  </div>
 </Layout>

@@ -1,28 +1,48 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { portfolio } from '../lib/data';
+import { guideFor } from '../data/guides';
+const base = import.meta.env.BASE_URL;
 ---
 
-<Layout title="İlişkili fikirler">
-  <h1>Bir marka, birden fazla ticari yol.</h1>
-  <p class="lede">
-    Ortak altyapı kullanmak, iki fikri aynı ürün veya aynı sahiplik haline
-    getirmez. Kesinleşmeyen eşleşmeler aday ilişki olarak kalır.
-  </p>
+<Layout title="Projeler nasıl ilişkili?">
+  <header class="page-heading">
+    <p class="eyebrow">Marka, ürün ve ortak araçlar</p>
+    <h1>Hangi işler birlikte düşünülmeli?</h1>
+    <p class="lede">
+      AtonotA çatı marka, MetaFramer ortak teknik araç. Her ticari işin
+      müşterisini, teklifini ve gelirini ayrı değerlendirmek gerekiyor.
+    </p>
+  </header>
+  <nav class="section-nav" aria-label="Proje ilişkileri">
+    {portfolio.projects.map((p) => (
+      <a href={`#${p.id}`}>{p.name}</a>
+    ))}
+  </nav>
   {portfolio.projects.map((p) => (
-    <section class="reading">
+    <section class="reading" id={p.id}>
       <h2>{p.name}</h2>
-      <ul>
-        {p.relationships.map((x) => (
-          <li>{x}</li>
-        ))}
-      </ul>
-      <h3>Ticari seçenekler</h3>
-      <ul>
-        {p.commercialOptions.map((x) => (
-          <li>{x}</li>
-        ))}
-      </ul>
+      <p>{guideFor(p.id).summary}</p>
+      <details>
+        <summary>Diğer projelerle ilişkisi ve ticari seçenekleri</summary>
+        <h3>İlişkiler</h3>
+        <ul>
+          {p.relationships.map((item) => (
+            <li>{item}</li>
+          ))}
+        </ul>
+        <h3>Ayrı değerlendirilecek ticari işler</h3>
+        <ul>
+          {p.commercialOptions.map((item) => (
+            <li>{item}</li>
+          ))}
+        </ul>
+      </details>
+      <p>
+        <a href={`${base}projeler/${p.id}/`}>
+          {p.name} özetini ve adımlarını aç
+        </a>
+      </p>
     </section>
   ))}
 </Layout>

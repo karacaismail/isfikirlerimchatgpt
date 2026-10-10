@@ -1,33 +1,29 @@
 ---
-import { groupIds, groupNames, scoreLabel, type Project } from '../lib/model';
+import type { Project } from '../lib/model';
+import { guideFor } from '../data/guides';
 interface Props {
   project: Project;
 }
 const { project: p } = Astro.props;
+const guide = guideFor(p.id);
 const base = import.meta.env.BASE_URL;
 ---
 
 <article class="project-entry">
-  <p class="eyebrow">
-    {p.maturity.product} ·{' '}
-    {p.provisional ? 'Geçici değerlendirme' : 'İncelenmiş değerlendirme'}
-  </p>
-  <h2>
+  <h3>
     <a href={`${base}projeler/${p.id}/`}>{p.name}</a>
-  </h2>
-  <p>{p.definition}</p>
+  </h3>
+  <p>{guide.summary}</p>
+  <dl class="project-facts">
+    <dt>Kim ödeyebilir?</dt>
+    <dd>{guide.buyer}</dd>
+    <dt>İlk teklif</dt>
+    <dd>{guide.firstOffer}</dd>
+  </dl>
   <p>
-    <strong>Ödeme yapan:</strong> {p.payer}
+    <strong>İlk adım:</strong> {guide.nextStep}
   </p>
-  <p>
-    <strong>Karar:</strong> {p.decision} — {p.decisionRationale}
-  </p>
-  <div class="score-list">
-    {groupIds.map((g) => (
-      <p>
-        <strong>{groupNames[g]}:</strong> {scoreLabel(g, p.scores[g])}
-      </p>
-    ))}
-  </div>
-  <p class="meta">Çalıştırma: {p.confidence.runtime}</p>
+  <a href={`${base}projeler/${p.id}/#ilk-adimlar`}>
+    {p.name} adım listesini aç
+  </a>
 </article>

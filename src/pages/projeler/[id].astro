@@ -1,6 +1,8 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import TableScroll from '../../components/TableScroll.astro';
+import Checklist from '../../components/Checklist.astro';
+import { guideFor, guideClusters } from '../../data/guides';
 import { portfolio } from '../../lib/data';
 import { criteria, groupIds, groupNames, scoreLabel } from '../../lib/model';
 export function getStaticPaths() {
@@ -11,7 +13,11 @@ export function getStaticPaths() {
 }
 const { project: p } = Astro.props;
 const base = import.meta.env.BASE_URL;
+const guide = guideFor(p.id);
+const cluster = guideClusters.find((item) => item.value === guide.cluster)!;
 const sections = [
+  ['Kaynaklardaki iş tanımı', p.definition],
+  ['Projenin türü', p.kind],
   ['Kullanıcı', p.user],
   ['Müşteri', p.customer],
   ['Ödeme yapan', p.payer],
@@ -23,31 +29,59 @@ const sections = [
 ];
 ---
 
-<Layout title={p.name} description={p.definition}>
+<Layout title={p.name} description={guide.summary}>
   <p>
-    <a href={`${base}katalog/`}>Kataloğa dön</a>
+    <a href={`${base}katalog/?cluster=${guide.cluster}`}>
+      {cluster.label} grubuna dön
+    </a>
   </p>
-  <p class="eyebrow">
-    {p.kind} · {p.maturity.product} · Geçici değerlendirme
-  </p>
-  <h1>{p.name}</h1>
-  <p class="lede">{p.definition}</p>
-  <p class="meta">
-    Diğer adlar: {p.aliases.join(', ') || 'Belirlenemedi'} · Son inceleme:{' '}
-    {p.reviewDate}
-  </p>
-  <section class="notice">
-    <h2>Karar: {p.decision}</h2>
-    <p>{p.decisionRationale}</p>
+  <header class="page-heading">
+    <p class="eyebrow">{cluster.label}</p>
+    <h1>{p.name}</h1>
+    <p class="lede">{guide.summary}</p>
+    <dl class="project-facts">
+      <dt>Kim ödeyebilir?</dt>
+      <dd>{guide.buyer}</dd>
+      <dt>İlk teklif</dt>
+      <dd>{guide.firstOffer}</dd>
+      <dt>Şimdi ne yapmalıyım?</dt>
+      <dd>{guide.nextStep}</dd>
+    </dl>
+  </header>
+  <nav class="section-nav" aria-label={`${p.name} bölümleri`}>
+    <a href="#ilk-adimlar">Adım listesi</a>
+    <a href="#is-tanimi">İşin kapsamı</a>
+    <a href="#deneyler">Deneyler</a>
+    <a href="#rakipler">Alternatifler</a>
+    <a href="#finans">Gelir ve maliyet</a>
+    <a href="#kanitlar">Kaynaklar</a>
+  </nav>
+  <section id="ilk-adimlar" class="reading">
+    <h2>Başlamak için adım adım</h2>
+    <Checklist
+      id={`project-${p.id}`}
+      title={`${p.name} adımları`}
+      items={guide.steps}
+    />
+    <p class="meta">{guide.effort}</p>
     <p>
-      <strong>Kararı değiştirecek kanıt:</strong> {p.changeEvidence}
-    </p>
-    <p>
-      <strong>Çalıştırma:</strong> {p.confidence.runtime}
+      Bunlar önerilen adımlar. Gerçek ödeme ve ürünün çalışması henüz
+      doğrulanmadı.
     </p>
   </section>
-  <section class="reading">
-    <h2>İşi hızlıca anla</h2>
+  <details id="is-tanimi">
+    <summary>İşin kapsamı ve mevcut durum</summary>
+    <p>
+      <strong>Öneri:</strong> {p.decision}
+    </p>
+    <p>{p.decisionRationale}</p>
+    <p>
+      <strong>Kararı değiştirecek bilgi:</strong> {p.changeEvidence}
+    </p>
+    <p class="meta">
+      Diğer adlar: {p.aliases.join(', ') || 'Yok'} · Son inceleme:{' '}
+      {p.reviewDate}
+    </p>
     <dl>
       {sections.map(([label, text]) => (
         <>
@@ -56,15 +90,15 @@ const sections = [
         </>
       ))}
     </dl>
-    <h3>En önemli engeller</h3>
+    <h3>Önce çözülmesi gerekenler</h3>
     <ul>
       {p.blockers.map((x) => (
         <li>{x}</li>
       ))}
     </ul>
-  </section>
-  <section>
-    <h2>Dört ayrı karar ekseni</h2>
+  </details>
+  <details id="puan-ozeti">
+    <summary>Gelir, yayılma ve iş yükü değerlendirmesi</summary>
     <p class="reading">
       Puanlar analistin karar modelidir. Eksik ağırlıklar tek bir kesin toplamla
       kapatılmaz; görülen aralık istatistiksel güven aralığı değildir.
@@ -83,9 +117,9 @@ const sections = [
         </div>
       ))}
     </div>
-  </section>
-  <section class="reading">
-    <h2>Gerçek kullanım yolu</h2>
+  </details>
+  <details id="is-akisi">
+    <summary>İlk teslimin kapsamı ve satış yolu</summary>
     <p>
       Bu akış kaynak vizyonu ve önerilen ilk kapsamı anlatır; yerelde
       doğrulanmış uçtan uca davranış değildir.
@@ -95,7 +129,7 @@ const sections = [
         <li>{x}</li>
       ))}
     </ol>
-    <h3>İlk satılabilir kapsam</h3>
+    <h3>İlk ücretli işin kapsamı</h3>
     <ul>
       {p.mmp.map((x) => (
         <li>{x}</li>
@@ -120,11 +154,11 @@ const sections = [
     </ul>
     <h3>Reklamsız ilk müşterilere erişim</h3>
     <p>{p.distribution}</p>
-    <h3>Ürün içi yayılma döngüsü</h3>
+    <h3>Mevcut kullanıcılardan yeni kullanıcı gelir mi?</h3>
     <p>{p.viralLoop}</p>
-  </section>
-  <section>
-    <h2>Alternatifler ve değiştirme gerekçesi</h2>
+  </details>
+  <details id="rakipler">
+    <summary>Alternatifler: müşteri bugün ne kullanabilir?</summary>
     <ul>
       {p.alternatives.map((x) => (
         <li>{x}</li>
@@ -163,9 +197,9 @@ const sections = [
         </article>
       ))}
     </div>
-  </section>
-  <section class="reading">
-    <h2>Gelir senaryosu</h2>
+  </details>
+  <details id="finans">
+    <summary>Gelir ve maliyet: bilinenler ve eksikler</summary>
     <p>{p.finance.status}</p>
     <ul>
       {p.finance.assumptions.map((x) => (
@@ -183,9 +217,9 @@ const sections = [
       ve tek seferlik satış ayrı gelirlerdir. Faaliyet sonucu vergi ve tüm
       giderler tamamlanmadan net kâr diye adlandırılmaz.
     </p>
-  </section>
-  <section>
-    <h2>İlk üç doğrulama deneyi</h2>
+  </details>
+  <details id="deneyler">
+    <summary>Üç küçük deney: neyi, nasıl ölçmeliyim?</summary>
     <p>Eşikler ve emek aralıkları öneridir; bu deneyler yapılmadı.</p>
     <div class="project-grid">
       {p.experiments.map((e, i) => (
@@ -208,17 +242,17 @@ const sections = [
         </article>
       ))}
     </div>
-  </section>
-  <section class="reading">
-    <h2>Riskler</h2>
+  </details>
+  <details id="riskler">
+    <summary>Riskler ve dikkat edilecek işler</summary>
     <ul>
       {p.risks.map((x) => (
         <li>{x}</li>
       ))}
     </ul>
-  </section>
-  <details>
-    <summary>Derin inceleme: özellikler ve olgunluk</summary>
+  </details>
+  <details id="ozellikler">
+    <summary>Özellikler: hangileri kaynaklarda var?</summary>
     <TableScroll label="Özellik durumu tablosu, yatay kaydırılabilir">
       <table>
         <thead>
@@ -267,8 +301,8 @@ const sections = [
       <dd>{p.platforms.structure}</dd>
     </dl>
   </details>
-  <details>
-    <summary>Ölçüt puanları ve gerekçeleri</summary>
+  <details id="puanlar">
+    <summary>Puanların ayrıntılı gerekçeleri</summary>
     {groupIds.map((g) => (
       <section>
         <h3>{groupNames[g]}</h3>
@@ -294,8 +328,8 @@ const sections = [
       </section>
     ))}
   </details>
-  <details>
-    <summary>Kanıt defteri, çelişkiler ve ilişkiler</summary>
+  <details id="kanitlar">
+    <summary>Kaynaklar, çelişkiler ve diğer projelerle ilişkiler</summary>
     <p>
       Özel kaynak dosyaları bu yayında yer almaz. Aşağıdaki güvenli kimlikler
       yerel ayrıntılı inceleme defterine bağlanır; kamuya açık metinler ham
@@ -342,8 +376,8 @@ const sections = [
       ))}
     </ul>
     <p>
-      Analiz sürümü 1.0 · {p.reviewDate} · Kısmi kaynak incelemesine dayanan ilk
-      değerlendirme.
+      Veri sürümü {portfolio.version} · {p.reviewDate} · Kaynak incelemesi henüz
+      tamamlanmadı.
     </p>
   </details>
 </Layout>

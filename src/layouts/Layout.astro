@@ -6,17 +6,19 @@ interface Props {
 }
 const {
   title,
-  description = 'İş fikirlerini kaynak, müşteri ve gelir kanıtıyla değerlendiren Türkçe portföy.',
+  description = 'Projeleri karşılaştır, ilk ücretli işi seç ve adım adım ilerle.',
 } = Astro.props;
 const base = import.meta.env.BASE_URL;
+const current = Astro.url.pathname.slice(base.length).replace(/\/$/, '');
 const nav = [
-  ['', 'Genel bakış'],
-  ['katalog/', 'Katalog'],
-  ['karsilastir/', 'Karşılaştırma'],
-  ['firsatlar/', 'Fırsatlar'],
-  ['yontem/', 'Yöntem'],
-  ['kararlar/', 'Kararlar'],
+  ['', 'Genel bakış', '01'],
+  ['katalog', 'Projeler', '02'],
+  ['karsilastir', 'Karşılaştır', '03'],
+  ['kararlar', 'Yapılacaklar', '04'],
+  ['firsatlar', 'Fırsatlar', '05'],
 ];
+const isCurrent = (path: string) =>
+  current === path || (path === 'katalog' && current.startsWith('projeler/'));
 ---
 
 <!doctype html>
@@ -25,32 +27,132 @@ const nav = [
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
-    <meta name="theme-color" content="#1e543f" />
+    <meta name="theme-color" content="#172235" />
     <title>{title} · İş Fikirlerim</title>
   </head>
   <body>
     <a href="#icerik" class="skip">
       İçeriğe geç
     </a>
-    <header class="site-header">
-      <a class="brand" href={base}>
-        İş Fikirlerim
-      </a>
-      <nav aria-label="Ana gezinme">
-        {nav.map(([path, label]) => (
-          <a href={`${base}${path}`}>{label}</a>
-        ))}
-      </nav>
-    </header>
-    <main class="page" id="icerik">
-      <slot />
-    </main>
-    <footer class="site-footer">
-      <p>
-        Kaynak, gözlem ve öneri ayrı tutulur. Bu katalog yatırım getirisi veya
-        gelir garantisi sunmaz.
-      </p>
-      <a href={`${base}yontem/`}>İnceleme sınırları ve yöntem</a>
-    </footer>
+    <div class="workspace">
+      <header class="site-header">
+        <a class="brand" href={base}>
+          <span class="brand-mark" aria-hidden="true">
+            İF
+          </span>
+          <span>
+            İş Fikirlerim<span class="brand-caption">Proje karar masası</span>
+          </span>
+        </a>
+        <details class="navigation-shell" open>
+          <summary class="navigation-toggle">Menü</summary>
+          <nav aria-label="Ana gezinme">
+            <p class="nav-label">Çalışma alanı</p>
+            {nav.map(([path, label, number]) => (
+              <a
+                href={`${base}${path ? `${path}/` : ''}`}
+                aria-current={isCurrent(path) ? 'page' : undefined}
+              >
+                <span class="nav-number" aria-hidden="true">
+                  {number}
+                </span>
+                <span class="nav-text">{label}</span>
+              </a>
+            ))}
+            <p class="nav-label nav-secondary-label">Başvuru</p>
+            <a
+              href={`${base}yontem/`}
+              aria-current={current === 'yontem' ? 'page' : undefined}
+            >
+              <span class="nav-text">İnceleme notları</span>
+            </a>
+            <a
+              href={`${base}iliskiler/`}
+              aria-current={current === 'iliskiler' ? 'page' : undefined}
+            >
+              <span class="nav-text">Proje ilişkileri</span>
+            </a>
+          </nav>
+        </details>
+        <p class="sidebar-note">
+          Altı proje, üç çalışma yönü.
+          <br />
+          Önce birini seç. Küçük bir işle dene.
+        </p>
+      </header>
+      <div class="workspace-content">
+        <div class="workspace-topbar">
+          <span>
+            Çalışma alanı <span aria-hidden="true">/</span>{' '}
+            <strong>{title}</strong>
+          </span>
+          <a href={`${base}kararlar/`}>İlk adımını seç</a>
+        </div>
+        <main class="page" id="icerik">
+          <slot />
+        </main>
+        <footer class="site-footer">
+          <p>İş Fikirlerim · 10 Ekim 2026</p>
+          <a href={`${base}yontem/`}>
+            Neler incelendi, neler henüz bilinmiyor?
+          </a>
+        </footer>
+      </div>
+    </div>
+    <script>
+      const menu =
+        document.querySelector<HTMLDetailsElement>('.navigation-shell');
+      const wide = matchMedia('(min-width: 64rem)');
+      const menuToggle = menu?.querySelector<HTMLElement>('summary');
+      let toggleFocused = false;
+      menuToggle?.addEventListener('focus', () => {
+        toggleFocused = true;
+      });
+      menuToggle?.addEventListener('blur', () => {
+        if (!wide.matches) toggleFocused = false;
+      });
+      const adapt = () => {
+        if (!menu) return;
+        const focused = document.activeElement;
+        menu.open = wide.matches || menu.contains(focused);
+        if (wide.matches && (focused === menuToggle || toggleFocused)) {
+          const destination =
+            menu.querySelector<HTMLElement>('[aria-current="page"]') ??
+            menu.querySelector<HTMLElement>('nav a');
+          destination?.focus();
+          toggleFocused = false;
+        }
+      };
+      adapt();
+      wide.addEventListener('change', adapt);
+      menu?.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && !wide.matches && menu.open) {
+          menu.open = false;
+          menu.querySelector<HTMLElement>('summary')?.focus();
+        }
+      });
+      const revealSection = () => {
+        let id: string;
+        try {
+          id = decodeURIComponent(location.hash.slice(1));
+        } catch {
+          return;
+        }
+        const target = document.getElementById(id);
+        if (!target) return;
+        let ancestor: HTMLElement | null = target;
+        let revealed = false;
+        while (ancestor) {
+          if (ancestor instanceof HTMLDetailsElement && !ancestor.open) {
+            ancestor.open = true;
+            revealed = true;
+          }
+          ancestor = ancestor.parentElement;
+        }
+        if (revealed) target.scrollIntoView({ block: 'start' });
+      };
+      revealSection();
+      addEventListener('hashchange', revealSection);
+    </script>
   </body>
 </html>

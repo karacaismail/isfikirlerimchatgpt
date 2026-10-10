@@ -3,9 +3,18 @@ import { gzipSync } from 'node:zlib';
 
 const base =
   process.env.SITE_URL || 'http://127.0.0.1:4179/isfikirlerimchatgpt/';
-const widths = [320, 360, 375, 390, 667, 767, 768, 769, 1280];
+const widths = [320, 360, 375, 390, 667, 767, 768, 769, 1023, 1024, 1025, 1280];
 const ready = async (page: Page) =>
   expect(page.locator('[data-ready]')).toHaveAttribute('data-ready', 'true');
+
+async function openFilters(page: Page) {
+  if (
+    !(await page
+      .locator('.filter-disclosure')
+      .evaluate((el) => (el as HTMLDetailsElement).open))
+  )
+    await page.locator('.filter-disclosure > summary').click();
+}
 
 function contrast(first: string, second: string) {
   const luminance = (color: string) => {
@@ -25,6 +34,19 @@ test('etkin yer tutucu metin ve klavye odağı kontrastı', async ({ page }) => 
   await page.setViewportSize({ width: 320, height: 640 });
   await page.goto('katalog/');
   await ready(page);
+  await openFilters(page);
+  for (const label of ['Proje veya problem ara', 'Gelir türü']) {
+    const colors = await page
+      .locator('input')
+      .and(page.getByLabel(label, { exact: true }))
+      .evaluate((el) => ({
+        border: getComputedStyle(el).borderTopColor,
+        background: getComputedStyle(el).backgroundColor,
+      }));
+    expect(contrast(colors.border, colors.background)).toBeGreaterThanOrEqual(
+      3,
+    );
+  }
   const inputs = page.locator(
     'input[placeholder]:not([placeholder=""]):visible',
   );
@@ -116,6 +138,8 @@ test('320 öncelikli arama, boş durum, filtre, iki-dört proje ve kalıcı kar�
   ).toBeVisible();
   await page.getByRole('button', { name: 'Filtreleri temizle' }).click();
   await expect(entries).toHaveCount(6);
+  await openFilters(page);
+  await page.getByText('Diğer filtreler', { exact: false }).click();
   const stage = page.getByRole('combobox', { name: 'Ürün aşaması' });
   await stage.click();
   await page.getByRole('option').first().click();
@@ -166,6 +190,7 @@ test('özel seçim klavyesi, geçersiz ağırlık ve pencereden odak dönüşü'
   await page.setViewportSize({ width: 320, height: 480 });
   await page.goto('katalog/');
   await ready(page);
+  await openFilters(page);
   const sort = page.getByRole('combobox', { name: 'Sıralama' });
   await sort.focus();
   await page.keyboard.press('ArrowDown');
@@ -243,13 +268,14 @@ test('tüm genişliklerde metin, açılır panel, tablo ve büyütülmüş kök 
 }, testInfo) => {
   await page.goto('katalog/');
   await ready(page);
+  await openFilters(page);
   for (const width of widths) {
     await page.setViewportSize({
       width,
       height: width === 667 ? 320 : width === 320 ? 480 : 720,
     });
     await readable(page);
-    await page.getByRole('combobox', { name: 'Gelir modeli' }).click();
+    await page.getByRole('combobox', { name: 'Gelir türü' }).click();
     await readable(page);
     await page.keyboard.press('Escape');
   }
@@ -353,10 +379,11 @@ test('statik tablolar klavyeyle yatay kayar', async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 480 });
   for (const route of ['firsatlar/', 'projeler/atonota/']) {
     await page.goto(route);
-    if (route.startsWith('projeler'))
-      await page
-        .getByText('Derin inceleme: özellikler ve olgunluk', { exact: true })
-        .click();
+    if (route.startsWith('projeler')) {
+      await page.locator('#ozellikler > summary').click();
+    } else {
+      await page.locator('#puanlar > summary').click();
+    }
     const region = page.locator('.table-scroll').first();
     await page.mouse.click(1, 1);
     let focused = false;
@@ -376,7 +403,7 @@ test('statik tablolar klavyeyle yatay kayar', async ({ page }) => {
   }
 });
 
-test('statik rota özel JS indirmez; katalog üretim aktarımı bütçede kalır', async ({
+test('statik rotalar yalnız ortak gezinme ve kontrol listesi kodunu indirir; katalog bütçede kalır', async ({
   browser,
 }, testInfo) => {
   for (const route of ['', 'firsatlar/', 'projeler/atonota/', 'katalog/']) {
@@ -433,6 +460,22 @@ test('statik rota özel JS indirmez; katalog üretim aktarımı bütçede kalır
       responses
         .filter((r) => r.type.includes(kind))
         .reduce((sum, r) => sum + r.bytes, 0);
+    const inlineScripts = await page
+      .locator('script:not([src])')
+      .evaluateAll((els) =>
+        els
+          .filter(
+            (el) =>
+              !['application/json', 'application/ld+json'].includes(
+                el.getAttribute('type') || '',
+              ),
+          )
+          .map((el) => el.textContent || '')
+          .join('\n'),
+      );
+    const inlineScriptGzip = inlineScripts
+      ? gzipSync(inlineScripts).byteLength
+      : 0;
     const totals = {
       total: responses.reduce((sum, r) => sum + r.bytes, 0),
       js: size('javascript'),
@@ -447,6 +490,7 @@ test('statik rota özel JS indirmez; katalog üretim aktarımı bütçede kalır
             condition:
               'Her rota yeni soğuk BrowserContext; SW engelli; gerçek encoded response body boyutu, protokol başlıkları hariç. Node gzip ayrıca karşılaştırma içindir.',
             totals,
+            inlineScriptGzip,
             requests,
             failures,
             responses,
@@ -457,15 +501,12 @@ test('statik rota özel JS indirmez; katalog üretim aktarımı bütçede kalır
         contentType: 'application/json',
       },
     );
-    if (!route)
+    if (route !== 'katalog/') {
+      expect(totals.js + inlineScriptGzip).toBeGreaterThan(0);
+      expect(totals.js + inlineScriptGzip).toBeLessThan(2 * 1024);
       expect(
-        requests.filter(
-          (r) => r.type === 'script' || /\.m?js(?:\?|$)/.test(r.url),
-        ),
+        requests.filter((r) => /Catalog|Proof|react-dom/.test(r.url)),
       ).toHaveLength(0);
-    else if (route !== 'katalog/') {
-      expect(totals.js).toBeGreaterThan(0);
-      expect(totals.js).toBeLessThan(2 * 1024);
     } else {
       expect(totals.js).toBeGreaterThan(0);
       expect(totals.total).toBeLessThanOrEqual(500 * 1024);
@@ -514,7 +555,8 @@ test('görsel referans adayları, dokunma ve hareket tercihi', async ({
     contentType: 'application/json',
   });
   await readable(page);
-  const select = page.getByRole('combobox', { name: 'Gelir modeli' });
+  await page.locator('.filter-disclosure > summary').tap();
+  const select = page.getByRole('combobox', { name: 'Gelir türü' });
   await select.tap();
   await expect(page.getByRole('listbox')).toBeVisible();
   await readable(page);

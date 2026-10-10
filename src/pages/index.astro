@@ -1,99 +1,104 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import Checklist from '../components/Checklist.astro';
 import ProjectSummary from '../components/ProjectSummary.astro';
 import { portfolio } from '../lib/data';
-const { reviewUpdate: r, projects } = portfolio;
+import { guideClusters } from '../data/guides';
 const base = import.meta.env.BASE_URL;
-const number = (n: number) => n.toLocaleString('tr-TR');
 ---
 
-<Layout title="Genel bakış">
-  <p class="eyebrow">İş Fikirlerim · {portfolio.date} · İnceleme sürüyor</p>
-  <div class="hero">
-    <div>
-      <h1>Hangi fikir, kimin işini kolaylaştırır?</h1>
-      <p class="lede">
-        Bir klasör listesi yerine; müşteri, ödeme gerekçesi, mevcut ürün ve
-        eksik kanıt üzerinden okunan bir portföy.
-      </p>
-      <div class="actions">
-        <a class="button-link" href={`${base}katalog/`}>
-          Projeleri incele
+<Layout title="Hangi projeye odaklanmalıyım?">
+  <header class="page-heading">
+    <p class="eyebrow">İş Fikirlerim · Altı kişisel proje</p>
+    <h1>Hangi projeye odaklanmalıyım?</h1>
+    <p class="lede">
+      Önce hedefini seç. Sonra kime, ne satacağını ve bu hafta hangi adımı
+      atacağını gör.
+    </p>
+    <div class="page-actions">
+      <a class="button-link" href={`${base}kararlar/`}>
+        Başlangıç planını gör
+      </a>
+      <a class="button-secondary" href={`${base}karsilastir/`}>
+        Projeleri karşılaştır
+      </a>
+    </div>
+  </header>
+
+  <section aria-labelledby="hedef-sec">
+    <div class="cluster-heading">
+      <p class="eyebrow">1. Hedefini seç</p>
+      <h2 id="hedef-sec">Şu an neyi öğrenmek istiyorsun?</h2>
+    </div>
+    <div class="cluster-grid">
+      <article class="project-entry">
+        <p class="project-tag">İlk ödeme</p>
+        <h3>Bir işi satıp teslim etmek</h3>
+        <p>Titanlar, AtonotA ve PIM için küçük ücretli işler öneriliyor.</p>
+        <a href={`${base}katalog/?cluster=paid`}>
+          Ücretli pilot adaylarını gör
         </a>
-        <a href={`${base}kararlar/`}>Önerilen ilk deneyi gör</a>
-      </div>
-    </div>
-    <aside class="notice">
-      <h2>Önce kararın dayanağı</h2>
-      <p>
-        Dosyada anlatılan vizyon, kodda görülen özellik ve güvenli çalıştırmayla
-        doğrulanan davranış ayrı tutulur.
-      </p>
-      <p>
-        <strong>Bu incelemede kaynak projeler çalıştırılmadı.</strong> Gelir ve
-        müşteri varsayımları doğrulanmış satış değildir.
-      </p>
-    </aside>
-  </div>
-  <section aria-label="Portföy sayıları" class="metrics">
-    <div class="metric">
-      <strong>{projects.length}</strong>Yayımlanan kişisel proje özeti
-    </div>
-    <div class="metric">
-      <strong>{number(r.fullTextFiles)}</strong>Tam metni okunan kaynak dosya
-    </div>
-    <div class="metric">
-      <strong>{number(r.documentTextFiles)}</strong>Metni veya hücreleri
-      incelenen belge
-    </div>
-    <div class="metric">
-      <strong>{number(r.formulaCells)}</strong>Yeniden hesaplanıp
-      karşılaştırılan formül
+      </article>
+      <article class="project-entry">
+        <p class="project-tag">Düzenli kullanım</p>
+        <h3>Tekrar ödeme getiren ürün kurmak</h3>
+        <p>PIM, HRMS ve İBYS’de önce aynı müşterinin tekrar ihtiyacını sına.</p>
+        <a href={`${base}katalog/?revenue=subscription`}>
+          Düzenli kullanım adaylarını gör
+        </a>
+      </article>
+      <article class="project-entry">
+        <p class="project-tag">Teslim hızı</p>
+        <h3>Kendi geliştirme işimi hızlandırmak</h3>
+        <p>MetaFramer’ı seçtiğin üründeki tek görevde süre kazancıyla ölç.</p>
+        <a href={`${base}katalog/?cluster=internal`}>İç araç planını gör</a>
+      </article>
     </div>
   </section>
-  <section class="notice">
-    <h2>Güncel inceleme kaydı</h2>
-    <p>
-      Sayaçlar {r.capturedAt} tarihli birleşik kayda aittir. Aynı yol ve içerik
-      özeti bir kez sayıldı; {number(r.textLines)} metin satırı incelendi.{' '}
-      {number(r.partialTextFiles)} metin dosyasının kalan bölümünde üçüncü taraf
-      paket kodu ayrıdır. Belge metni, görsel inceleme ve formül kontrolü ayrı
-      ölçümlerdir. Bütün portföyün içerik incelemesi henüz tamamlanmadı.
-    </p>
-    <p>
-      İşverene, arkadaşlara veya sahipliği belirsiz içeriklere ait ayrıntılar
-      kamuya açık veri kümesine alınmadı. Bazı projelerin yalnız araştırma veya
-      gereksinim kanıtı var.
-    </p>
-  </section>
-  <section class="reading">
-    <h2>İlk öneri: Titanlar’ın dar ücretli atölyesi</h2>
-    <p>
-      İki oturum ve beş gerçek ücretli katılımcıyla başlayacak 14 günlük deney,
-      yeni bir platform geliştirmeden ödeme ve teslim emeğini ölçebilir. Eğitmen
-      yeterliği, ayrılabilir zaman ve izinli erişim kanalı bu önerinin
-      koşuludur. Mevcut peşinatlı ve kapsamı doğrulanmış bir AtonotA hizmet işi
-      varsa önce o iş gelir. SaaS yönünde PIM’in tek kanal katalog pilotu ayrı
-      adaydır.
-    </p>
-    <a href={`${base}kararlar/`}>
-      Sıralamayı ve kararı değiştiren koşulları oku
-    </a>
-  </section>
-  <h2>Kaynaklardan ayrıştırılan kişisel projeler</h2>
-  <div class="project-grid">
-    {projects.map((project) => (
-      <ProjectSummary project={project} />
+
+  <nav class="section-nav" aria-label="Proje grupları">
+    {guideClusters.map((cluster) => (
+      <a href={`#${cluster.value}`}>{cluster.label}</a>
     ))}
-  </div>
-  <section>
-    <h2>Önceliği değiştirecek kanıt</h2>
-    <p class="reading">
-      İlk ücretli pilot, uçtan uca iş akışı ve gerçek destek maliyeti çoğu
-      kararı değiştirebilir. Kod miktarı tek başına ödeme isteğini göstermez.
+  </nav>
+
+  {guideClusters.map((cluster, index) => (
+    <section
+      id={cluster.value}
+      class="cluster-section"
+      aria-labelledby={`${cluster.value}-title`}
+    >
+      <div class="cluster-heading">
+        <p class="eyebrow">{index + 2}. Proje grubu</p>
+        <h2 id={`${cluster.value}-title`}>{cluster.label}</h2>
+        <p class="lede">{cluster.description}</p>
+      </div>
+      <div class="cluster-grid">
+        {cluster.projectIds.map((id) => {
+          const project = portfolio.projects.find((p) => p.id === id)!;
+          return <ProjectSummary project={project} />;
+        })}
+      </div>
+      <Checklist
+        id={`cluster-${cluster.value}`}
+        title="Bu grup için adım adım"
+        items={cluster.steps}
+      />
+      <p>
+        <a href={`${base}katalog/?cluster=${cluster.value}`}>
+          {cluster.label} grubunu katalogda filtrele
+        </a>
+      </p>
+    </section>
+  ))}
+
+  <section class="reading" aria-labelledby="karar-dayanagi">
+    <h2 id="karar-dayanagi">Bu öneriler neye dayanıyor?</h2>
+    <p>
+      Belgeler ve kod incelendi; kaynak ürünler çalıştırılmadı. Gerçek satış ve
+      müşteri devamlılığı henüz doğrulanmadı. Buradaki planlar, hangi küçük işi
+      önce deneyeceğini seçmene yardımcı olur.
     </p>
-    <a class="button-link" href={`${base}kararlar/`}>
-      Doğrulama deneylerine git
-    </a>
+    <a href={`${base}yontem/`}>İnceleme kapsamını ve puanlama yöntemini oku</a>
   </section>
 </Layout>

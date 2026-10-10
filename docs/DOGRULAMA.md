@@ -1,10 +1,88 @@
-# İlk sürüm doğrulama kaydı
+# Doğrulama kaydı
 
-## Karar ve kaynak güncellemesi
+## UX yenilemesi — 10 Ekim 2026
+
+Bu bölüm yeni UX adayını kapsar. Aşağıdaki önceki yayın kayıtları tarihsel kanıttır; yeni arayüzün tarayıcı, görsel, CI veya canlı yayın sonucu yerine geçmez. Yerel davranış kontrolleri tamamlandı; sıfır piksel farkı tekrarı, bağımsız görsel kabul ve yeni yayın kanıtı aşağıda ayrı izlenir.
+
+### Değişen akış
+
+- Ana sayfa üç hedefle başlar: ilk ödeme, düzenli kullanım ve geliştirme işini hızlandırma.
+- Altı proje **Ücretli pilotlar**, **Alan ortağı gerekenler** ve **İç araçlar** gruplarına ayrılır. Her grubun altında dört adımlı kontrol listesi bulunur.
+- Proje özetleri müşteri, ilk teklif ve sonraki adımı sade dille gösterir. Yapılacaklar ve proje ayrıntısı aynı proje kontrol listesi kaydını kullanır.
+- Katalog araması başlangıç yolu, müşteri türü, gelir türü, ürün aşaması, önerilen platform, gelir modeli ve önerilen kararla birlikte uygulanır. Etkin filtreler görünür ve temizlenebilir.
+- Arama, filtre ve sıralama URL üzerinden paylaşılır. Karşılaştırma seçimleri ve ağırlıklar tarayıcıda saklanır; paylaşılan filtre adresinin parçası değildir.
+- Kontrol listeleri `localStorage` içinde kişisel ilerleme tutar. İşaretlemek, kaynak analizi veya deney kabulü değildir. Saklama hatası görünür bir mesaja dönüşür; mevcut sayfanın kontrolleri çalışmaya devam eder.
+- Geniş ekranda yan gezinme, dar ekranda klavyeyle kullanılabilen Menü kontrolü vardır. Sayfa içi bağlantı, hedefi kapalı bir ayrıntıysa o bölümü açar. JavaScript kapalıyken temel metinler ve bağlantılar kullanılabilir.
+
+### Bu adayın durumu
+
+| Kontrol                                                                          | Durum                       | Kapsam                                                                                                                       |
+| -------------------------------------------------------------------------------- | --------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| Birim testleri                                                                   | pass                        | 10 Ekim 2026 adayında 13 test; model, rehber eşlemesi, filtre birleşimi, URL/saklama doğrulaması ve belirsiz puan sıralaması |
+| Astro kontrolü                                                                   | pass                        | 10 Ekim 2026 adayında 0 hata, 0 uyarı, 0 ipucu                                                                               |
+| Üretim derlemesi ve gizlilik kapısı                                              | pass                        | 10 Ekim 2026 adayında veri doğrulama, statik derleme ve kaynak/çıktı kontrolleri                                             |
+| Nihai tam depo formatter kontrolü                                                | pass                        | Ortak değişiklikler sonrası Prettier kontrolü                                                                                |
+| Yerel davranış tekrarı                                                           | pass                        | Üç motorda 51 davranış testi; 3 görsel test bu turda karşılaştırmasız çalıştı, görsel kabul sayılmaz                         |
+| Bağımsız UI ve görsel referans incelemesi                                        | nihai çalıştırma bekleniyor | Önce/sonra/fark ve hash bağlı referans kararı ayrı kaydedilecek                                                              |
+| Linux CI ve Pages deploy                                                         | nihai çalıştırma bekleniyor | Yeni UX commitine ait run sonucu gerekir                                                                                     |
+| Canlı tarayıcı tekrarı ve dosya eşitliği                                         | nihai çalıştırma bekleniyor | Yayımlanan commit ve CI Pages artefaktına bağlanmalı                                                                         |
+| Kaynak ürünlerin çalışma doğrulaması                                             | not_run                     | Bu değişiklik katalog arayüzünü kapsar                                                                                       |
+| Gerçek Safari, fiziksel telefon, sanal klavye, ekran okuyucu ve gerçek %400 zoom | not_run                     | Playwright motorları ve kök metin büyütme bu katmanların yerine geçmez                                                       |
+
+### Ölçülen UX sonuçları
+
+320×640 CSS px Chromium görünümünde ilk proje eski düzende 1.724 px, yeni düzende 649 px konumundadır. Sayfa genişliğinde taşma yok; kök metin 16 px kaldı. Arama ve özel Gelir türü alanının hesaplanmış sınırı `rgb(125, 137, 156)`, zemini beyazdır; sınır kontrastı en az 3:1 testi üç motorda geçti.
+
+Yüzde 200 kök metin, uzun MetaFramework kontrol listesi başlığında taşma yakaladı; başlığın esnek minimum genişliği düzeltildi. Teknik sayfada menü özetinin 1023→1024 geçişinde gizlenmesi Chromium'da odağı kaybettiriyordu; önce başarısız regresyon kaydedildi, görünür gezinme bağlantısına odak aktarımıyla üç motorda geçti. Geri/ileri gezinmede URL filtreleri, birleşik arama, adım kalıcılığı ve kayıt hatası da geçti. İlk başarısız çalıştırmalar başarı sayılmaz.
+
+Yeni üretim çıktısında soğuk yerel ölçümün üç motor arasındaki en yüksek encoded gövde değerleri:
+
+| Rota              | Toplam bayt | Dış JS bayt | CSS bayt | HTML bayt |
+| ----------------- | ----------: | ----------: | -------: | --------: |
+| Genel bakış       |       8.593 |           0 |    3.843 |     4.750 |
+| Fırsatlar         |       9.704 |         382 |    3.843 |     5.479 |
+| AtonotA ayrıntısı |      15.799 |         382 |    3.843 |    11.574 |
+| Katalog           |     244.105 |     159.687 |   39.970 |    44.448 |
+
+Statik sayfalardaki inline betikler ayrıca gzip ile ölçülür; dış JS ile toplamları 2 KiB altında kaldı. Sıfır dış JS, inline davranış olmadığı anlamına gelmez. Katalog bütçeleri geçti. Bu tablo yerel önizlemeye aittir; canlı CDN sonucu ayrı kaydedilir.
+
+### Gerçek doğrulama komutları
+
+Çalışma dizini `isfikirlerimchatgpt` depo köküdür. Araçlar Node 24.21.0 ve npm 11.19.0; paketler lockfile ile sabittir.
+
+```sh
+npm run format:check
+npm run check
+npm test
+npm run build
+npm run test:browser
+```
+
+`npm test`, `tests/*.test.ts` dosyalarını çalıştırır. `npm run build`, sırasıyla `scripts/validate-data.mjs`, Astro derlemesi ve `scripts/privacy-check.mjs` çalıştırır. Tarayıcı testleri geliştirme sunucusunu değil `dist` üretim çıktısını kullanır. Playwright yapılandırması önizlemeyi `127.0.0.1:4179` üzerinde başlatır; kurulu ve proje sürümüyle eşleşen üç motor gerekir.
+
+Odaklı regresyon komutu:
+
+```sh
+npx playwright test tests/browser/workspace.spec.ts
+```
+
+Bu dosya mobil gezinme ve yeniden boyutlandırmada odak, geri/ileri URL filtreleri, birden çok filtrenin birleşimi, kontrol listesi kalıcılığı, kapalı saklama alanı ve bölüm bağlantısının ayrıntıyı açması davranışlarını kapsar. Testin kaynakta bulunması, çalıştırılmış veya geçmiş olduğu anlamına gelmez; nihai sonuç yukarıya kaydedilir.
+
+Canlı yayın ayrı sınanır:
+
+```sh
+SITE_URL=https://karacaismail.github.io/isfikirlerimchatgpt/ npm run test:browser
+```
+
+`test-results/browser-results.json` test sonucunu; Playwright ekleri ekran görüntüsü, başarısızlık trace'i ve ağ ölçümlerini taşır. Başarısız veya yeni referansı olmayan görsel aday başarılı sayılmaz. Yalnız bağımsız incelenen adaylar referansa alınabilir; eşik yükseltilmez. Linux ve Darwin görüntüleri ayrı tutulur.
+
+320 CSS px önce gelir; ardından 360, 375, 390, kısa yatay görünüm, tablet, masaüstü ve değişen 48rem/64rem eşiklerinin iki yanı sınanır. Kontroller metin boyutu, yerel tablo kaydırması, fare/klavye odağı, özel seçim paneli ve durumun korunmasını kapsar. Yeni ölçümler eski ağ tablosundan ayrı kaydedilmelidir: ana sayfada artık ortak gezinme ve kontrol listesi için küçük JavaScript vardır. Statik rotalarda aktarılan dış JavaScript gövdesi ve inline betiğin gzip boyutu toplamı 2 KiB altında tutulur; React/katalog paketi istenmemelidir. Katalog bütçesi toplam 500 KiB, JavaScript 180 KiB, CSS 50 KiB, HTML 50 KiB olarak korunur. Bunlar kabul bütçeleridir; nihai ölçüm sonucu değildir.
+
+## Önceki yayın: karar ve kaynak güncellemesi
 
 10 Ekim 2026, veri sürümü 1.1. Altı proje özeti yeni kaynak okumalarıyla düzeltildi; çatı marka, iç üretim kabiliyeti ve satılabilecek dar işler ayrıldı. Genel bakış ve karar sayfasına koşullu ilk deney önerisi eklendi. İlk yayın sayaçları korunur; yeni okuma kaydı kendi UTC zamanına bağlıdır. Toplu çıkarım, belge metni/hücresi, tam kaynak metni ve formül yeniden hesaplaması ayrı ölçümlerdir.
 
-Bu adayda yerel formatter, Astro kontrolü, 7 model testi ve üretim derlemesi/gizlilik kapısı geçti. Chromium, Firefox ve WebKit üzerinde **33/33** tarayıcı testi geçti; atlanan, beklenmeyen ve dalgalı sonuç sıfır. Yeni test genel bakış/karar/yöntem metinlerini 320–1280 matrisinde ve yüzde 200 kök metinle kontrol eder. Kaynak projeler çalıştırılmadı.
+Önceki içerik güncellemesinde yerel formatter, Astro kontrolü, 7 model testi ve üretim derlemesi/gizlilik kapısı geçti. Chromium, Firefox ve WebKit üzerinde **33/33** tarayıcı testi geçti; atlanan, beklenmeyen ve dalgalı sonuç sıfır. O sürümde eklenen test genel bakış/karar/yöntem metinlerini 320–1280 matrisinde ve yüzde 200 kök metinle kontrol eder. Kaynak projeler çalıştırılmadı.
 
 İçerik değişimi eski altı Darwin görsel referansını önce başarısız yaptı. Bağımsız inceleyici her motorun önce/sonra/fark görüntülerini ve 18 statik sayfa görüntüsünü inceledi; değişim metin ve doğal satır yüksekliğine bağlıydı. Sürüm etiketi, kelime boşluğu ve eski kısmi kaynak notları düzeltildi. İncelenmiş hash bağlı adaylar referansa alındıktan sonra normal sıfır piksel farkı tekrarı geçti. Linux adayında 30 davranış testi geçti, üç görsel test eski toplam altı referans nedeniyle başarısız oldu. Bağımsız inceleyici 18 önce/sonra/fark görüntüsünü ve altı SHA-256 bağını ayrıca kontrol etti; açık bulgu kalmadı. Yalnız incelenen altı Linux referansı güncellendi. Başarısız aday run 38045181512 başarılı sayılmaz; normal tekrar ve yayın sonucu bu referans güncellemesinin GitHub Actions kaydına bağlanır. Aşağıdaki 30 testlik kayıt ilk sürüme aittir.
 

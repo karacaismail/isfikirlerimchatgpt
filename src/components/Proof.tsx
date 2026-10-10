@@ -16,19 +16,19 @@ export const theme = createTheme({
     fontFamily:
       'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
   },
-  primaryColor: 'forest',
+  primaryColor: 'decision',
   colors: {
-    forest: [
-      '#edf4ef',
-      '#d5e5da',
-      '#adccba',
-      '#81af98',
-      '#5c967b',
-      '#3d8064',
-      '#28684f',
-      '#1e543f',
-      '#174433',
-      '#103726',
+    decision: [
+      '#edf1fa',
+      '#dde5f7',
+      '#b8c8ee',
+      '#92abe6',
+      '#6f8ddd',
+      '#4e70d4',
+      '#385bc9',
+      '#2d4fc1',
+      '#2845ab',
+      '#203c9a',
     ],
   },
   fontSizes: {
