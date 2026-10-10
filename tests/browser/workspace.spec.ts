@@ -16,9 +16,9 @@ test('menü geniş ekrana geçerken gizlenen özet üzerinde odak bırakmaz', as
 });
 
 test('geri ve ileri gezinme URL filtrelerini geri yükler', async ({ page }) => {
-  await page.goto('katalog/?coverage=detailed');
+  await page.goto('katalog/?view=all&coverage=detailed');
   await expect(page.locator('[data-project]')).toHaveCount(6);
-  await page.goto('katalog/?coverage=detailed&q=pim');
+  await page.goto('katalog/?view=all&coverage=detailed&q=pim');
   await expect(page.locator('[data-project]')).toHaveCount(1);
   await page.goBack();
   await expect(page.locator('[data-project]')).toHaveCount(6);
@@ -32,7 +32,7 @@ test('mobil gezinme bulunduğum sayfayı gösterir ve klavyeyle açılır', asyn
   page,
 }) => {
   await page.setViewportSize({ width: 320, height: 568 });
-  await page.goto('katalog/');
+  await page.goto('katalog/?view=all');
   const menu = page.locator('.navigation-toggle');
   await menu.focus();
   await page.keyboard.press('Enter');
@@ -98,13 +98,13 @@ test('paylaşılabilir küme ve arama filtreleri aynı anda uygulanır', async (
   page,
 }) => {
   await page.setViewportSize({ width: 320, height: 640 });
-  await page.goto('katalog/?coverage=detailed');
+  await page.goto('katalog/?view=all&coverage=detailed');
   await expect(page.locator('[data-ready]')).toHaveAttribute(
     'data-ready',
     'true',
   );
   await expect(page.locator('[data-project]')).toHaveCount(6);
-  await page.goto('katalog/?coverage=detailed&q=pim');
+  await page.goto('katalog/?view=all&coverage=detailed&q=pim');
   await expect(page.locator('[data-ready]')).toHaveAttribute(
     'data-ready',
     'true',
@@ -162,7 +162,7 @@ test('hedef URLsi geri ve ileri gezinmede yerel tercihten bağımsız geri yükl
     'true',
   );
   await expect(
-    page.getByRole('combobox', { name: 'Karar hedefim' }),
+    page.getByRole('combobox', { name: 'Teknik hedefim' }),
   ).toHaveValue('Çalışan ürün akışı');
   await page.goForward();
   await expect(page.locator('[data-ready]')).toHaveAttribute(
@@ -170,6 +170,6 @@ test('hedef URLsi geri ve ileri gezinmede yerel tercihten bağımsız geri yükl
     'true',
   );
   await expect(
-    page.getByRole('combobox', { name: 'Karar hedefim' }),
+    page.getByRole('combobox', { name: 'Teknik hedefim' }),
   ).toHaveValue('Ortak altyapı');
 });

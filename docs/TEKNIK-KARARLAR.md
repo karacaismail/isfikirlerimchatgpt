@@ -55,3 +55,11 @@ Kullanıcının düzeltmesi: reklamsız satılabilirlik potansiyeli değerli bir
 `organic-sales.ts` mevcut 23 adayın kendi kaynak kimliklerine bağlı potansiyel hipotezlerini taşır; `development.ts` bunları aktif strateji sözleşmesine birleştirir. Çıkarım, bilinmeyen ve gerçek gözlem ayrımı korunur; çalışma/kabul olguları değişmez. Adayların teknik hedefleri, URL filtreleri ve v2 yerel ilerleme anahtarları korunur. ECA-01 birlikte değerlendirme ayrımını, ECA-13 yeni potansiyel kanıtıyla yeniden değerlendirmeyi kapsar; toplam 14 kural vardır.
 
 Proje ayrıntısı, katalog gerekçesi ve karşılaştırma aynı ölçütü gösterir. Karşılaştırma karara etkiyi de taşır. Başlangıç önerisi, teknik katkıya ek olarak reklamsız erişim ve sürekli satış/destek yükünün PIM/Studio tercihini değiştirebileceğini açıklar. Kanal önerileri kabul edilmiş dağıtım veya satış kanıtı sayılmaz.
+
+## 10 Ekim 2026: ticari gerekçe ve teknik işin ayrılması — strateji 2.2
+
+Genel organik kanal paragrafları ayrı satın alma gerekçesini kurmuyordu. Bu sürümde organic-sales.ts kaldırıldı; organik değerlendirme yapılandırılmış ticari vakadan türetilir. Kaynak projeler değişmez. GenUI bağımsız ürün olarak önerilmez; hazır ERP AI özelliklerine karşı ayrı ödeme nedeni gösterilemedi. PIM / Studio genel başlangıç sırası geri çekilir.
+
+product-value.ts strict vaka/özet şeması, 10 ticari ölçüt ve 8 ticari ECA içerir. Ticari konum, portföy eylemi ve teknik ECA ayrı sonuçtur. Koşullar ve belirleyici ticari kural görünür; kanal veya ekonomide bilinen kanıt eksikliği için doğrulama işi tetiklenir, talep varmış gibi yorumlanmaz. Olumlu ticari koşul analist hipotezidir; gözlenen talep değildir. Gerçek erişim gözlenmeden channel=true reddedilir. AI yapılabilirliği veya teknik kabul ticari koşul üretmez.
+
+Varsayılan görünüm yalnız dar satın alma hipotezi kurulan test seçeneklerini gösterir. Tüm kayıtlar view=all, altyapı/özellik/araştırma view=enablers altında erişilir. URL ve v3 tercihler doğrulanır; filtre temizliği görünüm/hedef/seçimi korur, paylaşılan URL eksik görünümü sessiz yerel tercihten almaz. Ticari checklists teknik ilerlemeyi veya koşulları değiştirmez. Ayrıntılı vakalar statik sayfada ve deger.json içinde; React katalog adaya ait türetilmiş kısa özeti kullanır.

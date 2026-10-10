@@ -1,33 +1,35 @@
 ---
 import type { Candidate } from '../lib/strategy';
-import { evaluateCandidate, coverageLabels, kindLabels } from '../lib/strategy';
+import { commercialLabels, positionLabels } from '../lib/product-value';
 interface Props {
   candidate: Candidate;
 }
 const { candidate: c } = Astro.props;
 const base = import.meta.env.BASE_URL;
-const result = evaluateCandidate(c, 'flow');
+const value = c.commercial;
 ---
 
 <article class="project-entry">
-  <div class="project-tags">
-    <span class="project-tag">{kindLabels[c.kind]}</span>
-    <span class="project-tag">{coverageLabels[c.coverage]}</span>
-  </div>
+  <p class="eyebrow">
+    {value ? positionLabels[value.position] : 'İş fikri henüz netleşmedi'}
+  </p>
   <h3>
     <a href={`${base}projeler/${c.id}/`}>{c.name}</a>
   </h3>
-  <p>{c.definition}</p>
+  <p>
+    <strong>{value ? commercialLabels[value.action] : 'Belirlenemedi.'}</strong>
+  </p>
+  <p>{value?.reason || c.definition}</p>
   <dl class="project-facts">
-    <dt>Geliştirilecek dilim</dt>
-    <dd>{c.slice.title}</dd>
-    <dt>Neden şimdi?</dt>
-    <dd>{c.rationale}</dd>
+    <dt>İlk alıcı hipotezi</dt>
+    <dd>{value?.buyer || 'Belirlenemedi.'}</dd>
+    <dt>Ayrıca neden ödesin?</dt>
+    <dd>{value?.value || 'Gösterilemedi.'}</dd>
   </dl>
   <p>
-    <strong>{result.label}:</strong> {c.slice.steps[0]}
+    <strong>En güçlü itiraz:</strong> {value?.objection || 'Belirlenemedi.'}
   </p>
-  <a href={`${base}projeler/${c.id}/#ilk-adimlar`}>
-    {c.name} adım listesini aç
+  <a href={`${base}projeler/${c.id}/#deger`}>
+    Alıcı, alternatif ve adım listesini aç
   </a>
 </article>

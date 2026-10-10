@@ -1,20 +1,35 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Catalog from '../components/Catalog';
+import { toCatalogCandidates } from '../lib/catalog';
+import { productCases } from '../data/product-cases';
 import { development } from '../data/development';
 import { strategicCriteria } from '../lib/strategy';
+const valueComparisons = Object.fromEntries(
+  productCases.map((c) => [
+    c.id,
+    {
+      roles: `Kullanan: ${c.buyer.user || 'Belirlenemedi.'} Kararı veren: ${c.buyer.decisionMaker || 'Belirlenemedi.'} Ödeyen: ${c.buyer.payer || 'Belirlenemedi.'}`,
+      economics: `Tekrar: ${c.economics.recurrence || 'Belirlenemedi.'} Birim: ${c.economics.unit || 'Belirlenemedi.'} Maliyetler: ${c.economics.costs.join(' · ')}. ${c.economics.risk}`,
+      advantage: `Eldeki: ${c.competition.advantage || 'Gösterilemedi.'} Eksik: ${c.competition.missingAdvantage}`,
+      scope: c.offer.smallestScope,
+      distribution: `${c.distribution.access === 'observed' ? 'Gözlenen erişim' : 'Gerçek erişim gözlenmedi'}. ${c.distribution.steps.join(' → ')}. ${c.distribution.cost}`,
+    },
+  ]),
+);
 ---
 
 <Layout title="Karşılaştırma">
   <p class="eyebrow">İki ile dört aday seç</p>
-  <h1>Hangi geliştirme dilimi hedefime daha uygun?</h1>
+  <h1>Hangi ürünün ayrı satın alma gerekçesi var?</h1>
   <p class="lede">
     Teknik katkıyı, reklamsız satış potansiyelini ve {strategicCriteria.length}
     ölçütün kanıt durumunu yan yana gör. Bilinmeyenler açık kalır; sahte toplam
     puan üretilmez.
   </p>
   <Catalog
-    candidates={development.candidates}
+    candidates={toCatalogCandidates(development.candidates)}
+    valueComparisons={valueComparisons}
     base={import.meta.env.BASE_URL}
     mode="compare"
     client:load

@@ -1,0 +1,237 @@
+---
+import type { ProductCase } from '../lib/product-value';
+import {
+  businessSentence,
+  commercialDecision,
+  commercialLabels,
+  positionLabels,
+  commercialCriteria,
+  criterionFinding,
+} from '../lib/product-value';
+import Checklist from './Checklist.astro';
+interface Props {
+  value: ProductCase;
+}
+const { value: c } = Astro.props;
+const result = commercialDecision(c);
+const unknown = (value: string | null) => value || 'Belirlenemedi.';
+---
+
+<section id="deger" class="reading">
+  <p class="eyebrow">
+    {positionLabels[c.position]} · {commercialLabels[result.action]}
+  </p>
+  <h2>Kime, hangi değer için?</h2>
+  <p class="notice">{c.conclusion}</p>
+  <p>
+    {businessSentence(c) ||
+      'İş fikri henüz netleşmedi: bağımsız ürün için kullanıcı, ödeyen, sorun, sonuç ve ayrı satın alma nedeni birlikte gösterilemiyor.'}
+  </p>
+  <p>
+    Bu değerlendirme kaynak gözlemi ve analist hipotezidir. Müşteri talebi,
+    görüşmesi, satış veya ödeme gözlendiği anlamına gelmez.
+  </p>
+  <dl>
+    <dt>İlk dar hedef kitle</dt>
+    <dd>{unknown(c.buyer.firstSegment)}</dd>
+    <dt>Kullanan</dt>
+    <dd>{unknown(c.buyer.user)}</dd>
+    <dt>Kararı veren</dt>
+    <dd>{unknown(c.buyer.decisionMaker)}</dd>
+    <dt>Ödeyen</dt>
+    <dd>{unknown(c.buyer.payer)}</dd>
+    <dt>İlk kapsamın dışında</dt>
+    <dd>{c.buyer.excluded}</dd>
+    <dt>Bugünkü iş ve sorun</dt>
+    <dd>{unknown(c.problem.workflow)}</dd>
+    <dt>İhtiyacı tetikleyen olay</dt>
+    <dd>{unknown(c.problem.trigger)}</dd>
+    <dt>Tekrar sıklığı</dt>
+    <dd>{unknown(c.problem.frequency)}</dd>
+    <dt>Bugünkü kayıp</dt>
+    <dd>{unknown(c.problem.cost)}</dd>
+    <dt>Önerilen sonuç</dt>
+    <dd>{unknown(c.offer.outcome)}</dd>
+    <dt>Ayrıca ödeme gerekçesi</dt>
+    <dd>{unknown(c.offer.buyReason)}</dd>
+    <dt>İlk uçtan uca değerli kapsam</dt>
+    <dd>{c.offer.smallestScope}</dd>
+  </dl>
+</section>
+<section id="alternatifler" class="reading">
+  <h2>Neden hazır çözüm veya AI özelliği yetmesin?</h2>
+  <p>
+    <strong>En güçlü karşı görüş:</strong> {c.competition.counterargument}
+  </p>
+  {c.alternatives.map((a) => (
+    <article class="project-entry">
+      <h3>
+        {a.url ? (
+          <a href={a.url} rel="noreferrer">
+            {a.name}
+          </a>
+        ) : (
+          a.name
+        )}
+      </h3>
+      <p>{a.claim}</p>
+      <p class="meta">{a.limitation}</p>
+    </article>
+  ))}
+  <dl>
+    <dt>Kolay kopyalanan bölüm</dt>
+    <dd>{c.competition.copyable}</dd>
+    <dt>Bugün eldeki kalıcı avantaj</dt>
+    <dd>{unknown(c.competition.advantage)}</dd>
+    <dt>Henüz bulunmayan ayrıştırıcı avantaj</dt>
+    <dd>{c.competition.missingAdvantage}</dd>
+  </dl>
+</section>
+<section id="reklamsiz" class="reading">
+  <h2>Reklamsız satış yolu ve ekonomisi</h2>
+  <p>
+    <strong>Erişim durumu:</strong>{' '}
+    {c.distribution.access === 'observed'
+      ? 'Gözlenen erişim'
+      : c.distribution.access === 'hypothesis'
+        ? 'Sınanacak kanal hipotezi'
+        : 'Gerçek erişim bilinmiyor'}
+    . Kanalın varlığı sana müşteri erişimi sağlandığını göstermez.
+  </p>
+  <dl>
+    <dt>Alıcıya ulaşma yolu</dt>
+    <dd>{unknown(c.distribution.channel)}</dd>
+    <dt>İlk somut teklif</dt>
+    <dd>{unknown(c.distribution.firstOffer)}</dd>
+    <dt>Edinme emeği</dt>
+    <dd>{c.distribution.cost}</dd>
+    <dt>Ücretlendirilebilecek birim</dt>
+    <dd>{unknown(c.economics.unit)}</dd>
+    <dt>Tekrar ödeme nedeni</dt>
+    <dd>{unknown(c.economics.recurrence)}</dd>
+    <dt>Ekonomi riski</dt>
+    <dd>{c.economics.risk}</dd>
+  </dl>
+  <h3>İlk erişimden kullanıma</h3>
+  <Checklist id={`value-v1-sales-${c.id}`} items={c.distribution.steps} />
+  <h3>Gelirin karşılaması gereken işler</h3>
+  <ul>
+    {c.economics.costs.map((cost) => (
+      <li>{cost}</li>
+    ))}
+  </ul>
+  <p>
+    Reklamsız erişim ücretsiz edinim değildir. Peşinat geliştirmeye başlama
+    şartı değildir. Listeyi işaretlemek talep veya satış kanıtı üretmez.
+  </p>
+</section>
+<section id="yatirim" class="reading">
+  <h2>Yatırım kararı ve portföy katkısı</h2>
+  <p>
+    Belirleyici ticari kural: {result.determiningRule}. T-ECA-05 ve T-ECA-06
+    satış yolu ve ekonomideki ek işleri gösterir; tek başına ürün önerisi
+    üretmez.
+  </p>
+  <dl>
+    <dt>Somut tüketici</dt>
+    <dd>{unknown(c.portfolio.consumer)}</dd>
+    <dt>Ürüne katkı</dt>
+    <dd>{unknown(c.portfolio.contribution)}</dd>
+    <dt>Fırsat maliyeti</dt>
+    <dd>{c.portfolio.opportunityCost}</dd>
+  </dl>
+  <h3>Kararı değiştirecek üç deney</h3>
+  <p>
+    Bunlar uygulanmış sonuçlar değil, önerilen planlardır. Eşikler alternatifin
+    iş yüküne bağlıdır; keyfî kişi veya saat kotası kullanılmaz. Deney eforu
+    henüz ölçülmedi; gerekli erişim ve veri hazırlığına bağlıdır.
+  </p>
+  <Checklist
+    id={`value-v1-experiments-${c.id}`}
+    items={c.experiments.map((e) => e.action)}
+  />
+  {c.experiments.map((e, i) => (
+    <article class="project-entry">
+      <h3>{i + 1}. deneyin karar koşulu</h3>
+      <dl>
+        <dt>Varsayım</dt>
+        <dd>{e.assumption}</dd>
+        <dt>Ölçülecek sonuç</dt>
+        <dd>{e.measure}</dd>
+        <dt>İlerleme koşulu</dt>
+        <dd>{e.pass}</dd>
+        <dt>Olmazsa</dt>
+        <dd>{e.fail}</dd>
+        <dt>Emek ve kaynak</dt>
+        <dd>Tahmin edilmedi. {e.effort?.basis}</dd>
+      </dl>
+    </article>
+  ))}
+</section>
+<details id="ticari-olcutler">
+  <summary>10 ticari ölçüt ve değerlendirme durumu</summary>
+  <p>
+    G: ekonomik değer. V: büyüme döngüsü. O: reklamsız erişim. U: uygulama ve
+    portföy katkısı. Teknik yapılabilirlik G veya O yerine geçmez. Eski puanlar
+    taşınmaz; eksik bilgilerle toplam sıralama üretilmez.
+  </p>
+  {commercialCriteria.map((criterion) => {
+    const a = criterionFinding(c, criterion.id);
+    return (
+      <article class="project-entry">
+        <h3>
+          {criterion.group} · {criterion.title}
+        </h3>
+        <p>{criterion.question}</p>
+        <p>
+          <strong>{a.state}:</strong> {a.finding}
+        </p>
+      </article>
+    );
+  })}
+</details>
+<details id="ticari-kurallar">
+  <summary>8 ticari ECA kuralının izi</summary>
+  {result.traces.map((t) => (
+    <article class="project-entry">
+      <h3>
+        {t.id} ·{' '}
+        {t.state === 'met'
+          ? 'Koşul sağlanıyor'
+          : t.state === 'unknown'
+            ? 'Bilinmiyor'
+            : 'Koşul sağlanmıyor'}
+      </h3>
+      <dl>
+        <dt>Olay</dt>
+        <dd>{t.event}</dd>
+        <dt>Koşul</dt>
+        <dd>{t.condition}</dd>
+        <dt>Eylem</dt>
+        <dd>{t.action}</dd>
+      </dl>
+    </article>
+  ))}
+</details>
+<details id="pazar-kaynaklari">
+  <summary>Bu değerlendirmedeki kaynaklar ve sınırları</summary>
+  <p>
+    İç kaynak gözlemleri: {c.evidenceIds.join(', ')}. Sayfanın kaynaklar
+    bölümündeki kayıtlarla eşleşir. Kaynakta hedef kitle yazması talebin
+    doğrulandığı anlamına gelmez.
+  </p>
+  {c.sources.map((s) => (
+    <article class="project-entry">
+      <h3>
+        <a href={s.url} rel="noreferrer">
+          {s.title}
+        </a>
+      </h3>
+      <p>
+        {s.id} · Erişim: {s.accessed}
+      </p>
+      <p>{s.claim}</p>
+      <p class="meta">{s.limitation}</p>
+    </article>
+  ))}
+</details>

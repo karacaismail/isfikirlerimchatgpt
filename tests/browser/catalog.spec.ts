@@ -32,7 +32,7 @@ function contrast(first: string, second: string) {
 
 test('etkin yer tutucu metin ve klavye odağı kontrastı', async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 640 });
-  await page.goto('katalog/');
+  await page.goto('katalog/?view=all');
   await ready(page);
   await openFilters(page);
   for (const label of ['Proje veya problem ara', 'Kayıt türü']) {
@@ -121,7 +121,7 @@ test('320 öncelikli arama, boş durum, filtre, iki-dört proje ve kalıcı kar�
   const errors: string[] = [];
   page.on('pageerror', (e) => errors.push(e.message));
   await page.setViewportSize({ width: 320, height: 640 });
-  await page.goto('katalog/');
+  await page.goto('katalog/?view=all');
   await ready(page);
   const entries = page.locator('[data-project]');
   await expect(entries).toHaveCount(23);
@@ -152,7 +152,7 @@ test('320 öncelikli arama, boş durum, filtre, iki-dört proje ve kalıcı kar�
   await expect(
     page.locator('.comparison-criterion').first().locator('.comparison-cell'),
   ).toHaveCount(2);
-  await page.goto('katalog/');
+  await page.goto('katalog/?view=all');
   await ready(page);
   for (let i = 2; i < 4; i++) await entries.nth(i).getByRole('button').click();
   await expect(page.getByRole('status').first()).toContainText('4/4');
@@ -163,7 +163,7 @@ test('320 öncelikli arama, boş durum, filtre, iki-dört proje ve kalıcı kar�
     .getByRole('link', { name: 'Seçilen projeleri karşılaştır' })
     .click();
   await ready(page);
-  await expect(page.locator('.comparison-criterion')).toHaveCount(23);
+  await expect(page.locator('.comparison-criterion')).toHaveCount(35);
   await expect(
     page.locator('.comparison-criterion').first().locator('.comparison-cell'),
   ).toHaveCount(3);
@@ -187,7 +187,7 @@ test('özel seçim klavyesi, kural penceresi ve odak dönüşü', async ({
   page,
 }, testInfo) => {
   await page.setViewportSize({ width: 320, height: 480 });
-  await page.goto('katalog/');
+  await page.goto('katalog/?view=all');
   await ready(page);
   await openFilters(page);
   const sort = page.getByRole('combobox', { name: 'Sıralama' });
@@ -197,7 +197,9 @@ test('özel seçim klavyesi, kural penceresi ve odak dönüşü', async ({
   await page.keyboard.press('Enter');
   await expect(sort).not.toHaveValue('Ada göre');
   await page.keyboard.press('Escape');
-  const opener = page.getByRole('button', { name: 'Karar kurallarını incele' });
+  const opener = page.getByRole('button', {
+    name: 'Teknik karar kurallarını incele',
+  });
   await opener.click();
   const dialog = page.getByRole('dialog');
   await expect(dialog).toBeVisible();
@@ -241,7 +243,7 @@ test('özel seçim klavyesi, kural penceresi ve odak dönüşü', async ({
 test('tüm genişliklerde metin, açılır panel, tablo ve büyütülmüş kök okunabilir', async ({
   page,
 }, testInfo) => {
-  await page.goto('katalog/');
+  await page.goto('katalog/?view=all');
   await ready(page);
   await openFilters(page);
   for (const width of widths) {
@@ -320,7 +322,7 @@ test('JavaScript kapalıyken bütün temel sayfa ve proje bağlantıları okunur
     await expect(page.locator('h1')).toBeVisible();
     await readable(page);
   }
-  await page.goto(new URL('katalog/', base).href);
+  await page.goto(new URL('katalog/?view=all', base).href);
   const links = await page
     .locator('[data-project] h3 a')
     .evaluateAll((els) => els.map((el) => (el as HTMLAnchorElement).href));
@@ -497,7 +499,7 @@ test('görsel referans adayları, dokunma ve hareket tercihi', async ({
     locale: 'tr-TR',
   });
   const page = await context.newPage();
-  await page.goto(new URL('katalog/', base).href);
+  await page.goto(new URL('katalog/?view=all', base).href);
   await ready(page);
   await testInfo.attach('environment.json', {
     body: JSON.stringify(

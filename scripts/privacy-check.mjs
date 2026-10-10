@@ -1,3 +1,4 @@
+import { productValue } from '../src/data/product-cases.ts';
 import { development } from '../src/data/development.ts';
 import { strategySchema } from '../src/lib/strategy.ts';
 import { readdir, readFile, stat, lstat } from 'node:fs/promises';
@@ -113,6 +114,9 @@ if (
   JSON.stringify(strategySchema.parse(development))
 )
   errors.push('Strateji dışa aktarımı izinli veriyle eşleşmiyor');
+const valueExport = JSON.parse(await readFile('dist/deger.json', 'utf8'));
+if (JSON.stringify(valueExport) !== JSON.stringify(productValue))
+  errors.push('Ticari vaka dışa aktarımı izinli veriyle eşleşmiyor');
 if (errors.length) throw new Error(errors.join('\n'));
 const size = (await stat('dist/veri.json')).size;
 console.log(

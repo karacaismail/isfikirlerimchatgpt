@@ -10,8 +10,8 @@ const base = import.meta.env.BASE_URL;
   <h1>Hangi çalışma başka işleri de açar?</h1>
   <p class="lede">
     Ortak kabiliyet ve teknik engel, somut ürün akışına bağlandığında yatırım
-    gerekçesi olur. Aşağıdaki gruplar öneri niteliğindedir; bir aday birden
-    fazla gruba girebilir.
+    gerekçesi olur. Aşağıdaki gruplar teknik çalışma listeleridir; satış önerisi
+    değildir. Bir aday birden fazla gruba girebilir.
   </p>
   <nav class="section-nav" aria-label="Fırsat odakları">
     {developmentPaths.map((p) => (
@@ -22,7 +22,7 @@ const base = import.meta.env.BASE_URL;
     <section class="guide-section" id={p.id}>
       <h2>{p.title}</h2>
       <p>{p.description}</p>
-      <a href={`${base}katalog/?goal=${p.id}&focus=${p.id}`}>
+      <a href={`${base}katalog/?view=all&goal=${p.id}&focus=${p.id}`}>
         Bu odağı filtreleyerek karşılaştır
       </a>
       <div class="project-grid">

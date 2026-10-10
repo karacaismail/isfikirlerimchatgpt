@@ -127,7 +127,7 @@ test('kaynak bağı olmayan kesin koşul ve bağımlılık döngüsü reddedilir
   a.facts.runtime.state = 'yes';
   assert.equal(
     strategySchema.safeParse({
-      version: '2.1',
+      version: '2.2',
       date: '2026-10-10',
       objective: 'Altyapı',
       ownershipBasis: 'Kullanıcı',
@@ -159,7 +159,7 @@ test('kaynak bağı olmayan kesin koşul ve bağımlılık döngüsü reddedilir
   ];
   assert.equal(
     strategySchema.safeParse({
-      version: '2.1',
+      version: '2.2',
       date: '2026-10-10',
       objective: 'Altyapı',
       ownershipBasis: 'Kullanıcı',
@@ -207,7 +207,7 @@ test('kaynak veya analist çıkarımı çalıştırma kabulünün yerine geçmez
     evidenceIds: ['source'],
   };
   const data = {
-    version: '2.1',
+    version: '2.2',
     date: '2026-10-10',
     objective: 'Altyapı',
     ownershipBasis: 'Kullanıcı',

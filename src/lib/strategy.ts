@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { productSummarySchema } from './product-value.ts';
 
 export const goalIds = ['flow', 'core', 'reliability', 'discovery'] as const;
 export type GoalId = (typeof goalIds)[number];
@@ -87,6 +88,7 @@ export const candidateSchema = z
     ownership: z.literal('user'),
     coverage: z.enum(['detailed', 'initial', 'missing']),
     definition: text,
+    commercial: productSummarySchema.optional(),
     observed: text,
     goals: z.array(z.enum(goalIds)).min(1),
     capabilities: z.array(text).min(1),
@@ -111,10 +113,11 @@ export const candidateSchema = z
   })
   .strict();
 export type Candidate = z.infer<typeof candidateSchema>;
+export type RuleCandidate = Pick<Candidate, 'facts'>;
 export type Assessment = z.infer<typeof assessmentSchema>;
 export const strategySchema = z
   .object({
-    version: z.literal('2.1'),
+    version: z.literal('2.2'),
     date: text,
     objective: text,
     ownershipBasis: text,
@@ -343,7 +346,7 @@ export const strategicCriteria: {
   },
 ];
 export function assessmentFor(
-  candidate: Candidate,
+  candidate: Pick<Candidate, 'assessments'>,
   criterion: CriterionId,
 ): Assessment {
   const found = candidate.assessments.find((a) => a.criterion === criterion);
@@ -402,7 +405,7 @@ type RuleDefinition = {
   priority: number;
   result: Action;
   check: (
-    c: Candidate,
+    c: RuleCandidate,
     g: GoalId,
   ) => Omit<RuleTrace, 'id' | 'title' | 'triggered' | 'priority' | 'action'>;
 };
@@ -419,7 +422,7 @@ const stateFor = (f: Fact, expected: 'yes' | 'no' = 'yes') =>
     reason: f.reason,
     evidenceIds: f.evidenceIds,
   }) as const;
-const yes = (c: Candidate, key: FactId) => stateFor(c.facts[key]);
+const yes = (c: RuleCandidate, key: FactId) => stateFor(c.facts[key]);
 const fixed = (state: 'met' | 'not_met', reason: string) => ({
   state,
   reason,
@@ -720,7 +723,7 @@ export function resolveTraces(traces: RuleTrace[]) {
     traces,
   };
 }
-export function evaluateCandidate(candidate: Candidate, goal: GoalId) {
+export function evaluateCandidate(candidate: RuleCandidate, goal: GoalId) {
   return resolveTraces(
     strategicRules.map((rule) => {
       const condition = rule.check(candidate, goal);
@@ -736,7 +739,7 @@ export function evaluateCandidate(candidate: Candidate, goal: GoalId) {
   );
 }
 
-export function runtimeLabel(c: Candidate) {
+export function runtimeLabel(c: RuleCandidate) {
   return {
     yes: 'Çalışan başlangıç kanıtı kayıtlı; bu bütün ürünün kabulü değildir.',
     no: 'Başlangıç çalıştırması başarısız; çalışma kanıtını incele.',
@@ -745,7 +748,7 @@ export function runtimeLabel(c: Candidate) {
       'Çalıştırma kanıtları çelişkili; sürüm ve senaryo eşliği çözülmeli.',
   }[c.facts.runtime.state];
 }
-export function acceptanceLabel(c: Candidate) {
+export function acceptanceLabel(c: RuleCandidate) {
   return {
     yes: 'Bu dilimin kabul kanıtı kayıtlı.',
     no: 'Bu dilim kabul koşullarını karşılamadı.',

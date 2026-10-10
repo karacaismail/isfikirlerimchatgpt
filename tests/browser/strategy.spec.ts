@@ -7,24 +7,26 @@ test('reklamsız satış potansiyeli proje ve karşılaştırmada ödeme koşulu
   await page.goto('projeler/pim/#reklamsiz');
   await expect(
     page.getByRole('heading', {
-      name: 'Reklamsız satış potansiyeli',
+      name: 'Reklamsız satış yolu ve ekonomisi',
       exact: true,
     }),
   ).toBeVisible();
-  await expect(page.locator('#reklamsiz')).toContainText('Stratejik çıkarım');
   await expect(page.locator('#reklamsiz')).toContainText(
-    'satış kanıtı değildir',
+    'Gerçek erişim bilinmiyor',
+  );
+  await expect(page.locator('#reklamsiz')).toContainText(
+    'talep veya satış kanıtı üretmez',
   );
   const response = await request.get('strateji.json');
   const data = await response.json();
   expect(response.status()).toBe(200);
-  expect(data.version).toBe('2.1');
+  expect(data.version).toBe('2.2');
   expect(
     data.candidates.every((c: { assessments: { criterion: string }[] }) =>
       c.assessments.some((a) => a.criterion === 'organicSales'),
     ),
   ).toBe(true);
-  await page.goto('karsilastir/');
+  await page.goto('karsilastir/?view=all');
   await expect(page.locator('[data-ready]')).toHaveAttribute(
     'data-ready',
     'true',
@@ -76,12 +78,12 @@ test('katalog bütün kayıtları ve yeni sahiplik sözleşmesini taşır', asyn
   const response = await request.get('strateji.json');
   expect(response.status()).toBe(200);
   const data = await response.json();
-  expect(data.version).toBe('2.1');
+  expect(data.version).toBe('2.2');
   expect(data.candidates).toHaveLength(23);
   expect(
     data.candidates.every((c: { ownership: string }) => c.ownership === 'user'),
   ).toBe(true);
-  await page.goto('katalog/');
+  await page.goto('katalog/?view=all');
   await expect(page.locator('[data-ready]')).toHaveAttribute(
     'data-ready',
     'true',
@@ -113,7 +115,7 @@ test('eski ticari ilerleme ve tercihler geliştirme görevine taşınmaz', async
       .getByRole('checkbox')
       .first(),
   ).not.toBeChecked();
-  await page.goto('katalog/');
+  await page.goto('katalog/?view=all');
   await expect(page.locator('[data-ready]')).toHaveAttribute(
     'data-ready',
     'true',

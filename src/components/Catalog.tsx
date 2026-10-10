@@ -6,6 +6,7 @@ import {
   Select,
   TextInput,
 } from '@mantine/core';
+import { commercialLabels, positionLabels } from '../lib/product-value';
 import { theme } from './Proof';
 import { scrollTableWithKeyboard } from '../lib/table-scroll';
 import {
@@ -19,6 +20,7 @@ import {
   sanitizePreferences,
   sortProjects,
   type CatalogPreferences,
+  type CatalogCandidate as Candidate,
   type FilterKey,
 } from '../lib/catalog';
 import {
@@ -30,7 +32,6 @@ import {
   strategicCriteria,
   assessmentFor,
   assessmentLabels,
-  type Candidate,
   type GoalId,
   strategicRules,
   runtimeLabel,
@@ -39,16 +40,32 @@ type Props = {
   candidates: Candidate[];
   base: string;
   mode: 'catalog' | 'compare';
+  valueComparisons?: Record<
+    string,
+    {
+      roles: string;
+      economics: string;
+      advantage: string;
+      scope: string;
+      distribution: string;
+    }
+  >;
 };
-const storageKey = 'isfikirlerim-gelistirme-v2';
+const storageKey = 'isfikirlerim-gelistirme-v3';
 const filterLabels: Record<FilterKey, string> = {
+  commercial: 'Ticari yatırım kararı',
   focus: 'Geliştirme odağı',
   kind: 'Kayıt türü',
   coverage: 'İnceleme derinliği',
   capability: 'Yazılım kabiliyeti',
   rule: 'Öncelikli ECA kuralı',
 };
-export default function Catalog({ candidates, base, mode }: Props) {
+export default function Catalog({
+  candidates,
+  base,
+  mode,
+  valueComparisons,
+}: Props) {
   const [prefs, setPrefs] = useState<CatalogPreferences>(
     createDefaultPreferences,
   );
@@ -116,28 +133,72 @@ export default function Catalog({ candidates, base, mode }: Props) {
     candidates.filter((c) => c.id === id),
   );
   const label = (key: FilterKey, value: string) =>
-    key === 'focus'
-      ? goalLabels[value as GoalId]
-      : key === 'kind'
-        ? kindLabels[value as Candidate['kind']]
-        : key === 'coverage'
-          ? coverageLabels[value as Candidate['coverage']]
-          : key === 'rule'
-            ? `${value} · ${strategicRules.find((r) => r.id === value)?.title || value}`
-            : value;
+    key === 'commercial'
+      ? commercialLabels[value as keyof typeof commercialLabels]
+      : key === 'focus'
+        ? goalLabels[value as GoalId]
+        : key === 'kind'
+          ? positionLabels[value as keyof typeof positionLabels] ||
+            kindLabels[value as Candidate['kind']]
+          : key === 'coverage'
+            ? coverageLabels[value as Candidate['coverage']]
+            : key === 'rule'
+              ? `${value} · ${strategicRules.find((r) => r.id === value)?.title || value}`
+              : value;
   const selection = (c: Candidate) =>
     prefs.selected.includes(c.id)
       ? prefs.selected.filter((id) => id !== c.id)
       : [...prefs.selected, c.id];
   const fields: [string, (c: Candidate) => string][] = [
+    [
+      'Ticari konum',
+      (c) =>
+        c.commercial ? positionLabels[c.commercial.position] : 'Belirlenemedi.',
+    ],
+    [
+      'Ticari yatırım kararı',
+      (c) =>
+        c.commercial ? commercialLabels[c.commercial.action] : 'Belirlenemedi.',
+    ],
+    ['İlk alıcı hipotezi', (c) => c.commercial?.buyer || 'Belirlenemedi.'],
+    ['Ayrı ödeme gerekçesi', (c) => c.commercial?.value || 'Gösterilemedi.'],
+    [
+      'En güçlü alternatif',
+      (c) => c.commercial?.alternative || 'Belirlenemedi.',
+    ],
+    ['Ticari karşı görüş', (c) => c.commercial?.objection || 'Belirlenemedi.'],
+    [
+      'Ticari sonucun gerekçesi',
+      (c) => c.commercial?.reason || 'Belirlenemedi.',
+    ],
+    [
+      'Kullanan, kararı veren, ödeyen',
+      (c) => valueComparisons?.[c.id]?.roles || 'Ayrıntı sayfasını aç.',
+    ],
+    [
+      'Tekrar değer ve maliyet',
+      (c) => valueComparisons?.[c.id]?.economics || 'Ayrıntı sayfasını aç.',
+    ],
+    [
+      'Kalıcı avantaj ve eksik birikim',
+      (c) => valueComparisons?.[c.id]?.advantage || 'Ayrıntı sayfasını aç.',
+    ],
+    [
+      'İlk değerli ürün kapsamı',
+      (c) => valueComparisons?.[c.id]?.scope || 'Ayrıntı sayfasını aç.',
+    ],
+    [
+      'İlk erişim ve satış adımları',
+      (c) => valueComparisons?.[c.id]?.distribution || 'Ayrıntı sayfasını aç.',
+    ],
     ['Geliştirilecek dilim', (c) => c.slice.title],
     ['Tamamlanacak sonuç', (c) => c.slice.outcome],
     [
-      'ECA önerisi',
+      'Teknik ECA önerisi',
       (c) =>
         `${evaluateCandidate(c, prefs.goal).label} (${evaluateCandidate(c, prefs.goal).ruleIds.join(', ')})`,
     ],
-    ['Neden şimdi?', (c) => c.rationale],
+    ['Teknik dilimin gerekçesi', (c) => c.rationale],
     ['Karşı görüş', (c) => c.counterargument],
     ['Kabul koşulları', (c) => c.slice.acceptance.join(' · ')],
     [
@@ -167,26 +228,43 @@ export default function Catalog({ candidates, base, mode }: Props) {
     return (
       <article key={c.id} className="project-entry" data-project={c.id}>
         <div className="project-tags">
-          <span className="project-tag">{kindLabels[c.kind]}</span>
+          <span className="project-tag">
+            {c.commercial
+              ? positionLabels[c.commercial.position]
+              : kindLabels[c.kind]}
+          </span>
           <span className="project-tag">{coverageLabels[c.coverage]}</span>
         </div>
         <h3>
           <a href={`${base}projeler/${c.id}/`}>{c.name}</a>
         </h3>
-        <p className="project-summary">{c.definition}</p>
+        <p className="project-next-step">
+          <strong>
+            {c.commercial
+              ? commercialLabels[c.commercial.action]
+              : 'İş fikri henüz netleşmedi'}
+          </strong>
+        </p>
+        <p className="project-summary">
+          {c.commercial?.reason || c.definition}
+        </p>
         <dl className="project-facts">
           <div>
-            <dt>Geliştirilecek dilim</dt>
-            <dd>{c.slice.title}</dd>
+            <dt>İlk alıcı hipotezi</dt>
+            <dd>{c.commercial?.buyer || 'Belirlenemedi.'}</dd>
           </div>
           <div>
-            <dt>Neden şimdi?</dt>
-            <dd>{c.rationale}</dd>
+            <dt>Ayrıca neden ödesin?</dt>
+            <dd>{c.commercial?.value || 'Gösterilemedi.'}</dd>
+          </div>
+          <div>
+            <dt>Mevcut alternatif</dt>
+            <dd>{c.commercial?.alternative || 'Belirlenemedi.'}</dd>
           </div>
         </dl>
-        <p className="project-next-step">
-          <strong>{result.label}:</strong> {c.slice.steps[0]}{' '}
-          <span className="meta">{result.ruleIds.join(', ')}</span>
+        <p>
+          <strong>En güçlü itiraz:</strong>{' '}
+          {c.commercial?.objection || 'Belirlenemedi.'}
         </p>
         <div className="actions">
           <a className="button-link" href={`${base}projeler/${c.id}/`}>
@@ -216,7 +294,11 @@ export default function Catalog({ candidates, base, mode }: Props) {
             Reklamsız satış değerlendirmesini aç
           </a>
           <p>
-            <strong>Karşı görüş:</strong> {c.counterargument}
+            <strong>Teknik iş:</strong> {result.label} · {c.slice.title}.{' '}
+            {result.ruleIds.join(', ')}
+          </p>
+          <p>
+            <strong>Teknik karşı görüş:</strong> {c.counterargument}
           </p>
           <p>
             <strong>Karar ne zaman değişir?</strong> {c.reconsiderWhen}
@@ -241,6 +323,34 @@ export default function Catalog({ candidates, base, mode }: Props) {
             okunabilir; filtre ve karşılaştırma için JavaScript gerekir.
           </p>
         </noscript>
+        <fieldset className="cluster-chips">
+          <legend>Hangi çalışmaları görmek istiyorum?</legend>
+          {(
+            [
+              ['cases', 'Değer önerisi sınanacaklar'],
+              ['all', 'Tüm çalışmalar'],
+              ['enablers', 'Altyapı, özellik ve araştırma'],
+            ] as const
+          ).map(([value, label]) => (
+            <Button
+              key={value}
+              variant="default"
+              className="filter-chip"
+              aria-pressed={prefs.view === value}
+              disabled={!ready}
+              onClick={() => update('view', value)}
+            >
+              {label} (
+              {
+                filterProjects(candidates, {
+                  ...createDefaultPreferences(),
+                  view: value,
+                }).length
+              }
+              )
+            </Button>
+          ))}
+        </fieldset>
         <div className="catalog-toolbar">
           <TextInput
             className="catalog-search"
@@ -261,7 +371,7 @@ export default function Catalog({ candidates, base, mode }: Props) {
             </summary>
             <div className="filters">
               <Select
-                label="Karar hedefim"
+                label="Teknik hedefim"
                 data={goalIds.map((value) => ({
                   value,
                   label: goalLabels[value],
@@ -313,23 +423,29 @@ export default function Catalog({ candidates, base, mode }: Props) {
               ))}
             </fieldset>
             <div className="filters">
-              {(['kind', 'coverage', 'capability', 'rule'] as FilterKey[]).map(
-                (key) => (
-                  <Select
-                    key={key}
-                    label={filterLabels[key]}
-                    placeholder="Tümü"
-                    data={options[key].map((value) => ({
-                      value,
-                      label: label(key, value),
-                    }))}
-                    value={prefs[key]}
-                    onChange={(v) => update(key, v)}
-                    disabled={!ready}
-                    allowDeselect
-                  />
-                ),
-              )}
+              {(
+                [
+                  'commercial',
+                  'kind',
+                  'coverage',
+                  'capability',
+                  'rule',
+                ] as FilterKey[]
+              ).map((key) => (
+                <Select
+                  key={key}
+                  label={filterLabels[key]}
+                  placeholder="Tümü"
+                  data={options[key].map((value) => ({
+                    value,
+                    label: label(key, value),
+                  }))}
+                  value={prefs[key]}
+                  onChange={(v) => update(key, v)}
+                  disabled={!ready}
+                  allowDeselect
+                />
+              ))}
             </div>
             <div className="actions catalog-options">
               <Button
@@ -341,7 +457,7 @@ export default function Catalog({ candidates, base, mode }: Props) {
                 }}
                 disabled={!ready}
               >
-                Karar kurallarını incele
+                Teknik karar kurallarını incele
               </Button>
               {mode === 'catalog' && (
                 <Button
@@ -419,9 +535,11 @@ export default function Catalog({ candidates, base, mode }: Props) {
           </div>
         </div>
         <p className="notice">
-          Bu görünüm kesin bir başarı sırası üretmez. Seçilen hedef önerileri
-          yorumlamaya yarar; bilinmeyen ölçütler puana çevrilmez. Sıralama
-          tercihi yalnız liste düzenidir.
+          İlk görünüm yalnız ayrı satın alma hipotezi kurulabilen dar
+          seçenekleri gösterir; bunlar doğrulanmış satış adayları değildir.
+          Altyapı ve netleşmemiş fikirler “Tüm çalışmalar” altında korunur.
+          Teknik ECA sonucu ticari öneri değildir. Sıralama yalnız liste
+          düzenidir.
         </p>
         {mode === 'compare' && (
           <section
@@ -459,7 +577,19 @@ export default function Catalog({ candidates, base, mode }: Props) {
         {sorted.length === 0 ? (
           <p className="notice">
             Bu arama ve filtrelerle eşleşen proje bulunamadı. Filtreleri
-            temizleyerek yeniden dene.
+            temizleyerek yeniden dene.{' '}
+            {prefs.view !== 'all' && (
+              <>
+                Bu görünüm yalnız{' '}
+                {prefs.view === 'cases'
+                  ? 'değer önerisi sınanacakları'
+                  : 'altyapı, özellik ve araştırmaları'}{' '}
+                gösteriyor.{' '}
+                <Button variant="light" onClick={() => update('view', 'all')}>
+                  Tüm çalışmalarda ara
+                </Button>
+              </>
+            )}
           </p>
         ) : table && mode === 'catalog' ? (
           <div
@@ -476,9 +606,9 @@ export default function Catalog({ candidates, base, mode }: Props) {
               <thead>
                 <tr>
                   <th>Proje</th>
-                  <th>Geliştirilecek dilim</th>
-                  <th>ECA önerisi</th>
-                  <th>Kabul koşulu</th>
+                  <th>İlk alıcı hipotezi</th>
+                  <th>Ticari karar</th>
+                  <th>Ayrı ödeme gerekçesi</th>
                 </tr>
               </thead>
               <tbody>
@@ -487,9 +617,13 @@ export default function Catalog({ candidates, base, mode }: Props) {
                     <th>
                       <a href={`${base}projeler/${c.id}/`}>{c.name}</a>
                     </th>
-                    <td>{c.slice.title}</td>
-                    <td>{evaluateCandidate(c, prefs.goal).label}</td>
-                    <td>{c.slice.acceptance.join(' · ')}</td>
+                    <td>{c.commercial?.buyer}</td>
+                    <td>
+                      {c.commercial
+                        ? commercialLabels[c.commercial.action]
+                        : 'Belirlenemedi.'}
+                    </td>
+                    <td>{c.commercial?.value}</td>
                   </tr>
                 ))}
               </tbody>
@@ -498,10 +632,32 @@ export default function Catalog({ candidates, base, mode }: Props) {
         ) : (
           <div className="project-grid">{sorted.map(entry)}</div>
         )}
+        <noscript>
+          <h2>Diğer çalışmalar: altyapı, özellik ve netleşmemiş fikirler</h2>
+          <p>
+            Bu kayıtlar bağımsız satış önerisi değildir. Ayrıntıları JavaScript
+            olmadan da okunabilir.
+          </p>
+          {candidates
+            .filter((c) => !c.commercial?.recommended)
+            .map((c) => (
+              <article key={c.id} data-project={c.id} className="project-entry">
+                <h3>
+                  <a href={`${base}projeler/${c.id}/`}>{c.name}</a>
+                </h3>
+                <p>
+                  {c.commercial
+                    ? commercialLabels[c.commercial.action]
+                    : 'İş fikri henüz netleşmedi'}
+                  . {c.commercial?.reason}
+                </p>
+              </article>
+            ))}
+        </noscript>
         <Modal
           opened={rulesOpen}
           onClose={() => setRulesOpen(false)}
-          title="Karar kuralları nasıl çalışır?"
+          title="Teknik karar kuralları nasıl çalışır?"
           centered
           returnFocus
           transitionProps={{ duration: 0 }}

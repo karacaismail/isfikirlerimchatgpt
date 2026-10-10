@@ -1,9 +1,10 @@
+import { caseFor } from './product-cases.ts';
+import { commercialDecision } from '../lib/product-value.ts';
 import type { Strategy } from '../lib/strategy';
-import { organicSalesAssessments } from './organic-sales.ts';
 
 // Yazılım yatırımı için sürümlü karar verisi; ticari puanların devamı değildir.
 const projectDevelopment: Strategy = {
-  version: '2.1',
+  version: '2.2',
   date: '2026-10-10',
   objective:
     'Kullanıcının kendi yazılım projelerinde hangi somut geliştirme dilimine yatırım yapılacağını; teknik katkı, reklamsız satış potansiyeli, bağımlılık, ortak kullanım, doğruluk ve belirsizlik üzerinden seçmek. Gerçekleşmiş ödeme geliştirme koşulu değildir.',
@@ -5654,11 +5655,27 @@ const projectDevelopment: Strategy = {
 export const development: Strategy = {
   ...projectDevelopment,
   candidates: projectDevelopment.candidates.map((candidate) => {
-    const organicSales = organicSalesAssessments[candidate.id];
-    if (!organicSales)
-      throw new Error(`${candidate.id}: reklamsız satış değerlendirmesi eksik`);
+    const value = caseFor(candidate.id);
+    const organicSales = {
+      criterion: 'organicSales' as const,
+      state:
+        value.distribution.access === 'observed'
+          ? ('observed' as const)
+          : value.distribution.channel
+            ? ('inferred' as const)
+            : ('unknown' as const),
+      finding: `${value.distribution.channel || 'Gerçek alıcı erişimi belirlenemedi.'} İlk teklif: ${value.distribution.firstOffer || 'Belirlenemedi.'} ${value.distribution.cost}`,
+      evidenceIds: value.evidenceIds,
+      verification: `${value.distribution.steps.join(' ')} ${
+        value.position === 'product'
+          ? 'Gerçek alıcıya erişim sonucunu, alternatif tercihini ve itirazını kaydet. Edinme, kurulum ve destek emeğini ayrı ölç; teknik tekrar deneyi kanal erişimi kanıtı değildir.'
+          : 'Bağımsız ürün satışı varsayma. Somut tüketiciye erişimi, mevcut alternatife göre katkıyı ve kurulum/bakım emeğini kaydet.'
+      }`,
+      decisionImpact: value.conclusion,
+    };
     return {
       ...candidate,
+      commercial: commercialDecision(caseFor(candidate.id)).summary,
       assessments: [...candidate.assessments, organicSales],
     };
   }),

@@ -32,7 +32,14 @@ const base = import.meta.env.BASE_URL;
     <a href="#sinirlar">Doğrulama sınırları</a>
   </nav>
   <section class="reading" id="duzeltme">
-    <h2>Önceki gelir sırası geri çekildi</h2>
+    <h2>Önceki gelir ve teknik başlangıç sırası geri çekildi</h2>
+    <p>
+      GenUI’nin teknik yetenekleri bağımsız ürün satın alma gerekçesi gibi
+      sunulmuştu. Bu öneri geri çekildi. PIM / Studio genel başlangıç sırası da
+      korunmuyor. 23 kayıt yeniden alıcı, alternatif, ayrı ödeme nedeni, kolay
+      kopya, satış yolu ve ekonomi bakımından değerlendirildi; teknik inceleme
+      ticari doğrulama sayılmıyor.
+    </p>
     <p>
       “Peşinatı alınmış iş”, atölye satışı ve elle katalog hizmeti önerileri
       yazılım geliştirme hedefinden çıkarılamazdı. Bunlar puanlardan hesaplanmış
@@ -100,6 +107,21 @@ const base = import.meta.env.BASE_URL;
       ise eklenti dağıtımının koşullarını tanımlar. Bu kanalların varlığı
       projelerin kabul edildiğini, alıcıya ulaştığını veya satış yapacağını
       göstermez. Adaylardaki kanal önerileri sınanacak analist hipotezleridir.
+    </p>
+    <h3>Yeni ticari model neye dayanıyor?</h3>
+    <p>
+      Asıl görevdeki iş cümlesi, kullanıcı/karar verici/ödeyen ayrımı, mevcut
+      alternatifler, G/V/O/U boyutları ve kararın değişme koşulları uygulanır.
+      10 ticari ölçüt ve 8 ticari ECA, 15 teknik ölçüt ve 14 teknik ECA’dan
+      ayrıdır. Resmî güncel rakip kaynakları özellik kapsamını gösterir;
+      müşterinin bizi seçeceğini göstermez. Olumlu ticari koşullar analist
+      hipotezidir, gözlenen talep değildir.
+    </p>
+    <p>
+      <a href={`${base}deger.json`}>
+        23 ticari değerlendirmeyi kaynaklarıyla indir
+      </a>
+      .
     </p>
     <h3>Neden senaryo, bağımlılık ve kabul koşulu?</h3>
     <p>
@@ -190,9 +212,9 @@ const base = import.meta.env.BASE_URL;
       inceleme defteri public depoya alınmaz.
     </p>
     <p>
-      Veri iki sürümlü sözleşmede tutulur: eski ayrıntılı kaynak kayıtları 1.1,
-      aktif geliştirme stratejisi {development.version}. Her ikisi sıkı şemayla
-      doğrulanır.{' '}
+      Veri üç sürümlü sözleşmede tutulur: ticari vakalar 1.0 (deger.json), eski
+      ayrıntılı kaynak kayıtları 1.1, aktif geliştirme stratejisi{' '}
+      {development.version}. Üçü de sıkı şemayla doğrulanır.{' '}
       <a href={`${base}strateji.json`}>Aktif strateji verisini indir</a>.
     </p>
     <p>

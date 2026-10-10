@@ -1,6 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Checklist from '../components/Checklist.astro';
+import { commercialCriteria, commercialRules } from '../lib/product-value';
 import { development } from '../data/development';
 import { strategicCriteria, strategicRules, goalLabels } from '../lib/strategy';
 const base = import.meta.env.BASE_URL;
@@ -10,71 +11,99 @@ const base = import.meta.env.BASE_URL;
   <p class="eyebrow">Amaç: yazılım altyapısını geliştirme yatırımı</p>
   <h1>Önceliği hangi gerekçeyle vereceğim?</h1>
   <p class="lede">
-    Proje adı yerine sıradaki tamamlanabilir yazılım dilimini seç. Kararı hedef
-    katkısı, teknik engel, bağımlılık ve kabul kanıtına bağla.
+    Önce alıcı ve ayrı satın alma nedenini sorgula. Sonra portföy katkısını ve
+    seçilen yazılımın sıradaki mühendislik işini değerlendir.
   </p>
   <nav class="section-nav" aria-label="Strateji bölümleri">
-    <a href="#strateji">Başlangıç önerisi</a>
+    <a href="#strateji">Yatırım stratejisi</a>
+    <a href="#ticari-olcutler">10 ticari ölçüt</a>
+    <a href="#ticari-eca">8 ticari ECA</a>
     <a href="#reklamsiz">Reklamsız satış potansiyeli</a>
     <a href="#olcutler">{strategicCriteria.length} değerlendirme ölçütü</a>
     <a href="#eca">14 ECA kuralı</a>
     <a href="#adimlar">Proje adımları</a>
   </nav>
   <section class="reading" id="strateji">
-    <h2>Başlangıç önerisi ve karşı görüş</h2>
-    <p>
-      <strong>Ürün odaklı altyapı geliştirme:</strong> PIM ile ürün modeli,
-      doğrulama ve yayın çıktısını; Studio ile gerçek bağlantı, workspace
-      yetkisi ve analiz sonucunu karşılaştır. MetaFramer’da gereken çekirdek
-      parçasını seçilen gerçek tüketiciyle birlikte tamamla.
-    </p>
-    <p>
-      <strong>Önce neye bakılacak?</strong> Aynı sürümde temiz kurulum ve dar
-      akışın başlangıç sonucu. Sonra kalan iş, zorunlu bağımlılıklar ve
-      kapatılacak en önemli belirsizlik. Bunlar ölçülmeden kesin birinci proje
-      ilan edilmiyor.
-    </p>
-    <p>
-      <strong>Karşı görüş:</strong> GenUI veya DestekTeşvik’te daha yakın bir
-      uçtan uca sonuç ve daha yüksek somut ortak kullanım bulunabilir.
-      Titanlar’daki hesaplama motoru küçük bir doğruluk dilimi olarak daha çabuk
-      tamamlanabilir. Katalogdaki geniş kayıt kümesi bu alternatiflerin
-      görünmesini sağlar.
-    </p>
-    <p>
-      <strong>Tercih ne zaman değişir?</strong> Bir adayın kurulabilirliği
-      doğrulanır, gereken bağımlılık küçülür veya aynı emekle açacağı somut ürün
-      akışları artarsa. “Önce framework tamamen bitsin” şartı kurulmaz; bütün
-      projeleri aynı anda başlatma önerisi de verilmez.
-    </p>
-  </section>
-  <section class="reading" id="reklamsiz">
-    <h2>Reklamsız satış potansiyeli kararı nasıl etkiler?</h2>
-    <p>
-      Alıcının ürüne reklam harcamadan ulaşabilmesi, değerini anlayabilmesi ve
-      tekrar kullanma ihtiyacı geliştirme yatırımını daha değerli kılabilir. Bu
-      potansiyel, teknik katkıyla birlikte değerlendirilir. Peşinat ise
-      gerçekleşmiş bir ödeme olayıdır; geliştirmeye başlama şartı değildir.
-    </p>
+    <h2>Üç ayrı karar</h2>
     <ol>
-      <li>Alıcı hangi somut problemi çözmek için ürünü arar?</li>
       <li>
-        Arama, tavsiye, topluluk veya entegrasyon üzerinden nasıl ulaşabilir?
+        <strong>Ticari konum:</strong> bağımsız ürün mü, ürün özelliği mi,
+        altyapı mı? Alıcı, ekonomik sorun ve ayrı ödeme nedeni kurulamadığında
+        ürün önerisi üretme.
       </li>
       <li>
-        Demo veya kendi verisiyle kullanım ilk değeri ne kadar kolay gösterir?
+        <strong>Portföy kararı:</strong> değer önerisini sına, daralt, ürün
+        içinde değerlendir veya beklet. Teknik olarak çalışabilir olması bu
+        kararı olumlu yapmaz.
       </li>
       <li>
-        Tekrar ihtiyaç, kurulum, kişisel satış ve destek emeği nasıl değişir?
+        <strong>Mühendislik işi:</strong> seçilen dilimi kur, doğrula veya onar.
+        Teknik ECA kuralları bu üçüncü kararı verir.
       </li>
     </ol>
     <p>
-      Teknik olarak uygun adaylar arasında daha açık erişim yolu, daha görünür
-      değer ve daha düşük sürekli satış/destek yükü öncelik gerekçesini
-      güçlendirir. Kaynaklardan çıkan hipotez, gözlenen deneme ve gerçekleşmiş
-      satış ayrı tutulur. Reklamsız erişim sıfır maliyet veya otomatik viral
-      büyüme anlamına gelmez. <a href="#eca-01">ECA-01 bu ayrımı korur.</a>
+      PIM ve Studio’nun önceki genel başlangıç sırası geri çekildi. GenUI
+      bağımsız satış adayı olarak önerilmiyor. Mevcut ERP’lerin AI
+      kabiliyetlerine karşı ayrı satın alma nedeni gösterilemedi. Bu, altyapı
+      kodunun değersiz olduğu anlamına gelmez; gereken tüketiciyle katkısı
+      sınanır.
     </p>
+    <p>
+      Karar kuralları bu portföy için açık analist tercihleridir. Evrensel
+      başarı standardı değildir. Eski ticari puanlar taşınmaz; eksik bilgilerle
+      kesin toplam veya kazanan sırası üretilmez. Bilinmeyen sıfır değildir.
+      Teknik yapılabilirlik ekonomik değer yerine geçmez.
+    </p>
+    <a href={`${base}katalog/`}>Dar değer hipotezlerini karşılaştır</a>
+  </section>
+  <section class="reading" id="reklamsiz">
+    <h2>Satış potansiyeli için ne gerekli?</h2>
+    <p>
+      Hangi kullanıcı bugün hangi alternatifi kullanarak ne iş yapıyor; ürün
+      hangi sonucu değiştiriyor; hangi taraf neden ayrıca ödeme yapabilir? Cümle
+      tamamlanamıyorsa “iş fikri henüz netleşmedi”. Bir özelliği AI ile üretmek
+      tek başına fark değildir.
+    </p>
+    <p>
+      Reklamsız erişim: belirli alıcı, ihtiyaç anı, ilk teklif, görünür sonuç,
+      satış ve kurulum adımları. Arama veya topluluğun varlığı gerçek erişim
+      değildir; kurucunun müşteri ağı bilinmiyorsa avantaj yazılmaz. Paylaşım
+      düğmesi viral döngü değildir. Peşinat geliştirme şartı değildir.
+    </p>
+  </section>
+  <section id="ticari-olcutler">
+    <h2>10 ticari ölçüt</h2>
+    <p class="reading">
+      Asıl talimattaki G/V/O/U ayrımı korunur. G ekonomik değer; V kullanıcılar
+      arası büyüme; O reklamsız erişim; U uygulanabilirlik ve portföy
+      katkısıdır. Mevcut kanıt eksikleri nedeniyle sayısal puan üretilmiyor. Her
+      projenin ayrıntısında bulgu, karşı görüş, kaynak ve kararı değiştirecek üç
+      deney var.
+    </p>
+    {commercialCriteria.map((c) => (
+      <details>
+        <summary>
+          {c.group} · {c.title}
+        </summary>
+        <p>{c.question}</p>
+      </details>
+    ))}
+  </section>
+  <section id="ticari-eca">
+    <h2>8 ticari ECA kuralı</h2>
+    {commercialRules.map((r) => (
+      <details id={r.id.toLowerCase()}>
+        <summary>{r.id}</summary>
+        <dl>
+          <dt>Olay</dt>
+          <dd>{r.event}</dd>
+          <dt>Koşul</dt>
+          <dd>{r.condition}</dd>
+          <dt>Eylem</dt>
+          <dd>{r.action}</dd>
+        </dl>
+      </details>
+    ))}
   </section>
   <section id="olcutler">
     <h2>{strategicCriteria.length} değerlendirme ölçütü</h2>

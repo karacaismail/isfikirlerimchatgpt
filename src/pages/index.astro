@@ -16,8 +16,9 @@ const count = development.candidates.length;
     <h1>Hangi yazılımı geliştirmeye öncelik vermeliyim?</h1>
     <p class="lede">
       Bir ürün akışını tamamla; gereken altyapıyı onunla birlikte geliştir.
-      Projeleri teknik katkı, reklamsız satış potansiyeli, bağımlılıklar ve
-      kabul koşulları üzerinden karşılaştır.
+      Projeleri alıcı, ekonomik sorun, hazır alternatif, ayrı ödeme gerekçesi ve
+      reklamsız erişim üzerinden karşılaştır. Teknik iş ve altyapı katkısını
+      ayrıca gör.
     </p>
     <div class="actions">
       <a class="button-link" href={`${base}kararlar/`}>
@@ -29,34 +30,35 @@ const count = development.candidates.length;
     </div>
   </header>
   <section class="reading">
-    <h2>Önerim: ürün ile altyapıyı birlikte ilerlet</h2>
+    <h2>Önce satın alma nedenini karşılaştır</h2>
     <p>
-      Başlangıç tercihim PIM’in ürün verisi akışını somut bir altyapı tüketicisi
-      olarak ele almak. Veri modeli, doğrulama ve sürümlü çıktı aynı dilimde
-      sınanabilir. Bu tercih, gerçekleşmiş yeniden kullanım veya tamamlanma
-      süresi iddiası değil. İlk teknik karşılaştırmayı PIM’in ürün modeli →
-      doğrulama → yayın çıktısı ile Studio’nun bağlantı → analiz → kayıtlı sonuç
-      akışı arasında yap. MetaFramer’ı bu akışlardan birinin gerçekten ihtiyaç
-      duyduğu çekirdek kabiliyetle birlikte değerlendir.
+      Önceki PIM / Studio başlangıç sırasını geri çekiyorum. Ürün modeli veya AI
+      arayüzü bulunması, müşterinin ayrıca ödeme yapacağı anlamına gelmiyor.
+      GenUI bağımsız satış önerisinden çıkarıldı: ERP üreticilerinin AI
+      özelliklerine karşı ayrı alıcı ve satın alma nedeni gösterilemedi.
     </p>
     <p>
-      Bu, bütün portföy için kanıtlanmış bir sıralama değil; mevcut kaynaklardan
-      çıkan başlangıç hipotezi. GenUI, DestekTeşvik ve diğer adayları da
-      kataloğa dahil et. Kurulabilirlik, kapatılacak teknik engel ve kalan iş
-      kanıtı bu tercihi değiştirebilir.
+      Bugünkü karar ticari kazanan ilan etmek değil. Dar alıcı, tekrar eden iş
+      ve hazır alternatife karşı geçiş hipotezi kurulabilen seçeneklerde en
+      kritik varsayımı sınamak. Altyapı yatırımı, seçilen ürünün gereken
+      kabiliyetini tamamladığı ölçüde anlamlı. Hiçbir aday için kalıcı rekabet
+      üstünlüğü veya gerçekleşmiş talep doğrulanmış değil.
     </p>
     <p>
-      Reklamsız satılabilirlik de öncelik nedenidir: PIM’de anlaşılır katalog
-      çıktısı, Studio’da site sahibinin kendi verisinden görebildiği analiz
-      değeri sınanabilir. Erişilebilir alıcı, deneme yolu, tekrar ihtiyaç ve
-      sürekli satış/destek emeği karşılaştırmayı değiştirebilir. Bunlar
-      gerçekleşmiş satış veya peşinat iddiası değildir.
+      PIM’de tek kanalın ikinci güncellemesi gibi tekrar eden bir işi, hazır CSV
+      içe aktarma akışıyla karşılaştırmak değerli bir ilk inceleme olabilir.
+      Fark çıkmazsa ayrı PIM ürünü gerekçesi daralır. Bu, peşinat veya satış
+      bekleme şartı değildir; geliştirme yatırımının hangi varsayıma dayandığını
+      açık tutar.
     </p>
-    <p>
-      Satış, peşinat veya ücretli hizmet bu geliştirme kararının önkoşulu değil.
-      Kaynak projeler bu incelemede çalıştırılmadı; bilinmeyen efor ve yeniden
-      kullanım değeri uydurulmadı.
-    </p>
+    <div class="actions">
+      <a class="button-link" href={`${base}katalog/`}>
+        Değer önerisi sınanacakları incele
+      </a>
+      <a class="quiet-link" href={`${base}katalog/?view=all`}>
+        Altyapı ve taslaklar dahil tüm çalışmalar
+      </a>
+    </div>
   </section>
   <nav class="section-nav" aria-label="Geliştirme yolları">
     {developmentPaths.map((path) => (
@@ -71,23 +73,26 @@ const count = development.candidates.length;
       <Checklist id={`software-v2-cluster-${path.id}`} items={path.steps} />
       <a
         class="button-link"
-        href={`${base}katalog/?goal=${path.id}&focus=${path.id}`}
+        href={`${base}katalog/?view=all&goal=${path.id}&focus=${path.id}`}
       >
         Bu odaktaki adayları gör
       </a>
     </section>
   ))}
   <section>
-    <h2>İlk teknik karşılaştırma</h2>
+    <h2>Alıcı ve değer gerekçesini aç</h2>
     <p class="reading">
       Ürün, çatı ve platform aynı şey değil. Aşağıdaki kayıtların her birinde
       karşılaştırılan yatırım dilimi açıkça belirtiliyor.
     </p>
     <div class="project-grid">
-      {['pim', 'atonota', 'metaframer'].map((id) => {
-        const c = development.candidates.find((c) => c.id === id);
-        return c && <ProjectSummary candidate={c} />;
-      })}
+      {development.candidates
+        .filter((c) => c.commercial?.recommended)
+        .map((c) => c.id)
+        .map((id) => {
+          const c = development.candidates.find((c) => c.id === id);
+          return c && <ProjectSummary candidate={c} />;
+        })}
     </div>
   </section>
 </Layout>

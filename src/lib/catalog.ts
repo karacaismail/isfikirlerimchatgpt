@@ -2,11 +2,20 @@ import { searchText } from './model.ts';
 import {
   goalIds,
   evaluateCandidate,
-  type Candidate,
+  type Candidate as FullCandidate,
   type GoalId,
 } from './strategy.ts';
+export type CatalogCandidate = Omit<FullCandidate, 'evidence'>;
+type Candidate = CatalogCandidate;
+export function toCatalogCandidates(
+  candidates: FullCandidate[],
+): CatalogCandidate[] {
+  return candidates.map(({ evidence: _evidence, ...candidate }) => candidate);
+}
 export type CatalogPreferences = {
   query: string;
+  view: 'cases' | 'all' | 'enablers';
+  commercial: string | null;
   goal: GoalId;
   focus: string | null;
   kind: string | null;
@@ -17,6 +26,7 @@ export type CatalogPreferences = {
   selected: string[];
 };
 export const filterKeys = [
+  'commercial',
   'focus',
   'kind',
   'coverage',
@@ -26,6 +36,8 @@ export const filterKeys = [
 export type FilterKey = (typeof filterKeys)[number];
 export const createDefaultPreferences = (): CatalogPreferences => ({
   query: '',
+  view: 'cases',
+  commercial: null,
   goal: 'flow',
   focus: null,
   kind: null,
@@ -39,8 +51,13 @@ export const uniqueOptions = (values: string[]) =>
   [...new Set(values)].sort((a, b) => a.localeCompare(b, 'tr'));
 export function filterOptions(candidates: Candidate[], goal: GoalId = 'flow') {
   return {
+    commercial: uniqueOptions(
+      candidates.flatMap((c) => (c.commercial ? [c.commercial.action] : [])),
+    ),
     focus: uniqueOptions(candidates.flatMap((c) => c.goals)),
-    kind: uniqueOptions(candidates.map((c) => c.kind)),
+    kind: uniqueOptions(
+      candidates.map((c) => c.commercial?.position || c.kind),
+    ),
     coverage: uniqueOptions(candidates.map((c) => c.coverage)),
     capability: uniqueOptions(candidates.flatMap((c) => c.capabilities)),
     rule: uniqueOptions(
@@ -58,6 +75,8 @@ export function sanitizePreferences(
   if (typeof input.query === 'string') result.query = input.query.slice(0, 200);
   if (goalIds.includes(input.goal as GoalId))
     result.goal = input.goal as GoalId;
+  if (['cases', 'all', 'enablers'].includes(input.view as string))
+    result.view = input.view as CatalogPreferences['view'];
   const options = filterOptions(candidates, result.goal);
   for (const key of filterKeys)
     if (typeof input[key] === 'string' && options[key].includes(input[key]))
@@ -79,10 +98,11 @@ export function resetFilters(p: CatalogPreferences): CatalogPreferences {
   return {
     ...createDefaultPreferences(),
     goal: p.goal,
+    view: p.view,
     selected: [...p.selected],
   };
 }
-const keys = ['q', 'goal', ...filterKeys, 'sort'] as const;
+const keys = ['view', 'q', 'goal', ...filterKeys, 'sort'] as const;
 export function preferencesFromUrl(
   search: string,
   saved: CatalogPreferences,
@@ -94,6 +114,7 @@ export function preferencesFromUrl(
   const input: Record<string, unknown> = {
     ...resetFilters(saved),
     goal: 'flow',
+    view: 'cases',
   };
   for (const key of keys)
     if (params.has(key)) input[key === 'q' ? 'query' : key] = params.get(key);
@@ -115,6 +136,7 @@ export function queryStringForPreferences(
     'decision',
   ])
     params.delete(key);
+  if (p.view !== 'cases') params.set('view', p.view);
   if (p.query) params.set('q', p.query);
   params.set('goal', p.goal);
   for (const key of filterKeys) if (p[key]) params.set(key, p[key]);
@@ -129,6 +151,8 @@ export function filterProjects(candidates: Candidate[], p: CatalogPreferences) {
         c.name,
         ...c.aliases,
         c.definition,
+        c.commercial?.buyer || '',
+        c.commercial?.value || '',
         c.observed,
         c.slice.title,
         c.slice.outcome,
@@ -136,9 +160,16 @@ export function filterProjects(candidates: Candidate[], p: CatalogPreferences) {
       ].join(' '),
     );
     return (
+      (p.view === 'all' ||
+        (p.view === 'cases'
+          ? c.commercial?.recommended === true
+          : ['feature', 'infrastructure', 'umbrella', 'research'].includes(
+              c.commercial?.position || '',
+            ))) &&
+      (!p.commercial || c.commercial?.action === p.commercial) &&
       terms.every((t) => haystack.includes(t)) &&
       (!p.focus || c.goals.includes(p.focus as GoalId)) &&
-      (!p.kind || c.kind === p.kind) &&
+      (!p.kind || (c.commercial?.position || c.kind) === p.kind) &&
       (!p.coverage || c.coverage === p.coverage) &&
       (!p.capability || c.capabilities.includes(p.capability)) &&
       (!p.rule || evaluateCandidate(c, p.goal).ruleIds.includes(p.rule))

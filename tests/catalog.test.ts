@@ -11,6 +11,7 @@ import {
   sanitizePreferences,
   sortProjects,
   filterKeys,
+  toCatalogCandidates,
 } from '../src/lib/catalog.ts';
 const candidates = strategySchema.parse(development).candidates;
 test('katalog ayrıntılı ve ilk değerlendirme kayıtlarını sahiplik düzeltmesiyle kapsar', () => {
@@ -64,7 +65,7 @@ test('paylaşılan URL filtreyi değiştirir ve yerel seçimi korur', () => {
   const saved = {
     ...createDefaultPreferences(),
     query: 'eski',
-    kind: 'platform',
+    kind: 'product',
     selected: ['hrms', 'pim'],
   };
   const p = preferencesFromUrl(
@@ -152,4 +153,46 @@ test('paylaşılan filtre URLsi yerel hedefi sessizce devralmaz', () => {
     ).get('goal'),
     'flow',
   );
+});
+
+test('ilk görünüm teknik altyapıyı ticari öneri yapmaz; tüm çalışmalar ayrıca erişilir', () => {
+  const p = createDefaultPreferences();
+  assert.ok(
+    filterProjects(candidates, p).every((c) => c.commercial?.recommended),
+  );
+  assert.ok(!filterProjects(candidates, p).some((c) => c.id === 'genui'));
+  assert.equal(filterProjects(candidates, { ...p, view: 'all' }).length, 23);
+  const shared = preferencesFromUrl(
+    '?view=all&commercial=internal',
+    p,
+    candidates,
+  );
+  assert.equal(shared.view, 'all');
+  assert.ok(
+    filterProjects(candidates, shared).every(
+      (c) => c.commercial?.action === 'internal',
+    ),
+  );
+});
+
+test('katalog yalnız gereken veriyi taşır; kaynak metinleri ayrı sayfada kalır', () => {
+  const compact = toCatalogCandidates(candidates);
+  assert.ok(compact.every((c) => !('evidence' in c)));
+  const prefs = { ...createDefaultPreferences(), view: 'all' as const };
+  assert.deepEqual(
+    filterProjects(compact, prefs).map((c) => c.id),
+    filterProjects(candidates, prefs).map((c) => c.id),
+  );
+});
+
+test('kayıt türü filtresi ticari konumla eşleşir; özellik bağımsız ürün sayılmaz', () => {
+  const p = {
+    ...createDefaultPreferences(),
+    view: 'all' as const,
+    kind: 'feature',
+  };
+  const ids = filterProjects(candidates, p).map((c) => c.id);
+  assert.ok(ids.includes('genui'));
+  assert.ok(ids.includes('titanlar'));
+  assert.ok(!ids.includes('pim'));
 });
