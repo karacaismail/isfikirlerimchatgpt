@@ -341,6 +341,7 @@ p {
 .project-facts {
   min-width: 0;
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-sm);
   margin-block: var(--space-md);
 }
@@ -369,6 +370,11 @@ p {
   align-items: center;
   flex-wrap: wrap;
   gap: var(--space-sm);
+}
+.actions > *,
+.page-actions > * {
+  min-width: 0;
+  max-width: 100%;
 }
 .button-link,
 .button-secondary {

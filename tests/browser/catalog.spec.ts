@@ -353,6 +353,10 @@ test('karar, kapsam ve genel bakış metinleri akışkan kalır', async ({
     await page.setViewportSize({ width: 320, height: 640 });
     await page.addStyleTag({ content: ':root { font-size:200%; }' });
     await readable(page);
+    await page.addStyleTag({
+      content: ':root { --font-ui: Verdana, sans-serif; }',
+    });
+    await readable(page);
   }
 });
 
