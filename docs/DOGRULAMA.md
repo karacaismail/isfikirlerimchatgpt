@@ -6,7 +6,7 @@
 
 Bu adayda yerel formatter, Astro kontrolü, 7 model testi ve üretim derlemesi/gizlilik kapısı geçti. Chromium, Firefox ve WebKit üzerinde **33/33** tarayıcı testi geçti; atlanan, beklenmeyen ve dalgalı sonuç sıfır. Yeni test genel bakış/karar/yöntem metinlerini 320–1280 matrisinde ve yüzde 200 kök metinle kontrol eder. Kaynak projeler çalıştırılmadı.
 
-İçerik değişimi eski altı Darwin görsel referansını önce başarısız yaptı. Bağımsız inceleyici her motorun önce/sonra/fark görüntülerini ve 18 statik sayfa görüntüsünü inceledi; değişim metin ve doğal satır yüksekliğine bağlıydı. Sürüm etiketi, kelime boşluğu ve eski kısmi kaynak notları düzeltildi. İncelenmiş hash bağlı adaylar referansa alındıktan sonra normal sıfır piksel farkı tekrarı geçti. Linux referansları ve yayın sonucu ilgili commitin GitHub Actions kaydına ayrıca bağlanır; aşağıdaki 30 testlik kayıt ilk sürüme aittir.
+İçerik değişimi eski altı Darwin görsel referansını önce başarısız yaptı. Bağımsız inceleyici her motorun önce/sonra/fark görüntülerini ve 18 statik sayfa görüntüsünü inceledi; değişim metin ve doğal satır yüksekliğine bağlıydı. Sürüm etiketi, kelime boşluğu ve eski kısmi kaynak notları düzeltildi. İncelenmiş hash bağlı adaylar referansa alındıktan sonra normal sıfır piksel farkı tekrarı geçti. Linux adayında 30 davranış testi geçti, üç görsel test eski toplam altı referans nedeniyle başarısız oldu. Bağımsız inceleyici 18 önce/sonra/fark görüntüsünü ve altı SHA-256 bağını ayrıca kontrol etti; açık bulgu kalmadı. Yalnız incelenen altı Linux referansı güncellendi. Başarısız aday run 38045181512 başarılı sayılmaz; normal tekrar ve yayın sonucu bu referans güncellemesinin GitHub Actions kaydına bağlanır. Aşağıdaki 30 testlik kayıt ilk sürüme aittir.
 
 ## İlk sürümün kanıtı
 
