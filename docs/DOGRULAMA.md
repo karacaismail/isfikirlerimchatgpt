@@ -17,13 +17,26 @@ Yeni model 14 değerlendirme ölçütü ve 14 olay–koşul–eylem kuralı içe
 | `npm run build`                                                                      | pass    | 31 statik sayfa; iki veri şeması, kamuya açık dışa aktarım eşitliği ve gizlilik kapısı                                                                                                                                                                                                       |
 | Normal yerel tarayıcı turu                                                           | pass    | macOS üzerinde Chromium, Firefox, WebKit; 66/66; sıfır atlanan, dalgalı veya beklenmeyen sonuç                                                                                                                                                                                               |
 | Bağımsız UI ve Mac görsel inceleme                                                   | pass    | Uygulayıcıdan ayrı inceleyici değişen motor/UI dosyalarını ve root veri düzeltmelerini salt okunur inceledi; açık bulgu kalmadı. Altı Mac önce/sonra/fark görüntüsü exact SHA-256 ile onaylandı. İnceleyicinin ilk yazdığı veri kayıtları bağımsız veri incelemesi kapsamına dahil değildir. |
-| Linux CI, Linux görsel referansları ve yeni canlı yayın                              | not_run | İlk CI adayı gönderilecek; önceki yayının başarısı bu sürümün başarısı sayılmaz.                                                                                                                                                                                                             |
+| Linux CI, Linux görsel referansları ve yeni canlı yayın                              | fail    | İlk aday run 38052816513: 63 işlev testi geçti, eski referanslara karşı üç görsel test başarısız. Altı exact-hash Linux adayı bağımsız incelemeden sonra referansa alındı; normal tekrar ve yayın henüz tamamlanmadı.                                                                        |
 | Kaynak ürünlerin çalışma ve kabul doğrulaması                                        | not_run | Katalog testleri kaynak ürünleri başlatmaz. 23 adayın çalışma/kabul olguları bilinmiyor olarak korunur.                                                                                                                                                                                      |
 | Gerçek Safari, fiziksel iOS/Android, sanal klavye, ekran okuyucu ve gerçek %400 zoom | not_run | Playwright motorları, dokunma emülasyonu ve %200 kök metin deneyi ayrı kanıttır.                                                                                                                                                                                                             |
 
 Tarayıcı turu 320 CSS px ile başlayıp 360, 375, 390, kısa yatay görünüm, tablet, eşiklerin N−1/N/N+1 genişlikleri ve masaüstünü kapsar. Üç motorda minimum hesaplanmış metin boyutu, %200 kök metin/Verdana, yerel tablo kaydırması, fare/klavye odağı, özel seçim paneli, modal odak dönüşü, birleşik filtre/boş durum, dört aday sınırı, URL geri/ileri hedefi, kapalı saklama alanı, kontrol listesi kalıcılığı, JavaScript kapalı temel içerik ve ağ bütçeleri geçti. WebKit modal odak dönüşü önce başarısız oldu; açan kontrolün odağı kaynağında düzeltildikten sonra üç motorda geçti.
 
-Komutların çalışma dizini depo köküdür: `npm run format:check`, `npm run check`, `npm test`, `npm run build`, `npm run test:browser`. Node 24.21.0 / npm 11.19.0; Astro 7.3.8, React 19.3.0, Mantine 9.7.1, TypeScript 6.0.3 ve Playwright 1.64.0 kullanıldı. Paket/lockfile değiştirilmedi. Görsel eşik gevşetilmedi; yalnız bağımsız incelenen altı Mac adayı referansa alındı. Linux referansları henüz eski sürümdür ve ayrıca incelenecektir.
+Komutların çalışma dizini depo köküdür: `npm run format:check`, `npm run check`, `npm test`, `npm run build`, `npm run test:browser`. Node 24.21.0 / npm 11.19.0; Astro 7.3.8, React 19.3.0, Mantine 9.7.1, TypeScript 6.0.3 ve Playwright 1.64.0 kullanıldı. Paket/lockfile değiştirilmedi. Görsel eşik gevşetilmedi; yalnız bağımsız incelenen altı Mac adayı referansa alındı. Altı Linux önce/sonra/fark seti de bağımsız incelendi ve yalnız SHA-256 ile bağlı adaylar referansa alındı. Açık UI/motor bulgusu kalmadı. İlk Linux adayı başarılı yayın sayılmaz. Chromium/WebKit masaüstü adaylarında boyut farkıyla birlikte görüntü bekleme zaman aşımı da kaydedildi; referans alımı tek başına kararlı görüntü kabulü değildir. Normal turda sıfır fark ve zaman aşımı olmaması gerekir.
+
+### Bu sürümün ağ ölçümü
+
+Soğuk, service worker engelli 320×640 bağlamlarda macOS ve ilk Linux CI adayının üç motor arasındaki en yüksek encoded gövde değerleri aşağıdadır. Protokol başlıkları hariçtir. Statik rotalarda dış JavaScript 0; inline gezinme/kontrol listesi kodu ayrıca gzip ölçülerek 2 KiB bütçesinde kaldı. Bu tablo canlı CDN ölçümü değildir.
+
+| Rota                       | Toplam bayt | Dış JS bayt | CSS bayt | HTML bayt |
+| -------------------------- | ----------: | ----------: | -------: | --------: |
+| Genel bakış                |       8.576 |           0 |    3.873 |     4.703 |
+| Fırsatlar                  |      10.407 |           0 |    3.873 |     6.534 |
+| AtonotA / Studio ayrıntısı |      13.006 |           0 |    3.873 |     9.133 |
+| Katalog                    |     242.862 |     161.879 |   40.000 |    40.983 |
+
+Katalog toplam 500 KiB, JS 180 KiB, CSS 50 KiB, HTML 50 KiB kabul bütçelerini geçti. 23 aday için ayrı cihaz paketleri eklenmedi; statik sayfalarda React/katalog paketi indirilmedi. Düzen, işlev, kaynak teslimi ve kaynak ürün runtime sonucu ayrı değerlendirilir.
 
 ## UX yenilemesi — 10 Ekim 2026
 
